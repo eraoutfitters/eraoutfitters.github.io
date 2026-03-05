@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="en" style="background:#1A2A18;">
+<html lang="en" style="background:#0C2340;">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,510 +8,622 @@
 <meta name="description" content="A modern outfitter for the field, river, and the everyday. Opening soon in Historic Roswell, Georgia.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 
-html, body, section, footer { background-color: #1A2A18 !important; }
-
+/* ─────────────────────────────────────
+TOKENS — Finnish flag: navy + white + gold
+───────────────────────────────────── */
 :root {
-–pine:       #1A2A18;
-–gold:       #C9A030;
-–gold-light: #D4AE45;
-–cream:      #F2E8D0;
-–border-mid: rgba(201,160,48,0.32);
-–border-hi:  rgba(201,160,48,0.62);
+–navy:        #0C2340;
+–navy-mid:    #112B4E;
+–navy-light:  #163459;
+–white:       #F8F6F2;
+–white-dim:   rgba(248,246,242,0.65);
+–white-faint: rgba(248,246,242,0.28);
+–white-ghost: rgba(248,246,242,0.12);
+–gold:        #C9A030;
+–gold-bright: #D4AE45;
+–gold-dim:    rgba(201,160,48,0.45);
+–gold-faint:  rgba(201,160,48,0.18);
+–gold-ghost:  rgba(201,160,48,0.08);
 }
 
+html, body { background: var(–navy) !important; }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { background: var(–pine); }
 
 body {
-background: var(–pine);
-color: var(–cream);
+background: var(–navy);
+color: var(–white);
 font-family: ‘Inter’, system-ui, sans-serif;
-font-size: 18px;
+font-size: 17px;
 font-weight: 300;
 line-height: 1.65;
 overflow-x: hidden;
 -webkit-font-smoothing: antialiased;
 }
 
+/* Subtle grain over everything */
 body::before {
 content: ‘’;
 position: fixed; inset: 0; z-index: 0; pointer-events: none;
-background-image: url(“data:image/svg+xml,%3Csvg viewBox=‘0 0 256 256’ xmlns=‘http://www.w3.org/2000/svg’%3E%3Cfilter id=‘noise’%3E%3CfeTurbulence type=‘fractalNoise’ baseFrequency=‘0.85’ numOctaves=‘4’ stitchTiles=‘stitch’/%3E%3C/filter%3E%3Crect width=‘100%25’ height=‘100%25’ filter=‘url(%23noise)’ opacity=‘1’/%3E%3C/svg%3E”);
-opacity: 0.03;
+background-image: url(“data:image/svg+xml,%3Csvg viewBox=‘0 0 300 300’ xmlns=‘http://www.w3.org/2000/svg’%3E%3Cfilter id=‘n’%3E%3CfeTurbulence type=‘fractalNoise’ baseFrequency=‘0.8’ numOctaves=‘4’ stitchTiles=‘stitch’/%3E%3C/filter%3E%3Crect width=‘100%25’ height=‘100%25’ filter=‘url(%23n)’/%3E%3C/svg%3E”);
+opacity: 0.025;
 }
 
-/* ── HERO ── */
+/* ─────────────────────────────────────
+SHARED ORNAMENT SYSTEM
+Mirrors the logo’s rules + diamonds
+───────────────────────────────────── */
+.ornament {
+display: flex;
+align-items: center;
+gap: 0;
+width: 100%;
+max-width: 560px;
+margin: 0 auto;
+}
+.ornament-line {
+flex: 1;
+height: 1px;
+background: linear-gradient(to right, transparent, var(–gold-dim));
+}
+.ornament-line.r {
+background: linear-gradient(to left, transparent, var(–gold-dim));
+}
+.ornament-diamond {
+width: 7px; height: 7px;
+background: var(–gold);
+transform: rotate(45deg);
+flex-shrink: 0;
+opacity: 0.7;
+margin: 0 14px;
+}
+.ornament-text {
+font-family: ‘Inter’, sans-serif;
+font-size: 11px;
+font-weight: 500;
+letter-spacing: 4px;
+text-transform: uppercase;
+color: var(–gold-dim);
+padding: 0 4px;
+white-space: nowrap;
+}
+
+/* Full-width ruled divider */
+.rule-divider {
+display: flex;
+align-items: center;
+gap: 0;
+padding: 0 32px;
+margin: 0 auto;
+max-width: 900px;
+}
+.rule-divider .rd-line {
+flex: 1; height: 1px;
+background: var(–gold-faint);
+}
+.rule-divider .rd-diamond {
+width: 6px; height: 6px;
+background: var(–gold);
+transform: rotate(45deg);
+flex-shrink: 0;
+opacity: 0.5;
+margin: 0 20px;
+}
+
+/* ─────────────────────────────────────
+HERO
+───────────────────────────────────── */
 .hero {
 position: relative;
-background: var(–pine);
+background: var(–navy);
 display: flex;
 flex-direction: column;
 align-items: center;
-padding: 60px 32px 72px;
+padding: 64px 32px 72px;
 text-align: center;
 overflow: hidden;
 }
+
+/* Top accent */
 .hero::before {
 content: ‘’;
-position: absolute; top: 0; left: 0; right: 0; height: 2px;
-background: linear-gradient(90deg, transparent, var(–gold), transparent);
-opacity: 0.45;
+position: absolute; top: 0; left: 0; right: 0; height: 3px;
+background: linear-gradient(90deg, transparent 0%, var(–gold) 40%, var(–gold) 60%, transparent 100%);
+opacity: 0.55;
 }
-.hero-trees {
+
+/* Deep radial vignette at bottom */
+.hero::after {
+content: ‘’;
 position: absolute; bottom: 0; left: 0; right: 0; height: 200px;
-z-index: 0; pointer-events: none;
-}
-.hero-trees svg { width: 100%; height: 100%; }
-.hero-trees::before {
-content: ‘’;
-position: absolute; top: 0; left: 0; right: 0; height: 55%;
-background: linear-gradient(to bottom, var(–pine), transparent);
-z-index: 1;
-}
-.hero-inner {
-position: relative; z-index: 2;
-display: flex; flex-direction: column; align-items: center;
-width: 100%; max-width: 640px;
-}
-
-/* ── EYEBROW ── */
-.eyebrow {
-display: flex; align-items: center; gap: 14px;
-margin-bottom: 32px;
-flex-wrap: wrap; justify-content: center;
-opacity: 0; animation: fadeUp 0.7s ease 0.1s forwards;
-}
-.ey-line { width: 40px; height: 1px; background: linear-gradient(to right, transparent, rgba(201,160,48,0.55)); flex-shrink: 0; }
-.ey-line.r { background: linear-gradient(to left, transparent, rgba(201,160,48,0.55)); }
-.ey-diamond { width: 6px; height: 6px; background: var(–gold); transform: rotate(45deg); flex-shrink: 0; opacity: 0.75; }
-.ey-text {
-font-size: 13px;
-font-weight: 500;
-letter-spacing: 3.5px;
-text-transform: uppercase;
-color: rgba(201,160,48,0.7);
-}
-
-/* ── PRE-HEADLINE ── */
-.pre-headline {
-font-family: ‘Playfair Display’, Georgia, serif;
-font-size: clamp(20px, 3.2vw, 26px);
-font-style: italic;
-font-weight: 400;
-color: rgba(242,232,208,0.48);
-margin-bottom: 30px;
-max-width: 480px;
-line-height: 1.5;
-opacity: 0; animation: fadeUp 0.7s ease 0.2s forwards;
-}
-
-/* ── LOGO ── */
-.logo-wrap {
-position: relative;
-width: min(360px, 80vw);
-margin-bottom: 22px;
-opacity: 0; animation: fadeUp 0.9s ease 0.35s forwards;
-border-radius: 4px; overflow: hidden;
-}
-.logo-wrap img { width: 100%; height: auto; display: block; border-radius: 4px; }
-.logo-wrap::after {
-content: ‘’;
-position: absolute; inset: 0; border-radius: 4px;
-background: radial-gradient(ellipse at 50% 50%, transparent 45%, rgba(26,42,24,0.5) 68%, rgba(26,42,24,0.9) 86%, #1A2A18 100%);
+background: linear-gradient(to top, rgba(8,18,30,0.6), transparent);
 pointer-events: none;
 }
 
-/* ── DEFINITION ── */
-.definition {
-margin-bottom: 36px;
-opacity: 0; animation: fadeUp 0.7s ease 0.52s forwards;
-}
-.definition p {
-font-family: ‘Playfair Display’, Georgia, serif;
-font-style: italic;
-font-size: clamp(15px, 2.2vw, 18px);
-color: rgba(201,160,48,0.48);
-line-height: 1.65;
-max-width: 480px;
+.hero-inner {
+position: relative; z-index: 1;
+display: flex; flex-direction: column; align-items: center;
+width: 100%; max-width: 660px;
 }
 
-/* ── VALUE PROP ── */
+/* ─── EYEBROW ─── */
+.hero-eyebrow {
+margin-bottom: 36px;
+opacity: 0; animation: fadeUp 0.8s ease 0.1s forwards;
+}
+
+/* ─── PRE-HEADLINE ─── */
+.pre-headline {
+font-family: ‘Playfair Display’, Georgia, serif;
+font-size: clamp(18px, 3vw, 24px);
+font-style: italic;
+font-weight: 400;
+color: var(–white-faint);
+margin-bottom: 32px;
+max-width: 500px;
+line-height: 1.5;
+opacity: 0; animation: fadeUp 0.8s ease 0.22s forwards;
+letter-spacing: 0.2px;
+}
+
+/* ─── LOGO ─── */
+.logo-wrap {
+position: relative;
+width: min(380px, 82vw);
+margin-bottom: 0;
+opacity: 0; animation: fadeUp 1s ease 0.38s forwards;
+}
+.logo-wrap img { width: 100%; height: auto; display: block; }
+
+/* Seamless fade — logo bg matches navy now via CSS overlay */
+.logo-wrap::before {
+content: ‘’;
+position: absolute; top: 0; left: 0; right: 0; height: 12%;
+background: linear-gradient(to bottom, var(–navy), transparent);
+z-index: 1; pointer-events: none;
+}
+.logo-wrap::after {
+content: ‘’;
+position: absolute; inset: 0;
+background:
+linear-gradient(to right, var(–navy) 0%, transparent 12%, transparent 88%, var(–navy) 100%),
+linear-gradient(to bottom, transparent 50%, rgba(12,35,64,0.7) 80%, var(–navy) 100%);
+pointer-events: none;
+}
+
+/* ─── DEFINITION ─── */
+.definition {
+margin: 24px 0 36px;
+opacity: 0; animation: fadeUp 0.8s ease 0.56s forwards;
+width: 100%;
+}
+.definition-inner {
+display: inline-flex;
+align-items: center;
+gap: 16px;
+padding: 14px 28px;
+border: 1px solid var(–gold-faint);
+background: var(–gold-ghost);
+border-radius: 1px;
+}
+.definition-inner p {
+font-family: ‘Playfair Display’, Georgia, serif;
+font-style: italic;
+font-size: clamp(14px, 2vw, 16px);
+color: var(–gold-dim);
+line-height: 1.5;
+white-space: nowrap;
+}
+@media (max-width: 500px) {
+.definition-inner { padding: 12px 18px; }
+.definition-inner p { white-space: normal; text-align: center; }
+}
+
+/* ─── VALUE PROP ─── */
 .value-prop {
-margin-bottom: 14px;
-opacity: 0; animation: fadeUp 0.7s ease 0.64s forwards;
+margin-bottom: 16px;
+opacity: 0; animation: fadeUp 0.8s ease 0.7s forwards;
 }
 .value-prop h2 {
 font-family: ‘Playfair Display’, Georgia, serif;
-font-size: clamp(30px, 5.5vw, 42px);
-font-weight: 600;
-color: var(–cream);
+font-size: clamp(28px, 5.5vw, 44px);
+font-weight: 700;
+color: var(–white);
 line-height: 1.2;
-margin-bottom: 16px;
-letter-spacing: -0.3px;
+margin-bottom: 18px;
+letter-spacing: -0.5px;
 }
 .value-prop p {
-font-size: clamp(17px, 2.4vw, 20px);
+font-family: ‘Inter’, sans-serif;
+font-size: clamp(16px, 2.2vw, 19px);
 font-weight: 300;
-color: rgba(242,232,208,0.48);
+color: var(–white-dim);
 max-width: 440px;
 line-height: 1.75;
 margin: 0 auto;
 }
 
-/* ── LOCATION ── */
+/* ─── LOCATION ─── */
 .location-tag {
 display: inline-flex; align-items: center; gap: 8px;
-margin: 22px 0 40px;
-opacity: 0; animation: fadeUp 0.7s ease 0.76s forwards;
+margin: 24px 0 44px;
+opacity: 0; animation: fadeUp 0.8s ease 0.82s forwards;
 }
-.location-tag svg { opacity: 0.4; flex-shrink: 0; }
+.location-tag svg { opacity: 0.35; flex-shrink: 0; }
 .location-tag span {
-font-size: 13px;
-font-weight: 400;
-letter-spacing: 2.5px;
-text-transform: uppercase;
-color: rgba(242,232,208,0.3);
+font-family: ‘Inter’, sans-serif;
+font-size: 12px; font-weight: 400;
+letter-spacing: 2.5px; text-transform: uppercase;
+color: var(–white-faint);
 }
 
-/* ── EMAIL ── */
+/* ─── EMAIL CAPTURE ─── */
 .email-section {
-width: min(480px, 94vw);
-opacity: 0; animation: fadeUp 0.7s ease 0.88s forwards;
+width: min(500px, 94vw);
+opacity: 0; animation: fadeUp 0.8s ease 0.94s forwards;
 }
 .email-heading {
 font-family: ‘Playfair Display’, Georgia, serif;
-font-size: clamp(22px, 3.5vw, 28px);
+font-size: clamp(22px, 3.5vw, 30px);
 font-weight: 600;
-color: var(–cream);
+color: var(–white);
 margin-bottom: 8px;
+letter-spacing: -0.2px;
 }
 .email-subhead {
-font-size: clamp(15px, 2vw, 17px);
+font-family: ‘Inter’, sans-serif;
+font-size: clamp(14px, 1.9vw, 16px);
 font-weight: 300;
-color: rgba(242,232,208,0.4);
-margin-bottom: 22px;
+color: var(–white-faint);
+margin-bottom: 24px;
 line-height: 1.65;
 }
 .form-row {
 display: flex;
-border: 1px solid var(–border-mid);
+border: 1px solid rgba(201,160,48,0.38);
 border-radius: 2px; overflow: hidden;
 transition: border-color 0.25s, box-shadow 0.25s;
+background: rgba(255,255,255,0.03);
 }
 .form-row:focus-within {
-border-color: var(–border-hi);
-box-shadow: 0 0 0 3px rgba(201,160,48,0.07);
+border-color: var(–gold);
+box-shadow: 0 0 0 3px rgba(201,160,48,0.1);
 }
 .form-input {
 flex: 1; min-width: 0;
-background: rgba(255,255,255,0.04);
+background: transparent;
 border: none; outline: none;
 padding: 18px 22px;
 font-family: ‘Inter’, sans-serif;
-font-size: 17px;
-font-weight: 300;
-color: var(–cream);
+font-size: 16px; font-weight: 300;
+color: var(–white);
+letter-spacing: 0.2px;
 }
-.form-input::placeholder { color: rgba(242,232,208,0.22); }
+.form-input::placeholder { color: var(–white-ghost); }
 .form-btn {
 background: var(–gold); border: none;
-padding: 18px 26px;
+padding: 18px 28px;
 font-family: ‘Inter’, sans-serif;
-font-size: 12px;
-font-weight: 500;
-letter-spacing: 2.2px;
-text-transform: uppercase;
-color: var(–pine);
+font-size: 11.5px; font-weight: 600;
+letter-spacing: 2.5px; text-transform: uppercase;
+color: var(–navy);
 cursor: pointer;
 transition: background 0.2s, transform 0.1s;
 white-space: nowrap; flex-shrink: 0;
 }
-.form-btn:hover { background: var(–gold-light); }
+.form-btn:hover { background: var(–gold-bright); }
 .form-btn:active { transform: scale(0.98); }
 .form-note {
-font-size: 14px;
-font-weight: 300;
-color: rgba(242,232,208,0.22);
-margin-top: 13px;
-font-style: italic;
+font-family: ‘Inter’, sans-serif;
+font-size: 13px; font-weight: 300;
+color: var(–white-ghost);
+margin-top: 14px; font-style: italic;
 }
 .success-msg {
-display: none;
-padding: 22px 28px;
-border: 1px solid rgba(201,160,48,0.28);
-border-radius: 2px;
-background: rgba(201,160,48,0.05);
+display: none; padding: 22px 28px;
+border: 1px solid rgba(201,160,48,0.3);
+border-radius: 2px; background: var(–gold-ghost);
 }
 .success-msg p {
 font-family: ‘Playfair Display’, Georgia, serif;
-font-style: italic;
-font-size: 22px;
-color: var(–gold);
+font-style: italic; font-size: 22px; color: var(–gold);
 }
 
-/* ── PILLARS ── */
-.pillars {
+/* ─────────────────────────────────────
+WHAT WE’RE BUILDING
+───────────────────────────────────── */
+.building {
 position: relative; z-index: 1;
-background: rgba(0,0,0,0.18);
-border-top: 1px solid rgba(201,160,48,0.07);
-border-bottom: 1px solid rgba(201,160,48,0.07);
-padding: 60px 32px;
+background: var(–navy-mid);
+padding: 64px 32px;
+border-top: 1px solid var(–gold-faint);
+border-bottom: 1px solid var(–gold-faint);
 }
-.section-label {
-text-align: center;
-font-size: 13px;
-font-weight: 500;
-letter-spacing: 3.5px;
-text-transform: uppercase;
-color: rgba(201,160,48,0.45);
-margin-bottom: 48px;
+.building-inner {
+max-width: 860px; margin: 0 auto;
+display: flex; flex-direction: column; align-items: center;
 }
-.pillars-grid {
+.building-label {
+font-family: ‘Inter’, sans-serif;
+font-size: 12px; font-weight: 500;
+letter-spacing: 4px; text-transform: uppercase;
+color: var(–gold-dim);
+margin-bottom: 52px;
+}
+.building-grid {
 display: grid;
 grid-template-columns: repeat(3, 1fr);
-gap: 1px;
-max-width: 900px;
-margin: 0 auto;
+gap: 48px 40px;
+width: 100%;
 }
-.pillar {
-padding: 40px 28px;
+.building-item {
+display: flex; flex-direction: column; align-items: center;
 text-align: center;
-border: 1px solid rgba(201,160,48,0.07);
-background: rgba(255,255,255,0.015);
-transition: background 0.25s, border-color 0.25s;
+padding-top: 28px;
+border-top: 1px solid var(–gold-faint);
+position: relative;
 }
-.pillar:hover {
-background: rgba(255,255,255,0.03);
-border-color: rgba(201,160,48,0.16);
+/* Gold top-rule accent on each item */
+.building-item::before {
+content: ‘’;
+position: absolute; top: -1px; left: 50%;
+transform: translateX(-50%);
+width: 40px; height: 1px;
+background: var(–gold);
+opacity: 0.8;
 }
-.pillar-icon { width: 48px; height: 48px; margin: 0 auto 22px; opacity: 0.55; }
-.pillar-icon svg { width: 100%; height: 100%; }
-.pillar h3 {
+.building-item h3 {
 font-family: ‘Playfair Display’, Georgia, serif;
-font-size: 22px;
-font-weight: 600;
-color: var(–cream);
+font-size: 21px; font-weight: 600;
+color: var(–white);
 margin-bottom: 12px;
+letter-spacing: 0.2px;
 }
-.pillar p {
-font-size: 15px;
-font-weight: 300;
-color: rgba(242,232,208,0.42);
+.building-item p {
+font-family: ‘Inter’, sans-serif;
+font-size: 15px; font-weight: 300;
+color: var(–white-dim);
 line-height: 1.75;
 }
 
-/* ── PILLS ── */
+/* ─────────────────────────────────────
+PILLS
+───────────────────────────────────── */
 .pills-section {
 position: relative; z-index: 1;
-background: var(–pine);
-padding: 56px 32px 60px;
+background: var(–navy);
+padding: 60px 32px 64px;
 text-align: center;
+}
+.pills-label {
+font-family: ‘Inter’, sans-serif;
+font-size: 12px; font-weight: 500;
+letter-spacing: 4px; text-transform: uppercase;
+color: var(–gold-dim);
+margin-bottom: 28px;
 }
 .pills {
 display: flex; gap: 10px; flex-wrap: wrap;
 justify-content: center;
-max-width: 580px;
-margin: 0 auto 44px;
+max-width: 600px; margin: 0 auto 48px;
 }
 .pill {
-border: 1px solid rgba(201,160,48,0.14);
+border: 1px solid var(–gold-faint);
 border-radius: 100px;
 padding: 9px 22px;
-font-size: 13px;
-font-weight: 400;
-letter-spacing: 1.8px;
-text-transform: uppercase;
-color: rgba(242,232,208,0.32);
-transition: border-color 0.2s, color 0.2s;
+font-family: ‘Inter’, sans-serif;
+font-size: 12.5px; font-weight: 400;
+letter-spacing: 2px; text-transform: uppercase;
+color: var(–white-faint);
+transition: border-color 0.2s, color 0.2s, background 0.2s;
+cursor: default;
 }
 .pill:hover {
-border-color: rgba(201,160,48,0.28);
-color: rgba(242,232,208,0.55);
+border-color: rgba(201,160,48,0.4);
+color: rgba(248,246,242,0.65);
+background: var(–gold-ghost);
+}
+
+/* ─────────────────────────────────────
+CLOSING
+───────────────────────────────────── */
+.closing {
+margin-top: 8px;
+padding: 0 0 8px;
 }
 .closing p {
 font-family: ‘Playfair Display’, Georgia, serif;
 font-style: italic;
-font-size: clamp(20px, 3vw, 26px);
-color: rgba(242,232,208,0.28);
+font-size: clamp(20px, 3vw, 28px);
+color: var(–white-faint);
+letter-spacing: 0.3px;
 }
 
-/* ── FOOTER ── */
+/* ─────────────────────────────────────
+FOOTER
+───────────────────────────────────── */
 footer {
 position: relative; z-index: 1;
-background: var(–pine);
-border-top: 1px solid rgba(201,160,48,0.07);
-padding: 36px 28px 44px;
+background: rgba(6,16,28,0.7);
+border-top: 1px solid var(–gold-faint);
+padding: 36px 32px 44px;
 text-align: center;
 }
+.foot-ornament { margin-bottom: 24px; }
 .foot-brand {
 font-family: ‘Playfair Display’, Georgia, serif;
-font-size: 16px;
-font-weight: 600;
-color: rgba(242,232,208,0.22);
-letter-spacing: 3px;
-text-transform: uppercase;
+font-size: 15px; font-weight: 700;
+color: rgba(248,246,242,0.22);
+letter-spacing: 3.5px; text-transform: uppercase;
 margin-bottom: 12px;
 }
 .foot-links {
-font-size: 13px;
-font-weight: 400;
-color: rgba(242,232,208,0.15);
-letter-spacing: 1.8px;
-text-transform: uppercase;
+font-family: ‘Inter’, sans-serif;
+font-size: 12.5px; font-weight: 400;
+color: rgba(248,246,242,0.15);
+letter-spacing: 2px; text-transform: uppercase;
 line-height: 2.4;
 }
-.foot-links a { color: rgba(201,160,48,0.35); text-decoration: none; transition: color 0.2s; }
+.foot-links a { color: var(–gold-dim); text-decoration: none; transition: color 0.2s; }
 .foot-links a:hover { color: var(–gold); }
+.foot-finnish {
+margin-top: 20px;
+font-family: ‘Playfair Display’, Georgia, serif;
+font-style: italic; font-size: 13px;
+color: rgba(248,246,242,0.1);
+letter-spacing: 0.3px;
+}
 
-/* ── ANIMATION ── */
+/* ─────────────────────────────────────
+ANIMATION
+───────────────────────────────────── */
 @keyframes fadeUp {
-from { opacity: 0; transform: translateY(12px); }
+from { opacity: 0; transform: translateY(14px); }
 to   { opacity: 1; transform: translateY(0); }
 }
-.pillar:nth-child(1) { animation: fadeUp 0.6s ease 0.2s both; }
-.pillar:nth-child(2) { animation: fadeUp 0.6s ease 0.33s both; }
-.pillar:nth-child(3) { animation: fadeUp 0.6s ease 0.46s both; }
+.building-item:nth-child(1) { animation: fadeUp 0.7s ease 0.1s both; }
+.building-item:nth-child(2) { animation: fadeUp 0.7s ease 0.25s both; }
+.building-item:nth-child(3) { animation: fadeUp 0.7s ease 0.4s both; }
 
-/* ── MOBILE ── */
-@media (max-width: 600px) {
-.hero { padding: 48px 24px 56px; }
-.pillars-grid { grid-template-columns: 1fr; gap: 1px; }
-.pillar { padding: 32px 24px; }
-.form-btn { padding: 18px 18px; font-size: 11px; letter-spacing: 1.8px; }
+/* ─────────────────────────────────────
+MOBILE
+───────────────────────────────────── */
+@media (max-width: 640px) {
+.hero { padding: 52px 24px 60px; }
+.building-grid { grid-template-columns: 1fr; gap: 36px; }
+.building-item { padding-top: 24px; }
+.form-btn { padding: 18px 18px; font-size: 11px; letter-spacing: 2px; }
 .value-prop h2 { font-size: 28px; }
+.rule-divider { padding: 0 20px; }
 }
-@media (max-width: 380px) {
+@media (max-width: 400px) {
 .form-row { flex-direction: column; }
-.form-btn { padding: 15px; width: 100%; }
+.form-btn { padding: 15px; width: 100%; text-align: center; }
+.definition-inner p { font-size: 13px; }
 }
 </style>
 
 </head>
 <body>
 
+<!-- ══════════════════════════════
+     HERO
+══════════════════════════════ -->
+
 <section class="hero">
-  <div class="hero-trees">
-    <svg viewBox="0 0 1440 200" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
-      <g fill="#C9A030" opacity="0.06">
-        <polygon points="60,200 88,128 74,128 102,52 88,52 118,0 148,52 134,52 162,128 148,128 176,200"/>
-        <polygon points="180,200 203,140 191,140 214,76 202,76 228,10 254,76 242,76 265,140 253,140 276,200"/>
-        <polygon points="295,200 325,120 310,120 340,38 323,38 356,0 389,38 372,38 402,120 387,120 417,200"/>
-        <polygon points="430,200 454,138 442,138 466,72 454,72 480,2 506,72 494,72 518,138 506,138 530,200"/>
-        <polygon points="548,200 576,116 561,116 589,32 572,32 604,0 636,32 619,32 647,116 632,116 660,200"/>
-        <polygon points="673,200 698,135 686,135 711,66 699,66 726,0 753,66 741,66 766,135 754,135 779,200"/>
-        <polygon points="793,200 821,118 806,118 834,36 817,36 849,0 881,36 864,36 892,118 877,118 905,200"/>
-        <polygon points="918,200 942,138 930,138 954,70 942,70 968,0 994,70 982,70 1006,138 994,138 1018,200"/>
-        <polygon points="1033,200 1059,124 1045,124 1071,44 1056,44 1086,0 1116,44 1101,44 1127,124 1113,124 1139,200"/>
-        <polygon points="1153,200 1176,140 1164,140 1187,76 1175,76 1200,8 1225,76 1213,76 1236,140 1224,140 1247,200"/>
-        <polygon points="1263,200 1288,122 1274,122 1299,42 1284,42 1312,0 1340,42 1325,42 1350,122 1336,122 1361,200"/>
-        <polygon points="1373,200 1394,142 1383,142 1404,80 1393,80 1416,16 1439,80 1428,80 1449,142 1438,142 1459,200"/>
-        <path d="M0,192 Q360,182 720,190 Q1080,198 1440,188 L1440,200 L0,200Z" opacity="0.45"/>
-      </g>
+<div class="hero-inner">
+
+  <!-- Eyebrow ornament -->
+
+  <div class="hero-eyebrow">
+    <div class="ornament">
+      <div class="ornament-line"></div>
+      <div class="ornament-diamond"></div>
+      <span class="ornament-text">Opening Soon &nbsp;·&nbsp; Historic Roswell, Georgia</span>
+      <div class="ornament-diamond"></div>
+      <div class="ornament-line r"></div>
+    </div>
+  </div>
+
+  <!-- Pre-headline -->
+
+  <p class="pre-headline">A Modern Outfitter for the Field, River, and the Everyday.</p>
+
+  <!-- Logo -->
+
+  <div class="logo-wrap">
+    <img src="logo.png" alt="Erä Outfitters — Fly Fishing and Upland Hunting, Roswell Georgia"/>
+  </div>
+
+  <!-- Definition — framed like a plaque -->
+
+  <div class="definition">
+    <div class="definition-inner">
+      <p>er&#228; (n.) &#8212; Finnish. The act of hunting and fishing in the wilderness.</p>
+    </div>
+  </div>
+
+  <!-- Value prop -->
+
+  <div class="value-prop">
+    <h2>Premium gear. Real community.<br>No gatekeeping.</h2>
+    <p>A carefully curated shop and gathering place for fishermen, hunters, and the curious.</p>
+  </div>
+
+  <!-- Location -->
+
+  <div class="location-tag">
+    <svg width="12" height="15" viewBox="0 0 12 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6 0C2.69 0 0 2.69 0 6C0 10.5 6 15 6 15C6 15 12 10.5 12 6C12 2.69 9.31 0 6 0ZM6 8.25C4.76 8.25 3.75 7.24 3.75 6C3.75 4.76 4.76 3.75 6 3.75C7.24 3.75 8.25 4.76 8.25 6C8.25 7.24 7.24 8.25 6 8.25Z" fill="#C9A030"/>
     </svg>
+    <span>Historic Roswell, Georgia</span>
   </div>
 
-  <div class="hero-inner">
+  <!-- Email -->
+
+  <div class="email-section">
+    <p class="email-heading">Be among the first to know</p>
+    <p class="email-subhead">Join the list for opening day, first events, and early access.</p>
+    <div id="formContainer">
+      <div class="form-row">
+        <input type="email" class="form-input" id="emailInput" placeholder="your@email.com" autocomplete="email"/>
+        <button class="form-btn" onclick="handleSubmit()">Get Early Access</button>
+      </div>
+      <p class="form-note">No spam. Just the opening date, first events, and updates on our progress.</p>
+    </div>
+    <div class="success-msg" id="successMsg">
+      <p>You&#39;re on the list. We&#39;ll be in touch.</p>
+    </div>
+  </div>
+
+</div>
+</section>
+
+<!-- ══════════════════════════════
+     WHAT WE'RE BUILDING
+══════════════════════════════ -->
+
+<section class="building">
+<div class="building-inner">
+  <p class="building-label">What We&#39;re Building</p>
+  <div class="building-grid">
 
 ```
-<div class="eyebrow">
-  <div class="ey-line"></div>
-  <div class="ey-diamond"></div>
-  <span class="ey-text">Opening Soon &nbsp;·&nbsp; Historic Roswell, Georgia</span>
-  <div class="ey-diamond"></div>
-  <div class="ey-line r"></div>
+<div class="building-item">
+  <h3>Hunting</h3>
+  <p>Gear and apparel built for the field. Dove, quail, and all upland birds — no pretension, no gatekeeping.</p>
 </div>
 
-<p class="pre-headline">A Modern Outfitter for the Field, River, and the Everyday.</p>
-
-<div class="logo-wrap">
-  <img src="logo.png" alt="Erä Outfitters — Fly Fishing and Upland Hunting, Roswell Georgia"/>
+<div class="building-item">
+  <h3>Fishing</h3>
+  <p>Fly and tackle for Southern tailwaters. The Chattahoochee, Toccoa, and every river worth fishing.</p>
 </div>
 
-<div class="definition">
-  <p>er&#228; (n.) &#8212; Finnish. The act of hunting and fishing in the wilderness. Origin of Er&#228; Outfitters.</p>
-</div>
-
-<div class="value-prop">
-  <h2>Premium gear. Real community.<br>No gatekeeping.</h2>
-  <p>A carefully curated shop and gathering place for fishermen, hunters, and the curious.</p>
-</div>
-
-<div class="location-tag">
-  <svg width="13" height="16" viewBox="0 0 12 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M6 0C2.69 0 0 2.69 0 6C0 10.5 6 15 6 15C6 15 12 10.5 12 6C12 2.69 9.31 0 6 0ZM6 8.25C4.76 8.25 3.75 7.24 3.75 6C3.75 4.76 4.76 3.75 6 3.75C7.24 3.75 8.25 4.76 8.25 6C8.25 7.24 7.24 8.25 6 8.25Z" fill="#C9A030"/>
-  </svg>
-  <span>Historic Roswell, Georgia</span>
-</div>
-
-<div class="email-section">
-  <p class="email-heading">Be among the first to know</p>
-  <p class="email-subhead">Join the list for opening day, first events, and early access.</p>
-  <div id="formContainer">
-    <div class="form-row">
-      <input type="email" class="form-input" id="emailInput" placeholder="your@email.com" autocomplete="email"/>
-      <button class="form-btn" onclick="handleSubmit()">Get Early Access</button>
-    </div>
-    <p class="form-note">No spam. Just the opening date, first events, and updates on our progress.</p>
-  </div>
-  <div class="success-msg" id="successMsg">
-    <p>You&#39;re on the list. We&#39;ll be in touch.</p>
-  </div>
+<div class="building-item">
+  <h3>Community</h3>
+  <p>Pig roasts, crawfish boils, fly tying nights, live music, and a bar worth coming back to.</p>
 </div>
 ```
 
   </div>
+</div>
 </section>
 
-<section class="pillars">
-  <p class="section-label">What We&#39;re Building</p>
-  <div class="pillars-grid">
-    <div class="pillar">
-      <div class="pillar-icon">
-        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="4" y="22" width="30" height="3.5" rx="1.75" fill="#C9A030"/>
-          <rect x="34" y="19.5" width="10" height="9" rx="1.5" fill="#C9A030"/>
-          <rect x="11" y="18" width="7" height="4" rx="1" fill="#C9A030"/>
-          <circle cx="14" cy="30" r="2.5" fill="#C9A030"/>
-          <path d="M28 9 Q33 6 38 9 Q33 11.5 28 9Z" fill="#C9A030" opacity="0.55"/>
-          <path d="M35 7 Q40 4 45 7 Q40 9.5 35 7Z" fill="#C9A030" opacity="0.38"/>
-        </svg>
-      </div>
-      <h3>Hunting</h3>
-      <p>Gear and apparel built for the field. Dove, quail, and all upland birds.</p>
-    </div>
-    <div class="pillar">
-      <div class="pillar-icon">
-        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <line x1="6" y1="42" x2="42" y2="6" stroke="#C9A030" stroke-width="2.5" stroke-linecap="round"/>
-          <circle cx="10" cy="38" r="4" stroke="#C9A030" stroke-width="2" fill="none"/>
-          <path d="M42 6 Q50 18 38 28 Q28 34 30 44" stroke="#C9A030" stroke-width="1.5" fill="none" stroke-dasharray="3 2.5" opacity="0.65"/>
-          <circle cx="30" cy="44" r="2" fill="#C9A030" opacity="0.85"/>
-        </svg>
-      </div>
-      <h3>Fishing</h3>
-      <p>Fly and tackle for Southern tailwaters. The Chattahoochee, Toccoa, and beyond.</p>
-    </div>
-    <div class="pillar">
-      <div class="pillar-icon">
-        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M24 40C16 40 10 34 10 26C10 20 14 16 18 14C17 18 19 20 21 19C20 15 22 10 26 8C25 13 28 16 27 20C30 17 31 13 30 10C35 14 38 20 38 26C38 34 32 40 24 40Z" fill="#C9A030" opacity="0.7"/>
-          <path d="M24 38C19 38 15 33 15 27C15 23 17 20 20 19C19.5 22 21 23 22 22C22 20 23 17 25 16C24.5 19 26 21 25.5 23C27 21 28 19 27.5 17C30 20 31 24 31 27C31 33 27 38 24 38Z" fill="#1A2A18"/>
-          <circle cx="17" cy="44" r="2" fill="#C9A030" opacity="0.45"/>
-          <circle cx="24" cy="46" r="2" fill="#C9A030" opacity="0.45"/>
-          <circle cx="31" cy="44" r="2" fill="#C9A030" opacity="0.45"/>
-        </svg>
-      </div>
-      <h3>Community</h3>
-      <p>Pig roasts, crawfish boils, fly tying nights, and a bar worth coming back to.</p>
-    </div>
-  </div>
-</section>
+<!-- ══════════════════════════════
+     PILLS
+══════════════════════════════ -->
 
 <section class="pills-section">
-  <p class="section-label">Also on the agenda</p>
+
+  <div class="rule-divider" style="margin-bottom: 52px;">
+    <div class="rd-line"></div>
+    <div class="rd-diamond"></div>
+    <div class="rd-line"></div>
+  </div>
+
+  <p class="pills-label">Also on the agenda</p>
   <div class="pills">
     <div class="pill">Dove Season</div>
     <div class="pill">Fly Tying</div>
@@ -522,12 +634,31 @@ to   { opacity: 1; transform: translateY(0); }
     <div class="pill">The Bar</div>
     <div class="pill">Pig Roasts</div>
   </div>
+
+  <div class="rule-divider" style="margin-bottom: 40px;">
+    <div class="rd-line"></div>
+    <div class="rd-diamond"></div>
+    <div class="rd-line"></div>
+  </div>
+
   <div class="closing">
     <p>From the tailwater to the field.</p>
   </div>
+
 </section>
 
+<!-- ══════════════════════════════
+     FOOTER
+══════════════════════════════ -->
+
 <footer>
+  <div class="foot-ornament">
+    <div class="ornament" style="max-width:320px;">
+      <div class="ornament-line"></div>
+      <div class="ornament-diamond"></div>
+      <div class="ornament-line r"></div>
+    </div>
+  </div>
   <div class="foot-brand">Er&#228; Outfitters</div>
   <div class="foot-links">
     <a href="https://instagram.com/eraoutfitter" target="_blank">@eraoutfitter</a>
@@ -536,13 +667,14 @@ to   { opacity: 1; transform: translateY(0); }
     &nbsp;&nbsp;·&nbsp;&nbsp;
     Roswell, Georgia
   </div>
+  <p class="foot-finnish">er&#228; &#8212; Finnish. hunting and fishing in the wilderness.</p>
 </footer>
 
 <script>
 function handleSubmit() {
   var email = document.getElementById('emailInput').value.trim();
   if (!email || email.indexOf('@') === -1) {
-    document.getElementById('emailInput').style.outline = '2px solid rgba(184,85,37,0.6)';
+    document.getElementById('emailInput').style.outline = '2px solid rgba(201,160,48,0.5)';
     document.getElementById('emailInput').focus();
     return;
   }
