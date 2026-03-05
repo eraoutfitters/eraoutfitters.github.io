@@ -11,17 +11,7 @@
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-:root {
-–pine:  #1E2D1C;
-–gold:  #C9A030;
-–cream: #F4EDD8;
-–smoke: #7A7060;
-–ember: #B85525;
-}
-
-html {
-background: #1E2D1C;
-}
+html { background: #1E2D1C; }
 
 body {
 min-height: 100vh;
@@ -31,7 +21,6 @@ font-family: ‘Crimson Pro’, Georgia, serif;
 overflow-x: hidden;
 }
 
-/* GRAIN OVERLAY */
 body::before {
 content: ‘’;
 position: fixed; inset: 0; z-index: 0;
@@ -40,7 +29,6 @@ opacity: 0.04;
 pointer-events: none;
 }
 
-/* VIGNETTE */
 body::after {
 content: ‘’;
 position: fixed; inset: 0; z-index: 0;
@@ -48,7 +36,6 @@ background: radial-gradient(ellipse at 50% 40%, transparent 30%, rgba(8,14,8,0.6
 pointer-events: none;
 }
 
-/* LAYOUT */
 .page {
 position: relative; z-index: 1;
 min-height: 100vh;
@@ -65,243 +52,121 @@ text-align: center;
 display: flex;
 align-items: center;
 gap: 14px;
-margin-bottom: 52px;
+margin-bottom: 40px;
 opacity: 0;
 animation: fadeUp 0.8s ease 0.1s forwards;
 }
-.rule-line {
-width: 60px; height: 1px;
-background: linear-gradient(to right, transparent, #C9A030);
-}
-.rule-line.right {
-background: linear-gradient(to left, transparent, #C9A030);
-}
-.rule-diamond {
-width: 7px; height: 7px;
-background: #C9A030;
-transform: rotate(45deg);
-flex-shrink: 0;
-}
-.top-eyebrow {
-font-family: ‘Crimson Pro’, serif;
-font-size: 13px;
-letter-spacing: 4px;
-text-transform: uppercase;
-color: #C9A030;
-font-weight: 300;
-}
+.rule-line { width: 60px; height: 1px; background: linear-gradient(to right, transparent, #C9A030); }
+.rule-line.right { background: linear-gradient(to left, transparent, #C9A030); }
+.rule-diamond { width: 7px; height: 7px; background: #C9A030; transform: rotate(45deg); flex-shrink: 0; }
+.top-eyebrow { font-family: ‘Crimson Pro’, serif; font-size: 13px; letter-spacing: 4px; text-transform: uppercase; color: #C9A030; font-weight: 300; }
 
 /* LOGO */
 .logo-wrap {
 opacity: 0;
 animation: fadeUp 1s ease 0.3s forwards;
-margin-bottom: 8px;
+width: min(420px, 86vw);
+margin-bottom: 4px;
 }
-.logo-era {
-font-family: ‘Playfair Display’, serif;
-font-size: clamp(88px, 18vw, 160px);
-font-weight: 700;
-line-height: 0.9;
-color: #F4EDD8;
-letter-spacing: -2px;
-text-shadow: 0 2px 40px rgba(0,0,0,0.5);
-}
-.logo-outfitters {
-font-family: ‘Crimson Pro’, serif;
-font-size: clamp(14px, 2.5vw, 20px);
-letter-spacing: 8px;
-text-transform: uppercase;
-color: #C9A030;
-font-weight: 300;
-margin-top: 2px;
+.logo-wrap img {
+width: 100%;
+height: auto;
 display: block;
+border-radius: 4px;
 }
 
-/* DIVIDER */
-.mid-rule {
-display: flex;
-align-items: center;
-gap: 14px;
-margin: 28px 0 32px;
+/* DEFINITION */
+.definition {
 opacity: 0;
-animation: fadeUp 0.8s ease 0.5s forwards;
-width: min(320px, 80vw);
+animation: fadeUp 0.8s ease 0.55s forwards;
+margin-bottom: 44px;
+margin-top: 8px;
 }
-.mid-line { flex: 1; height: 1px; background: rgba(201,160,48,0.3); }
-.mid-text {
-font-size: 11px;
-letter-spacing: 3px;
-text-transform: uppercase;
-color: rgba(201,160,48,0.6);
-font-family: ‘Crimson Pro’, serif;
-font-weight: 300;
-white-space: nowrap;
+.definition p {
+font-family: ‘Playfair Display’, serif;
+font-style: italic;
+font-size: clamp(12px, 1.8vw, 15px);
+color: rgba(201,160,48,0.5);
+max-width: 480px;
 }
 
 /* TAGLINE */
 .tagline {
 opacity: 0;
-animation: fadeUp 0.8s ease 0.6s forwards;
-margin-bottom: 12px;
+animation: fadeUp 0.8s ease 0.7s forwards;
+margin-bottom: 10px;
 }
 .tagline p {
 font-family: ‘Playfair Display’, serif;
 font-style: italic;
-font-size: clamp(18px, 3vw, 26px);
-color: rgba(244,237,216,0.75);
-line-height: 1.5;
-max-width: 480px;
+font-size: clamp(19px, 3.2vw, 28px);
+color: rgba(244,237,216,0.78);
+line-height: 1.4;
+max-width: 520px;
 }
 
-/* SUB TAGLINE */
-.sub-tagline {
+/* LOCATION */
+.location {
 opacity: 0;
-animation: fadeUp 0.8s ease 0.75s forwards;
+animation: fadeUp 0.8s ease 0.82s forwards;
 margin-bottom: 52px;
 }
-.sub-tagline p {
-font-size: 14px;
-letter-spacing: 2px;
-text-transform: uppercase;
-color: rgba(244,237,216,0.35);
-font-weight: 300;
-}
+.location p { font-size: 13px; letter-spacing: 2.5px; text-transform: uppercase; color: rgba(244,237,216,0.28); font-weight: 300; }
 
-/* EMAIL FORM */
+/* FORM */
 .form-wrap {
 opacity: 0;
-animation: fadeUp 0.8s ease 0.9s forwards;
+animation: fadeUp 0.8s ease 0.95s forwards;
 width: min(420px, 90vw);
-margin-bottom: 48px;
+margin-bottom: 52px;
 }
-.form-label {
-font-size: 12px;
-letter-spacing: 2.5px;
-text-transform: uppercase;
-color: #C9A030;
-font-weight: 300;
-margin-bottom: 14px;
-display: block;
-}
-.form-row {
-display: flex;
-border: 1px solid rgba(201,160,48,0.35);
-border-radius: 2px;
-overflow: hidden;
-transition: border-color 0.2s;
-}
+.form-label { font-size: 12px; letter-spacing: 2.5px; text-transform: uppercase; color: #C9A030; font-weight: 300; margin-bottom: 14px; display: block; }
+.form-row { display: flex; border: 1px solid rgba(201,160,48,0.35); border-radius: 2px; overflow: hidden; transition: border-color 0.2s; }
 .form-row:focus-within { border-color: rgba(201,160,48,0.7); }
-.form-input {
-flex: 1;
-background: rgba(255,255,255,0.05);
-border: none;
-outline: none;
-padding: 14px 18px;
-font-family: ‘Crimson Pro’, serif;
-font-size: 16px;
-color: #F4EDD8;
-}
+.form-input { flex: 1; background: rgba(255,255,255,0.05); border: none; outline: none; padding: 14px 18px; font-family: ‘Crimson Pro’, serif; font-size: 16px; color: #F4EDD8; }
 .form-input::placeholder { color: rgba(244,237,216,0.25); font-style: italic; }
-.form-btn {
-background: #C9A030;
-border: none;
-padding: 14px 22px;
-font-family: ‘Crimson Pro’, serif;
-font-size: 12px;
-letter-spacing: 2px;
-text-transform: uppercase;
-color: #1E2D1C;
-cursor: pointer;
-transition: background 0.2s;
-white-space: nowrap;
-font-weight: 600;
-}
+.form-btn { background: #C9A030; border: none; padding: 14px 22px; font-family: ‘Crimson Pro’, serif; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: #1E2D1C; cursor: pointer; transition: background 0.2s; white-space: nowrap; font-weight: 600; }
 .form-btn:hover { background: #d9b040; }
-.form-note {
-font-size: 12px;
-color: rgba(244,237,216,0.25);
-margin-top: 10px;
-font-style: italic;
-}
-.success-msg {
-display: none;
-padding: 14px 24px;
-border: 1px solid rgba(201,160,48,0.4);
-border-radius: 2px;
-background: rgba(201,160,48,0.08);
-}
-.success-msg p {
-font-family: ‘Playfair Display’, serif;
-font-style: italic;
-font-size: 17px;
-color: #C9A030;
-}
+.form-note { font-size: 12px; color: rgba(244,237,216,0.22); margin-top: 10px; font-style: italic; }
+.success-msg { display: none; padding: 14px 24px; border: 1px solid rgba(201,160,48,0.4); border-radius: 2px; background: rgba(201,160,48,0.08); }
+.success-msg p { font-family: ‘Playfair Display’, serif; font-style: italic; font-size: 17px; color: #C9A030; }
 
 /* PILLS */
-.pills {
+.building-label {
 opacity: 0;
 animation: fadeUp 0.8s ease 1.1s forwards;
-display: flex;
-gap: 8px;
-flex-wrap: wrap;
-justify-content: center;
-margin-bottom: 60px;
+font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+color: rgba(201,160,48,0.4); font-weight: 300; margin-bottom: 14px;
+font-family: ‘Crimson Pro’, serif;
 }
-.pill {
-border: 1px solid rgba(201,160,48,0.2);
-border-radius: 100px;
-padding: 6px 16px;
-font-size: 12px;
-letter-spacing: 1.5px;
-text-transform: uppercase;
-color: rgba(244,237,216,0.4);
-font-weight: 300;
+.pills {
+opacity: 0;
+animation: fadeUp 0.8s ease 1.15s forwards;
+display: flex; gap: 8px; flex-wrap: wrap;
+justify-content: center; margin-bottom: 36px; max-width: 520px;
 }
+.pill { border: 1px solid rgba(201,160,48,0.18); border-radius: 100px; padding: 6px 16px; font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(244,237,216,0.36); font-weight: 300; }
+
+/* CLOSING */
+.closing {
+opacity: 0;
+animation: fadeUp 0.8s ease 1.25s forwards;
+margin-bottom: 56px;
+}
+.closing p { font-family: ‘Playfair Display’, serif; font-style: italic; font-size: clamp(15px, 2.2vw, 19px); color: rgba(244,237,216,0.38); }
 
 /* FOOTER */
 .foot {
 opacity: 0;
-animation: fadeUp 0.8s ease 1.3s forwards;
-border-top: 1px solid rgba(201,160,48,0.12);
-padding-top: 28px;
-width: min(480px, 90vw);
-text-align: center;
+animation: fadeUp 0.8s ease 1.35s forwards;
+border-top: 1px solid rgba(201,160,48,0.1);
+padding-top: 28px; width: min(480px, 90vw); text-align: center;
 }
-.foot-brand {
-font-family: ‘Playfair Display’, serif;
-font-size: 15px;
-font-weight: 700;
-color: rgba(244,237,216,0.5);
-letter-spacing: 1px;
-margin-bottom: 6px;
-}
-.foot-sub {
-font-size: 12px;
-color: rgba(244,237,216,0.2);
-letter-spacing: 1.5px;
-text-transform: uppercase;
-font-weight: 300;
-line-height: 1.8;
-}
-.foot-sub a {
-color: rgba(201,160,48,0.45);
-text-decoration: none;
-transition: color 0.2s;
-}
+.foot-brand { font-family: ‘Playfair Display’, serif; font-size: 14px; font-weight: 700; color: rgba(244,237,216,0.3); letter-spacing: 2px; margin-bottom: 8px; }
+.foot-sub { font-size: 12px; color: rgba(244,237,216,0.18); letter-spacing: 1.5px; text-transform: uppercase; font-weight: 300; line-height: 1.8; }
+.foot-sub a { color: rgba(201,160,48,0.4); text-decoration: none; transition: color 0.2s; }
 .foot-sub a:hover { color: #C9A030; }
 
-/* FINNISH LINE */
-.finnish-line {
-opacity: 0;
-animation: fadeUp 0.8s ease 1.5s forwards;
-margin-top: 24px;
-font-family: ‘Playfair Display’, serif;
-font-style: italic;
-font-size: 13px;
-color: rgba(244,237,216,0.18);
-}
-
-/* ANIMATION */
 @keyframes fadeUp {
 from { opacity: 0; transform: translateY(16px); }
 to   { opacity: 1; transform: translateY(0); }
@@ -309,7 +174,7 @@ to   { opacity: 1; transform: translateY(0); }
 
 @media (max-width: 480px) {
 .page { padding: 48px 20px; }
-.form-btn { padding: 14px 14px; font-size: 11px; }
+.form-btn { padding: 14px 12px; font-size: 11px; }
 }
 </style>
 
@@ -326,21 +191,18 @@ to   { opacity: 1; transform: translateY(0); }
   </div>
 
   <div class="logo-wrap">
-    <div class="logo-era">ER&#196;</div>
-    <span class="logo-outfitters">Outfitters</span>
+    <img src="logo.png" alt="Erä Outfitters — Fly Fishing and Upland Hunting, Roswell Georgia"/>
   </div>
 
-  <div class="mid-rule">
-    <div class="mid-line"></div>
-    <span class="mid-text">Fly Fishing &middot; Upland Hunting</span>
-    <div class="mid-line"></div>
+  <div class="definition">
+    <p>er&#228; (n.) &#8212; Finnish. The act of hunting and fishing in the wilderness. Origin of Er&#228; Outfitters.</p>
   </div>
 
   <div class="tagline">
-    <p>A shop, a community, and a place<br>where everyone belongs.</p>
+    <p>A shop, a community, and a place where everyone belongs</p>
   </div>
 
-  <div class="sub-tagline">
+  <div class="location">
     <p>Historic Roswell, Georgia</p>
   </div>
 
@@ -348,29 +210,30 @@ to   { opacity: 1; transform: translateY(0); }
     <span class="form-label">Be the first to know</span>
     <div id="formContainer">
       <div class="form-row">
-        <input
-          type="email"
-          class="form-input"
-          id="emailInput"
-          placeholder="your@email.com"
-          autocomplete="email"
-        />
+        <input type="email" class="form-input" id="emailInput" placeholder="your@email.com" autocomplete="email"/>
         <button class="form-btn" onclick="handleSubmit()">Notify Me</button>
       </div>
-      <p class="form-note">No spam. Just the opening date, the first event, and the Gate City collab.</p>
+      <p class="form-note">No spam. Just the opening date, the first events and updates on our progress.</p>
     </div>
     <div class="success-msg" id="successMsg">
       <p>You&#39;re on the list. We&#39;ll be in touch.</p>
     </div>
   </div>
 
+  <div class="building-label">What We&#39;re Building</div>
   <div class="pills">
-    <div class="pill">Dove Season</div>
+    <div class="pill">Fishing</div>
     <div class="pill">Fly Tying</div>
+    <div class="pill">Upland Birds</div>
     <div class="pill">Bird Dogs</div>
     <div class="pill">Pig Roasts</div>
+    <div class="pill">Crawfish Boils</div>
     <div class="pill">Live Music</div>
     <div class="pill">The Bar</div>
+  </div>
+
+  <div class="closing">
+    <p>From the tailwater to the field.</p>
   </div>
 
   <div class="foot">
@@ -378,14 +241,10 @@ to   { opacity: 1; transform: translateY(0); }
     <div class="foot-sub">
       <a href="https://instagram.com/eraoutfitter" target="_blank">@eraoutfitter</a>
       &nbsp;&middot;&nbsp;
-      <a href="mailto:hello@eraoutfitters.com">hello@eraoutfitters.com</a>
+      <a href="mailto:shop@eraoutfitters.com">shop@eraoutfitters.com</a>
       &nbsp;&middot;&nbsp;
       Roswell, Georgia
     </div>
-  </div>
-
-  <div class="finnish-line">
-    er&#228; &#8212; Finnish. hunting and fishing in the wilderness.
   </div>
 
 </div>
@@ -401,7 +260,6 @@ function handleSubmit() {
   document.getElementById('formContainer').style.display = 'none';
   document.getElementById('successMsg').style.display = 'block';
 }
-
 document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('emailInput').addEventListener('keydown', function(e) {
     if (e.key === 'Enter') handleSubmit();
