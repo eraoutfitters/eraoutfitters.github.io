@@ -4,256 +4,736 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Erä Outfitters — Coming to Roswell, Georgia</title>
-<meta name="description" content="Fly fishing and upland hunting. Coming soon to Historic Roswell, Georgia.">
+<title>Erä Outfitters — Coming to Historic Roswell, Georgia</title>
+<meta name="description" content="A modern outfitter for the field, river, and woods. Opening soon in Historic Roswell, Georgia.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400;1,700&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-html { background: #1E2D1C; }
+/* ─────────────────────────────────────────
+TOKENS
+───────────────────────────────────────── */
+:root {
+–pine:      #1A2A18;
+–pine-mid:  #243322;
+–pine-light:#2E4029;
+–gold:      #C9A030;
+–gold-light:#D4AE45;
+–cream:     #F2E8D0;
+–cream-dim: rgba(242,232,208,0.72);
+–smoke:     #8A7E6E;
+–border:    rgba(201,160,48,0.18);
+–border-mid:rgba(201,160,48,0.35);
+–border-hi: rgba(201,160,48,0.65);
+}
+
+/* ─────────────────────────────────────────
+RESET & BASE
+───────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { background: var(–pine); scroll-behavior: smooth; }
 
 body {
-min-height: 100vh;
-background: #1E2D1C;
-color: #F4EDD8;
-font-family: ‘Crimson Pro’, Georgia, serif;
+background: var(–pine);
+color: var(–cream);
+font-family: ‘Inter’, system-ui, sans-serif;
+font-weight: 300;
+line-height: 1.6;
 overflow-x: hidden;
+-webkit-font-smoothing: antialiased;
 }
 
+/* ─────────────────────────────────────────
+GRAIN TEXTURE
+───────────────────────────────────────── */
 body::before {
 content: ‘’;
-position: fixed; inset: 0; z-index: 0;
-background-image: url(“data:image/svg+xml,%3Csvg viewBox=‘0 0 200 200’ xmlns=‘http://www.w3.org/2000/svg’%3E%3Cfilter id=‘n’%3E%3CfeTurbulence type=‘fractalNoise’ baseFrequency=‘0.9’ numOctaves=‘4’ stitchTiles=‘stitch’/%3E%3C/filter%3E%3Crect width=‘100%25’ height=‘100%25’ filter=‘url(%23n)’/%3E%3C/svg%3E”);
-opacity: 0.04;
-pointer-events: none;
+position: fixed; inset: 0; z-index: 0; pointer-events: none;
+background-image: url(“data:image/svg+xml,%3Csvg viewBox=‘0 0 256 256’ xmlns=‘http://www.w3.org/2000/svg’%3E%3Cfilter id=‘noise’%3E%3CfeTurbulence type=‘fractalNoise’ baseFrequency=‘0.85’ numOctaves=‘4’ stitchTiles=‘stitch’/%3E%3C/filter%3E%3Crect width=‘100%25’ height=‘100%25’ filter=‘url(%23noise)’ opacity=‘1’/%3E%3C/svg%3E”);
+opacity: 0.032;
 }
 
-body::after {
-content: ‘’;
-position: fixed; inset: 0; z-index: 0;
-background: radial-gradient(ellipse at 50% 40%, transparent 30%, rgba(8,14,8,0.6) 100%);
-pointer-events: none;
-}
-
-.page {
-position: relative; z-index: 1;
+/* ─────────────────────────────────────────
+HERO SECTION
+───────────────────────────────────────── */
+.hero {
+position: relative;
 min-height: 100vh;
 display: flex;
 flex-direction: column;
 align-items: center;
 justify-content: center;
-padding: 60px 24px;
+padding: 48px 24px 56px;
 text-align: center;
+overflow: hidden;
 }
 
-/* TOP ORNAMENT */
-.top-rule {
+/* SVG forest/river background pattern */
+.hero-bg {
+position: absolute; inset: 0; z-index: 0;
+overflow: hidden;
+}
+.hero-bg svg {
+position: absolute;
+bottom: 0; left: 0; right: 0;
+width: 100%; height: 55%;
+opacity: 0.07;
+}
+.hero-bg::after {
+content: ‘’;
+position: absolute; inset: 0;
+background:
+radial-gradient(ellipse at 50% 0%, rgba(36,51,34,0.3) 0%, transparent 60%),
+radial-gradient(ellipse at 50% 100%, rgba(10,18,10,0.8) 0%, transparent 70%);
+}
+
+/* Thin top border accent */
+.hero::before {
+content: ‘’;
+position: absolute;
+top: 0; left: 0; right: 0;
+height: 2px;
+background: linear-gradient(90deg, transparent, var(–gold), transparent);
+opacity: 0.6;
+}
+
+.hero-inner {
+position: relative; z-index: 1;
+display: flex;
+flex-direction: column;
+align-items: center;
+width: 100%;
+max-width: 680px;
+}
+
+/* ─────────────────────────────────────────
+EYEBROW
+───────────────────────────────────────── */
+.eyebrow {
 display: flex;
 align-items: center;
-gap: 14px;
-margin-bottom: 40px;
+gap: 12px;
+margin-bottom: 28px;
 opacity: 0;
-animation: fadeUp 0.8s ease 0.1s forwards;
+animation: fadeUp 0.7s ease 0.1s forwards;
 }
-.rule-line { width: 60px; height: 1px; background: linear-gradient(to right, transparent, #C9A030); }
-.rule-line.right { background: linear-gradient(to left, transparent, #C9A030); }
-.rule-diamond { width: 7px; height: 7px; background: #C9A030; transform: rotate(45deg); flex-shrink: 0; }
-.top-eyebrow { font-family: ‘Crimson Pro’, serif; font-size: 13px; letter-spacing: 4px; text-transform: uppercase; color: #C9A030; font-weight: 300; }
+.eyebrow-line {
+width: 40px; height: 1px;
+background: linear-gradient(to right, transparent, rgba(201,160,48,0.6));
+}
+.eyebrow-line.r { background: linear-gradient(to left, transparent, rgba(201,160,48,0.6)); }
+.eyebrow-diamond {
+width: 6px; height: 6px;
+background: var(–gold);
+transform: rotate(45deg);
+flex-shrink: 0;
+opacity: 0.8;
+}
+.eyebrow-text {
+font-family: ‘Inter’, sans-serif;
+font-size: 11px;
+font-weight: 500;
+letter-spacing: 3.5px;
+text-transform: uppercase;
+color: rgba(201,160,48,0.75);
+}
 
-/* LOGO */
-.logo-wrap {
+/* ─────────────────────────────────────────
+HEADLINE
+───────────────────────────────────────── */
+.hero-headline {
+font-family: ‘Playfair Display’, serif;
+font-size: clamp(15px, 2.4vw, 19px);
+font-weight: 400;
+font-style: italic;
+color: rgba(242,232,208,0.5);
+letter-spacing: 0.3px;
+margin-bottom: 24px;
+line-height: 1.4;
+max-width: 440px;
 opacity: 0;
-animation: fadeUp 1s ease 0.3s forwards;
-width: min(420px, 86vw);
-margin-bottom: 4px;
+animation: fadeUp 0.7s ease 0.2s forwards;
+}
+
+/* ─────────────────────────────────────────
+LOGO
+───────────────────────────────────────── */
+.logo-wrap {
+width: min(340px, 78vw);
+margin-bottom: 16px;
+opacity: 0;
+animation: fadeUp 0.9s ease 0.35s forwards;
 }
 .logo-wrap img {
 width: 100%;
 height: auto;
 display: block;
-border-radius: 4px;
+border-radius: 3px;
 }
 
-/* DEFINITION */
+/* ─────────────────────────────────────────
+DEFINITION
+───────────────────────────────────────── */
 .definition {
+margin-bottom: 32px;
 opacity: 0;
-animation: fadeUp 0.8s ease 0.55s forwards;
-margin-bottom: 44px;
-margin-top: 8px;
+animation: fadeUp 0.7s ease 0.5s forwards;
 }
 .definition p {
 font-family: ‘Playfair Display’, serif;
 font-style: italic;
-font-size: clamp(12px, 1.8vw, 15px);
-color: rgba(201,160,48,0.5);
-max-width: 480px;
+font-size: clamp(12px, 1.6vw, 14px);
+color: rgba(201,160,48,0.45);
+letter-spacing: 0.2px;
 }
 
-/* TAGLINE */
-.tagline {
+/* ─────────────────────────────────────────
+VALUE PROP
+───────────────────────────────────────── */
+.value-prop {
+margin-bottom: 8px;
 opacity: 0;
-animation: fadeUp 0.8s ease 0.7s forwards;
+animation: fadeUp 0.7s ease 0.6s forwards;
+}
+.value-prop h2 {
+font-family: ‘Playfair Display’, serif;
+font-size: clamp(22px, 4vw, 32px);
+font-weight: 600;
+color: var(–cream);
+line-height: 1.3;
 margin-bottom: 10px;
 }
-.tagline p {
+.value-prop p {
+font-size: 14px;
+font-weight: 300;
+color: rgba(242,232,208,0.45);
+letter-spacing: 0.3px;
+max-width: 360px;
+line-height: 1.7;
+}
+
+/* ─────────────────────────────────────────
+LOCATION TAG
+───────────────────────────────────────── */
+.location-tag {
+display: inline-flex;
+align-items: center;
+gap: 8px;
+margin: 20px 0 36px;
+opacity: 0;
+animation: fadeUp 0.7s ease 0.72s forwards;
+}
+.location-tag svg { opacity: 0.45; flex-shrink: 0; }
+.location-tag span {
+font-size: 12px;
+font-weight: 400;
+letter-spacing: 2px;
+text-transform: uppercase;
+color: rgba(242,232,208,0.3);
+}
+
+/* ─────────────────────────────────────────
+EMAIL CAPTURE
+───────────────────────────────────────── */
+.email-section {
+width: min(460px, 94vw);
+opacity: 0;
+animation: fadeUp 0.7s ease 0.85s forwards;
+}
+.email-heading {
+font-family: ‘Playfair Display’, serif;
+font-size: clamp(18px, 3vw, 22px);
+font-weight: 600;
+color: var(–cream);
+margin-bottom: 6px;
+}
+.email-subhead {
+font-size: 13px;
+font-weight: 300;
+color: rgba(242,232,208,0.4);
+margin-bottom: 20px;
+letter-spacing: 0.2px;
+}
+.form-row {
+display: flex;
+border: 1px solid var(–border-mid);
+border-radius: 2px;
+overflow: hidden;
+transition: border-color 0.25s, box-shadow 0.25s;
+box-shadow: 0 0 0 0 rgba(201,160,48,0);
+}
+.form-row:focus-within {
+border-color: var(–border-hi);
+box-shadow: 0 0 0 3px rgba(201,160,48,0.08);
+}
+.form-input {
+flex: 1;
+background: rgba(255,255,255,0.04);
+border: none;
+outline: none;
+padding: 16px 20px;
+font-family: ‘Inter’, sans-serif;
+font-size: 15px;
+font-weight: 300;
+color: var(–cream);
+letter-spacing: 0.2px;
+}
+.form-input::placeholder { color: rgba(242,232,208,0.2); }
+.form-btn {
+background: var(–gold);
+border: none;
+padding: 16px 26px;
+font-family: ‘Inter’, sans-serif;
+font-size: 11px;
+font-weight: 500;
+letter-spacing: 2.5px;
+text-transform: uppercase;
+color: var(–pine);
+cursor: pointer;
+transition: background 0.2s, transform 0.1s;
+white-space: nowrap;
+flex-shrink: 0;
+}
+.form-btn:hover { background: var(–gold-light); }
+.form-btn:active { transform: scale(0.98); }
+.form-note {
+font-size: 11.5px;
+font-weight: 300;
+color: rgba(242,232,208,0.2);
+margin-top: 12px;
+letter-spacing: 0.2px;
+font-style: italic;
+}
+.success-msg {
+display: none;
+padding: 18px 24px;
+border: 1px solid rgba(201,160,48,0.3);
+border-radius: 2px;
+background: rgba(201,160,48,0.06);
+}
+.success-msg p {
 font-family: ‘Playfair Display’, serif;
 font-style: italic;
-font-size: clamp(19px, 3.2vw, 28px);
-color: rgba(244,237,216,0.78);
-line-height: 1.4;
-max-width: 520px;
+font-size: 18px;
+color: var(–gold);
 }
 
-/* LOCATION */
-.location {
+/* ─────────────────────────────────────────
+SECTION DIVIDER
+───────────────────────────────────────── */
+.divider {
+display: flex;
+align-items: center;
+gap: 16px;
+width: min(480px, 88vw);
+margin: 0 auto;
+padding: 0 24px;
 opacity: 0;
-animation: fadeUp 0.8s ease 0.82s forwards;
-margin-bottom: 52px;
+animation: fadeUp 0.7s ease 1s forwards;
 }
-.location p { font-size: 13px; letter-spacing: 2.5px; text-transform: uppercase; color: rgba(244,237,216,0.28); font-weight: 300; }
+.divider-line { flex: 1; height: 1px; background: rgba(201,160,48,0.12); }
+.divider-diamond { width: 5px; height: 5px; background: rgba(201,160,48,0.3); transform: rotate(45deg); flex-shrink: 0; }
 
-/* FORM */
-.form-wrap {
-opacity: 0;
-animation: fadeUp 0.8s ease 0.95s forwards;
-width: min(420px, 90vw);
-margin-bottom: 52px;
+/* ─────────────────────────────────────────
+WHAT WE’RE BUILDING
+───────────────────────────────────────── */
+.pillars {
+position: relative; z-index: 1;
+background: rgba(0,0,0,0.15);
+border-top: 1px solid rgba(201,160,48,0.08);
+border-bottom: 1px solid rgba(201,160,48,0.08);
+padding: 56px 24px;
 }
-.form-label { font-size: 12px; letter-spacing: 2.5px; text-transform: uppercase; color: #C9A030; font-weight: 300; margin-bottom: 14px; display: block; }
-.form-row { display: flex; border: 1px solid rgba(201,160,48,0.35); border-radius: 2px; overflow: hidden; transition: border-color 0.2s; }
-.form-row:focus-within { border-color: rgba(201,160,48,0.7); }
-.form-input { flex: 1; background: rgba(255,255,255,0.05); border: none; outline: none; padding: 14px 18px; font-family: ‘Crimson Pro’, serif; font-size: 16px; color: #F4EDD8; }
-.form-input::placeholder { color: rgba(244,237,216,0.25); font-style: italic; }
-.form-btn { background: #C9A030; border: none; padding: 14px 22px; font-family: ‘Crimson Pro’, serif; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: #1E2D1C; cursor: pointer; transition: background 0.2s; white-space: nowrap; font-weight: 600; }
-.form-btn:hover { background: #d9b040; }
-.form-note { font-size: 12px; color: rgba(244,237,216,0.22); margin-top: 10px; font-style: italic; }
-.success-msg { display: none; padding: 14px 24px; border: 1px solid rgba(201,160,48,0.4); border-radius: 2px; background: rgba(201,160,48,0.08); }
-.success-msg p { font-family: ‘Playfair Display’, serif; font-style: italic; font-size: 17px; color: #C9A030; }
+.pillars-inner {
+max-width: 860px;
+margin: 0 auto;
+}
+.pillars-label {
+text-align: center;
+font-size: 11px;
+font-weight: 500;
+letter-spacing: 3.5px;
+text-transform: uppercase;
+color: rgba(201,160,48,0.5);
+margin-bottom: 44px;
+}
+.pillars-grid {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 2px;
+}
+.pillar {
+padding: 36px 28px;
+text-align: center;
+border: 1px solid rgba(201,160,48,0.08);
+background: rgba(255,255,255,0.015);
+transition: background 0.25s, border-color 0.25s;
+}
+.pillar:hover {
+background: rgba(255,255,255,0.03);
+border-color: rgba(201,160,48,0.18);
+}
+.pillar-icon {
+width: 44px; height: 44px;
+margin: 0 auto 20px;
+opacity: 0.6;
+}
+.pillar-icon svg { width: 100%; height: 100%; }
+.pillar h3 {
+font-family: ‘Playfair Display’, serif;
+font-size: 17px;
+font-weight: 600;
+color: var(–cream);
+margin-bottom: 10px;
+letter-spacing: 0.3px;
+}
+.pillar p {
+font-size: 13px;
+font-weight: 300;
+color: rgba(242,232,208,0.4);
+line-height: 1.7;
+letter-spacing: 0.2px;
+}
 
-/* PILLS */
-.building-label {
-opacity: 0;
-animation: fadeUp 0.8s ease 1.1s forwards;
-font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
-color: rgba(201,160,48,0.4); font-weight: 300; margin-bottom: 14px;
-font-family: ‘Crimson Pro’, serif;
+/* ─────────────────────────────────────────
+PILLS SECTION
+───────────────────────────────────────── */
+.pills-section {
+position: relative; z-index: 1;
+padding: 52px 24px;
+text-align: center;
+}
+.pills-label {
+font-size: 11px;
+font-weight: 500;
+letter-spacing: 3.5px;
+text-transform: uppercase;
+color: rgba(201,160,48,0.45);
+margin-bottom: 20px;
 }
 .pills {
-opacity: 0;
-animation: fadeUp 0.8s ease 1.15s forwards;
-display: flex; gap: 8px; flex-wrap: wrap;
-justify-content: center; margin-bottom: 36px; max-width: 520px;
+display: flex;
+gap: 8px;
+flex-wrap: wrap;
+justify-content: center;
+max-width: 560px;
+margin: 0 auto 32px;
 }
-.pill { border: 1px solid rgba(201,160,48,0.18); border-radius: 100px; padding: 6px 16px; font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(244,237,216,0.36); font-weight: 300; }
+.pill {
+border: 1px solid rgba(201,160,48,0.15);
+border-radius: 100px;
+padding: 7px 18px;
+font-size: 11.5px;
+font-weight: 400;
+letter-spacing: 1.8px;
+text-transform: uppercase;
+color: rgba(242,232,208,0.32);
+transition: border-color 0.2s, color 0.2s;
+}
+.pill:hover {
+border-color: rgba(201,160,48,0.3);
+color: rgba(242,232,208,0.55);
+}
 
-/* CLOSING */
+/* ─────────────────────────────────────────
+CLOSING LINE
+───────────────────────────────────────── */
 .closing {
-opacity: 0;
-animation: fadeUp 0.8s ease 1.25s forwards;
-margin-bottom: 56px;
+text-align: center;
+padding-bottom: 16px;
 }
-.closing p { font-family: ‘Playfair Display’, serif; font-style: italic; font-size: clamp(15px, 2.2vw, 19px); color: rgba(244,237,216,0.38); }
-
-/* FOOTER */
-.foot {
-opacity: 0;
-animation: fadeUp 0.8s ease 1.35s forwards;
-border-top: 1px solid rgba(201,160,48,0.1);
-padding-top: 28px; width: min(480px, 90vw); text-align: center;
+.closing p {
+font-family: ‘Playfair Display’, serif;
+font-style: italic;
+font-size: clamp(16px, 2.4vw, 20px);
+color: rgba(242,232,208,0.3);
+letter-spacing: 0.3px;
 }
-.foot-brand { font-family: ‘Playfair Display’, serif; font-size: 14px; font-weight: 700; color: rgba(244,237,216,0.3); letter-spacing: 2px; margin-bottom: 8px; }
-.foot-sub { font-size: 12px; color: rgba(244,237,216,0.18); letter-spacing: 1.5px; text-transform: uppercase; font-weight: 300; line-height: 1.8; }
-.foot-sub a { color: rgba(201,160,48,0.4); text-decoration: none; transition: color 0.2s; }
-.foot-sub a:hover { color: #C9A030; }
 
+/* ─────────────────────────────────────────
+FOOTER
+───────────────────────────────────────── */
+footer {
+position: relative; z-index: 1;
+border-top: 1px solid rgba(201,160,48,0.08);
+padding: 32px 24px;
+text-align: center;
+}
+.foot-brand {
+font-family: ‘Playfair Display’, serif;
+font-size: 13px;
+font-weight: 600;
+color: rgba(242,232,208,0.25);
+letter-spacing: 3px;
+text-transform: uppercase;
+margin-bottom: 10px;
+}
+.foot-links {
+font-size: 11px;
+font-weight: 400;
+color: rgba(242,232,208,0.16);
+letter-spacing: 1.8px;
+text-transform: uppercase;
+line-height: 2;
+}
+.foot-links a {
+color: rgba(201,160,48,0.35);
+text-decoration: none;
+transition: color 0.2s;
+}
+.foot-links a:hover { color: var(–gold); }
+
+/* ─────────────────────────────────────────
+ANIMATIONS
+───────────────────────────────────────── */
 @keyframes fadeUp {
-from { opacity: 0; transform: translateY(16px); }
+from { opacity: 0; transform: translateY(14px); }
 to   { opacity: 1; transform: translateY(0); }
 }
 
-@media (max-width: 480px) {
-.page { padding: 48px 20px; }
-.form-btn { padding: 14px 12px; font-size: 11px; }
-}
-</style>
+/* Stagger pillar cards */
+.pillar:nth-child(1) { animation: fadeUp 0.6s ease 0.2s both; }
+.pillar:nth-child(2) { animation: fadeUp 0.6s ease 0.35s both; }
+.pillar:nth-child(3) { animation: fadeUp 0.6s ease 0.5s both; }
 
+/* ─────────────────────────────────────────
+MOBILE
+───────────────────────────────────────── */
+@media (max-width: 600px) {
+.hero { padding: 40px 20px 48px; min-height: auto; }
+.logo-wrap { width: min(300px, 82vw); }
+.pillars-grid { grid-template-columns: 1fr; gap: 1px; }
+.pillar { padding: 28px 24px; }
+.form-btn { padding: 16px 18px; font-size: 10px; letter-spacing: 2px; }
+.email-heading { font-size: 18px; }
+}
+
+@media (max-width: 400px) {
+.form-row { flex-direction: column; }
+.form-btn { padding: 14px; width: 100%; }
+}
+
+</style>
 </head>
 <body>
-<div class="page">
 
-  <div class="top-rule">
-    <div class="rule-line"></div>
-    <div class="rule-diamond"></div>
-    <span class="top-eyebrow">Coming to Roswell, Georgia</span>
-    <div class="rule-diamond"></div>
-    <div class="rule-line right"></div>
+<!-- ═══════════════════════════════════════
+     HERO
+═══════════════════════════════════════ -->
+
+<section class="hero">
+
+  <!-- Background tree silhouette pattern -->
+
+  <div class="hero-bg">
+    <svg viewBox="0 0 1440 320" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+      <!-- Tree silhouettes -->
+      <g fill="#C9A030">
+        <!-- Pine tree 1 -->
+        <polygon points="80,320 110,240 95,240 125,160 108,160 140,60 172,160 155,160 185,240 170,240 200,320"/>
+        <!-- Pine tree 2 -->
+        <polygon points="200,320 225,255 212,255 238,185 224,185 252,95 280,185 266,185 292,255 279,255 304,320"/>
+        <!-- Pine tree 3 -->
+        <polygon points="320,320 352,240 336,240 368,148 350,148 385,40 420,148 402,148 434,240 418,240 450,320"/>
+        <!-- Pine tree 4 (taller) -->
+        <polygon points="470,320 495,250 482,250 508,175 494,175 522,80 550,175 536,175 562,250 549,250 574,320"/>
+        <!-- Pine tree 5 -->
+        <polygon points="600,320 632,235 616,235 648,150 630,150 665,48 700,150 682,150 714,235 698,235 730,320"/>
+        <!-- Pine tree 6 -->
+        <polygon points="750,320 778,258 764,258 792,183 778,183 808,88 838,183 824,183 852,258 838,258 866,320"/>
+        <!-- Pine tree 7 -->
+        <polygon points="880,320 912,238 895,238 928,148 910,148 946,42 982,148 964,148 997,238 980,238 1012,320"/>
+        <!-- Pine tree 8 -->
+        <polygon points="1030,320 1058,255 1044,255 1072,180 1058,180 1088,85 1118,180 1104,180 1132,255 1118,255 1146,320"/>
+        <!-- Pine tree 9 -->
+        <polygon points="1160,320 1190,242 1174,242 1204,158 1188,158 1220,58 1252,158 1236,158 1266,242 1250,242 1280,320"/>
+        <!-- Pine tree 10 -->
+        <polygon points="1290,320 1316,260 1303,260 1328,192 1315,192 1342,105 1369,192 1356,192 1381,260 1368,260 1394,320"/>
+        <!-- Water/river suggestion at base -->
+        <path d="M0,310 Q180,300 360,308 Q540,316 720,306 Q900,296 1080,305 Q1260,314 1440,308 L1440,320 L0,320 Z" opacity="0.4"/>
+      </g>
+    </svg>
   </div>
 
-  <div class="logo-wrap">
-    <img src="logo.png" alt="Erä Outfitters — Fly Fishing and Upland Hunting, Roswell Georgia"/>
-  </div>
+  <div class="hero-inner">
 
-  <div class="definition">
-    <p>er&#228; (n.) &#8212; Finnish. The act of hunting and fishing in the wilderness. Origin of Er&#228; Outfitters.</p>
-  </div>
+```
+<!-- Eyebrow -->
+<div class="eyebrow">
+  <div class="eyebrow-line"></div>
+  <div class="eyebrow-diamond"></div>
+  <span class="eyebrow-text">Opening Soon &nbsp;·&nbsp; Historic Roswell, Georgia</span>
+  <div class="eyebrow-diamond"></div>
+  <div class="eyebrow-line r"></div>
+</div>
 
-  <div class="tagline">
-    <p>A shop, a community, and a place where everyone belongs</p>
-  </div>
+<!-- Pre-headline -->
+<p class="hero-headline">A Modern Outfitter for the Field, River, and Woods</p>
 
-  <div class="location">
-    <p>Historic Roswell, Georgia</p>
-  </div>
+<!-- Logo -->
+<div class="logo-wrap">
+  <img src="logo.png" alt="Erä Outfitters — Fly Fishing and Upland Hunting, Roswell Georgia"/>
+</div>
 
-  <div class="form-wrap">
-    <span class="form-label">Be the first to know</span>
-    <div id="formContainer">
-      <div class="form-row">
-        <input type="email" class="form-input" id="emailInput" placeholder="your@email.com" autocomplete="email"/>
-        <button class="form-btn" onclick="handleSubmit()">Notify Me</button>
-      </div>
-      <p class="form-note">No spam. Just the opening date, the first events and updates on our progress.</p>
+<!-- Finnish definition -->
+<div class="definition">
+  <p>er&#228; (n.) &#8212; Finnish. The act of hunting and fishing in the wilderness. Origin of Er&#228; Outfitters.</p>
+</div>
+
+<!-- Value prop -->
+<div class="value-prop">
+  <h2>Premium gear. Real community.<br>No gatekeeping.</h2>
+  <p>A carefully curated shop and gathering place for fly fishers, upland hunters, and anyone who loves being outside.</p>
+</div>
+
+<!-- Location tag -->
+<div class="location-tag">
+  <svg width="13" height="16" viewBox="0 0 13 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M6.5 0C2.91 0 0 2.91 0 6.5C0 11.375 6.5 16 6.5 16C6.5 16 13 11.375 13 6.5C13 2.91 10.09 0 6.5 0ZM6.5 8.875C5.19 8.875 4.125 7.81 4.125 6.5C4.125 5.19 5.19 4.125 6.5 4.125C7.81 4.125 8.875 5.19 8.875 6.5C8.875 7.81 7.81 8.875 6.5 8.875Z" fill="#C9A030"/>
+  </svg>
+  <span>Historic Roswell, Georgia</span>
+</div>
+
+<!-- Email capture -->
+<div class="email-section">
+  <p class="email-heading">Be among the first to know</p>
+  <p class="email-subhead">Join the list for opening day, first events, and early access.</p>
+
+  <div id="formContainer">
+    <div class="form-row">
+      <input
+        type="email"
+        class="form-input"
+        id="emailInput"
+        placeholder="your@email.com"
+        autocomplete="email"
+      />
+      <button class="form-btn" onclick="handleSubmit()">Get Early Access</button>
     </div>
-    <div class="success-msg" id="successMsg">
-      <p>You&#39;re on the list. We&#39;ll be in touch.</p>
+    <p class="form-note">No spam. Just the opening date, first events, and updates on our progress.</p>
+  </div>
+
+  <div class="success-msg" id="successMsg">
+    <p>You&#39;re on the list. We&#39;ll be in touch.</p>
+  </div>
+</div>
+```
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     WHAT WE'RE BUILDING
+═══════════════════════════════════════ -->
+
+<section class="pillars">
+  <div class="pillars-inner">
+    <p class="pillars-label">What We&#39;re Building</p>
+    <div class="pillars-grid">
+
+```
+  <!-- Hunting -->
+  <div class="pillar">
+    <div class="pillar-icon">
+      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Shotgun silhouette -->
+        <rect x="4" y="22" width="32" height="4" rx="2" fill="#C9A030"/>
+        <rect x="36" y="20" width="8" height="8" rx="1" fill="#C9A030"/>
+        <rect x="12" y="18" width="6" height="4" rx="1" fill="#C9A030"/>
+        <circle cx="14" cy="30" r="3" fill="#C9A030"/>
+        <!-- Bird in flight -->
+        <path d="M30 10 Q34 7 38 10 Q34 12 30 10Z" fill="#C9A030" opacity="0.5"/>
+        <path d="M36 8 Q40 5 44 8 Q40 10 36 8Z" fill="#C9A030" opacity="0.35"/>
+      </svg>
     </div>
+    <h3>Hunting</h3>
+    <p>Gear and apparel built for the field. Dove, quail, and all upland birds.</p>
   </div>
 
-  <div class="building-label">What We&#39;re Building</div>
-  <div class="pills">
-    <div class="pill">Fishing</div>
-    <div class="pill">Fly Tying</div>
-    <div class="pill">Upland Birds</div>
-    <div class="pill">Bird Dogs</div>
-    <div class="pill">Pig Roasts</div>
-    <div class="pill">Crawfish Boils</div>
-    <div class="pill">Live Music</div>
-    <div class="pill">The Bar</div>
-  </div>
-
-  <div class="closing">
-    <p>From the tailwater to the field.</p>
-  </div>
-
-  <div class="foot">
-    <div class="foot-brand">ER&#196; OUTFITTERS</div>
-    <div class="foot-sub">
-      <a href="https://instagram.com/eraoutfitter" target="_blank">@eraoutfitter</a>
-      &nbsp;&middot;&nbsp;
-      <a href="mailto:shop@eraoutfitters.com">shop@eraoutfitters.com</a>
-      &nbsp;&middot;&nbsp;
-      Roswell, Georgia
+  <!-- Fishing -->
+  <div class="pillar">
+    <div class="pillar-icon">
+      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Fly rod -->
+        <line x1="6" y1="42" x2="42" y2="6" stroke="#C9A030" stroke-width="2.5" stroke-linecap="round"/>
+        <!-- Reel -->
+        <circle cx="10" cy="38" r="4" stroke="#C9A030" stroke-width="2" fill="none"/>
+        <!-- Fly line arc -->
+        <path d="M42 6 Q52 20 38 30 Q28 36 32 44" stroke="#C9A030" stroke-width="1.5" fill="none" stroke-dasharray="3 2" opacity="0.7"/>
+        <!-- Fly -->
+        <circle cx="32" cy="44" r="2" fill="#C9A030" opacity="0.8"/>
+      </svg>
     </div>
+    <h3>Fishing</h3>
+    <p>Fly and tackle for Southern tailwaters. The Chattahoochee, Toccoa, and beyond.</p>
+  </div>
+
+  <!-- Community -->
+  <div class="pillar">
+    <div class="pillar-icon">
+      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Fire / gathering symbol -->
+        <path d="M24 40 C16 40 10 34 10 26 C10 20 14 16 18 14 C17 18 19 20 21 19 C20 15 22 10 26 8 C25 13 28 16 27 20 C30 17 31 13 30 10 C35 14 38 20 38 26 C38 34 32 40 24 40Z" fill="#C9A030" opacity="0.75"/>
+        <path d="M24 38 C19 38 15 33 15 27 C15 23 17 20 20 19 C19.5 22 21 23 22 22 C22 20 23 17 25 16 C24.5 19 26 21 25.5 23 C27 21 28 19 27.5 17 C30 20 31 24 31 27 C31 33 27 38 24 38Z" fill="#1A2A18"/>
+        <!-- Three dots representing people -->
+        <circle cx="18" cy="44" r="2" fill="#C9A030" opacity="0.5"/>
+        <circle cx="24" cy="46" r="2" fill="#C9A030" opacity="0.5"/>
+        <circle cx="30" cy="44" r="2" fill="#C9A030" opacity="0.5"/>
+      </svg>
+    </div>
+    <h3>Community</h3>
+    <p>Pig roasts, crawfish boils, fly tying nights, and a bar worth coming back to.</p>
   </div>
 
 </div>
+```
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     PILLS
+═══════════════════════════════════════ -->
+
+<section class="pills-section">
+  <p class="pills-label">Also on the agenda</p>
+  <div class="pills">
+    <div class="pill">Dove Season</div>
+    <div class="pill">Fly Tying</div>
+    <div class="pill">Upland Birds</div>
+    <div class="pill">Bird Dogs</div>
+    <div class="pill">Crawfish Boils</div>
+    <div class="pill">Live Music</div>
+    <div class="pill">The Bar</div>
+    <div class="pill">Pig Roasts</div>
+  </div>
+  <div class="closing">
+    <p>From the tailwater to the field.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════ -->
+
+<footer>
+  <div class="foot-brand">Er&#228; Outfitters</div>
+  <div class="foot-links">
+    <a href="https://instagram.com/eraoutfitter" target="_blank">@eraoutfitter</a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a href="mailto:shop@eraoutfitters.com">shop@eraoutfitters.com</a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    Roswell, Georgia
+  </div>
+</footer>
 
 <script>
 function handleSubmit() {
   var email = document.getElementById('emailInput').value.trim();
   if (!email || email.indexOf('@') === -1) {
-    document.getElementById('emailInput').style.outline = '1px solid #B85525';
+    document.getElementById('emailInput').style.outline = '2px solid rgba(184,85,37,0.7)';
     document.getElementById('emailInput').focus();
     return;
   }
@@ -263,6 +743,9 @@ function handleSubmit() {
 document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('emailInput').addEventListener('keydown', function(e) {
     if (e.key === 'Enter') handleSubmit();
+  });
+  document.getElementById('emailInput').addEventListener('focus', function() {
+    this.style.outline = 'none';
   });
 });
 </script>
