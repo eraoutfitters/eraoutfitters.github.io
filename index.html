@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="en" style="background:#0C2340;">
+<html lang="en" style="background:#0C2340;color:#F8F6F2;">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,30 +11,17 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 
-/* ─────────────────────────────────────
-TOKENS — Finnish flag: navy + white + gold
-───────────────────────────────────── */
-:root {
-–navy:        #0C2340;
-–navy-mid:    #112B4E;
-–navy-light:  #163459;
-–white:       #F8F6F2;
-–white-dim:   rgba(248,246,242,0.65);
-–white-faint: rgba(248,246,242,0.28);
-–white-ghost: rgba(248,246,242,0.12);
-–gold:        #C9A030;
-–gold-bright: #D4AE45;
-–gold-dim:    rgba(201,160,48,0.45);
-–gold-faint:  rgba(201,160,48,0.18);
-–gold-ghost:  rgba(201,160,48,0.08);
+/* Hard-coded colors — no CSS variables on critical text */
+
+- { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+background: #0C2340;
 }
 
-html, body { background: var(–navy) !important; }
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
 body {
-background: var(–navy);
-color: var(–white);
+background: #0C2340;
+color: #F8F6F2;
 font-family: ‘Inter’, system-ui, sans-serif;
 font-size: 17px;
 font-weight: 300;
@@ -43,7 +30,7 @@ overflow-x: hidden;
 -webkit-font-smoothing: antialiased;
 }
 
-/* Subtle grain over everything */
+/* Grain texture */
 body::before {
 content: ‘’;
 position: fixed; inset: 0; z-index: 0; pointer-events: none;
@@ -51,186 +38,124 @@ background-image: url(“data:image/svg+xml,%3Csvg viewBox=‘0 0 300 300’ xml
 opacity: 0.025;
 }
 
-/* ─────────────────────────────────────
-SHARED ORNAMENT SYSTEM
-Mirrors the logo’s rules + diamonds
-───────────────────────────────────── */
-.ornament {
-display: flex;
-align-items: center;
-gap: 0;
-width: 100%;
-max-width: 560px;
-margin: 0 auto;
-}
-.ornament-line {
-flex: 1;
-height: 1px;
-background: linear-gradient(to right, transparent, var(–gold-dim));
-}
-.ornament-line.r {
-background: linear-gradient(to left, transparent, var(–gold-dim));
-}
-.ornament-diamond {
-width: 7px; height: 7px;
-background: var(–gold);
-transform: rotate(45deg);
-flex-shrink: 0;
-opacity: 0.7;
-margin: 0 14px;
-}
-.ornament-text {
-font-family: ‘Inter’, sans-serif;
-font-size: 11px;
-font-weight: 500;
-letter-spacing: 4px;
-text-transform: uppercase;
-color: var(–gold-dim);
-padding: 0 4px;
-white-space: nowrap;
-}
-
-/* Full-width ruled divider */
-.rule-divider {
-display: flex;
-align-items: center;
-gap: 0;
-padding: 0 32px;
-margin: 0 auto;
-max-width: 900px;
-}
-.rule-divider .rd-line {
-flex: 1; height: 1px;
-background: var(–gold-faint);
-}
-.rule-divider .rd-diamond {
-width: 6px; height: 6px;
-background: var(–gold);
-transform: rotate(45deg);
-flex-shrink: 0;
-opacity: 0.5;
-margin: 0 20px;
-}
-
-/* ─────────────────────────────────────
-HERO
-───────────────────────────────────── */
+/* ── HERO ── */
 .hero {
 position: relative;
-background: var(–navy);
+background: #0C2340;
 display: flex;
 flex-direction: column;
 align-items: center;
-padding: 64px 32px 72px;
+padding: 60px 32px 72px;
 text-align: center;
 overflow: hidden;
 }
-
-/* Top accent */
 .hero::before {
 content: ‘’;
 position: absolute; top: 0; left: 0; right: 0; height: 3px;
-background: linear-gradient(90deg, transparent 0%, var(–gold) 40%, var(–gold) 60%, transparent 100%);
+background: linear-gradient(90deg, transparent 0%, #C9A030 40%, #C9A030 60%, transparent 100%);
 opacity: 0.55;
 }
-
-/* Deep radial vignette at bottom */
-.hero::after {
-content: ‘’;
-position: absolute; bottom: 0; left: 0; right: 0; height: 200px;
-background: linear-gradient(to top, rgba(8,18,30,0.6), transparent);
-pointer-events: none;
-}
-
 .hero-inner {
 position: relative; z-index: 1;
 display: flex; flex-direction: column; align-items: center;
 width: 100%; max-width: 660px;
 }
 
-/* ─── EYEBROW ─── */
+/* ── ORNAMENT SYSTEM ── */
+.ornament {
+display: flex; align-items: center;
+width: 100%; max-width: 580px; margin: 0 auto;
+}
+.orn-line {
+flex: 1; height: 1px;
+background: linear-gradient(to right, transparent, rgba(201,160,48,0.5));
+}
+.orn-line.r {
+background: linear-gradient(to left, transparent, rgba(201,160,48,0.5));
+}
+.orn-diamond {
+width: 7px; height: 7px;
+background: #C9A030;
+transform: rotate(45deg);
+flex-shrink: 0; opacity: 0.7;
+margin: 0 14px;
+}
+.orn-text {
+font-family: ‘Inter’, sans-serif;
+font-size: 11px; font-weight: 500;
+letter-spacing: 3.5px; text-transform: uppercase;
+color: rgba(201,160,48,0.65);
+white-space: nowrap; padding: 0 4px;
+}
+
+/* ── EYEBROW ── */
 .hero-eyebrow {
 margin-bottom: 36px;
 opacity: 0; animation: fadeUp 0.8s ease 0.1s forwards;
+width: 100%;
 }
 
-/* ─── PRE-HEADLINE ─── */
+/* ── PRE-HEADLINE ── */
 .pre-headline {
 font-family: ‘Playfair Display’, Georgia, serif;
 font-size: clamp(18px, 3vw, 24px);
-font-style: italic;
-font-weight: 400;
-color: var(–white-faint);
+font-style: italic; font-weight: 400;
+color: rgba(248,246,242,0.45);
 margin-bottom: 32px;
-max-width: 500px;
-line-height: 1.5;
+max-width: 500px; line-height: 1.5;
 opacity: 0; animation: fadeUp 0.8s ease 0.22s forwards;
-letter-spacing: 0.2px;
 }
 
-/* ─── LOGO ─── */
+/* ── LOGO ── */
 .logo-wrap {
 position: relative;
-width: min(380px, 82vw);
+width: min(380px, 84vw);
 margin-bottom: 0;
 opacity: 0; animation: fadeUp 1s ease 0.38s forwards;
+/* No border-radius — let the gradient blending do the work */
 }
-.logo-wrap img { width: 100%; height: auto; display: block; }
-
-/* Seamless fade — logo bg matches navy now via CSS overlay */
-.logo-wrap::before {
-content: ‘’;
-position: absolute; top: 0; left: 0; right: 0; height: 12%;
-background: linear-gradient(to bottom, var(–navy), transparent);
-z-index: 1; pointer-events: none;
+.logo-wrap img {
+width: 100%; height: auto; display: block;
 }
+/* Blend all four edges into the navy background */
 .logo-wrap::after {
 content: ‘’;
 position: absolute; inset: 0;
 background:
-linear-gradient(to right, var(–navy) 0%, transparent 12%, transparent 88%, var(–navy) 100%),
-linear-gradient(to bottom, transparent 50%, rgba(12,35,64,0.7) 80%, var(–navy) 100%);
+linear-gradient(to right,  #0C2340 0%,   transparent 15%, transparent 85%, #0C2340 100%),
+linear-gradient(to bottom, #0C2340 0%,   transparent 14%, transparent 82%, #0C2340 100%);
 pointer-events: none;
 }
 
-/* ─── DEFINITION ─── */
+/* ── DEFINITION ── */
 .definition {
-margin: 24px 0 36px;
+margin: 20px 0 34px;
 opacity: 0; animation: fadeUp 0.8s ease 0.56s forwards;
-width: 100%;
 }
-.definition-inner {
-display: inline-flex;
-align-items: center;
-gap: 16px;
-padding: 14px 28px;
-border: 1px solid var(–gold-faint);
-background: var(–gold-ghost);
-border-radius: 1px;
+.definition-box {
+display: inline-block;
+padding: 13px 26px;
+border: 1px solid rgba(201,160,48,0.22);
+background: rgba(201,160,48,0.06);
 }
-.definition-inner p {
+.definition-box p {
 font-family: ‘Playfair Display’, Georgia, serif;
 font-style: italic;
 font-size: clamp(14px, 2vw, 16px);
-color: var(–gold-dim);
-line-height: 1.5;
-white-space: nowrap;
-}
-@media (max-width: 500px) {
-.definition-inner { padding: 12px 18px; }
-.definition-inner p { white-space: normal; text-align: center; }
+color: rgba(201,160,48,0.6);
+line-height: 1.55;
 }
 
-/* ─── VALUE PROP ─── */
+/* ── VALUE PROP ── */
 .value-prop {
-margin-bottom: 16px;
+margin-bottom: 14px;
 opacity: 0; animation: fadeUp 0.8s ease 0.7s forwards;
 }
 .value-prop h2 {
 font-family: ‘Playfair Display’, Georgia, serif;
 font-size: clamp(28px, 5.5vw, 44px);
 font-weight: 700;
-color: var(–white);
+color: #F8F6F2;
 line-height: 1.2;
 margin-bottom: 18px;
 letter-spacing: -0.5px;
@@ -239,27 +164,24 @@ letter-spacing: -0.5px;
 font-family: ‘Inter’, sans-serif;
 font-size: clamp(16px, 2.2vw, 19px);
 font-weight: 300;
-color: var(–white-dim);
-max-width: 440px;
-line-height: 1.75;
-margin: 0 auto;
+color: rgba(248,246,242,0.65);
+max-width: 440px; line-height: 1.75; margin: 0 auto;
 }
 
-/* ─── LOCATION ─── */
+/* ── LOCATION ── */
 .location-tag {
 display: inline-flex; align-items: center; gap: 8px;
-margin: 24px 0 44px;
+margin: 22px 0 44px;
 opacity: 0; animation: fadeUp 0.8s ease 0.82s forwards;
 }
-.location-tag svg { opacity: 0.35; flex-shrink: 0; }
 .location-tag span {
 font-family: ‘Inter’, sans-serif;
 font-size: 12px; font-weight: 400;
 letter-spacing: 2.5px; text-transform: uppercase;
-color: var(–white-faint);
+color: rgba(248,246,242,0.3);
 }
 
-/* ─── EMAIL CAPTURE ─── */
+/* ── EMAIL ── */
 .email-section {
 width: min(500px, 94vw);
 opacity: 0; animation: fadeUp 0.8s ease 0.94s forwards;
@@ -267,142 +189,134 @@ opacity: 0; animation: fadeUp 0.8s ease 0.94s forwards;
 .email-heading {
 font-family: ‘Playfair Display’, Georgia, serif;
 font-size: clamp(22px, 3.5vw, 30px);
-font-weight: 600;
-color: var(–white);
+font-weight: 600; color: #F8F6F2;
 margin-bottom: 8px;
-letter-spacing: -0.2px;
 }
 .email-subhead {
 font-family: ‘Inter’, sans-serif;
 font-size: clamp(14px, 1.9vw, 16px);
-font-weight: 300;
-color: var(–white-faint);
-margin-bottom: 24px;
-line-height: 1.65;
+font-weight: 300; color: rgba(248,246,242,0.45);
+margin-bottom: 24px; line-height: 1.65;
 }
 .form-row {
 display: flex;
-border: 1px solid rgba(201,160,48,0.38);
-border-radius: 2px; overflow: hidden;
+border: 1px solid rgba(201,160,48,0.4);
+overflow: hidden;
 transition: border-color 0.25s, box-shadow 0.25s;
-background: rgba(255,255,255,0.03);
+background: rgba(255,255,255,0.04);
 }
 .form-row:focus-within {
-border-color: var(–gold);
+border-color: #C9A030;
 box-shadow: 0 0 0 3px rgba(201,160,48,0.1);
 }
 .form-input {
 flex: 1; min-width: 0;
-background: transparent;
-border: none; outline: none;
-padding: 18px 22px;
+background: transparent; border: none; outline: none;
+padding: 18px 20px;
 font-family: ‘Inter’, sans-serif;
 font-size: 16px; font-weight: 300;
-color: var(–white);
-letter-spacing: 0.2px;
+color: #F8F6F2;
 }
-.form-input::placeholder { color: var(–white-ghost); }
+.form-input::placeholder { color: rgba(248,246,242,0.2); }
 .form-btn {
-background: var(–gold); border: none;
-padding: 18px 28px;
+background: #C9A030; border: none;
+padding: 18px 26px;
 font-family: ‘Inter’, sans-serif;
 font-size: 11.5px; font-weight: 600;
-letter-spacing: 2.5px; text-transform: uppercase;
-color: var(–navy);
+letter-spacing: 2.2px; text-transform: uppercase;
+color: #0C2340;
 cursor: pointer;
-transition: background 0.2s, transform 0.1s;
+transition: background 0.2s;
 white-space: nowrap; flex-shrink: 0;
 }
-.form-btn:hover { background: var(–gold-bright); }
-.form-btn:active { transform: scale(0.98); }
+.form-btn:hover { background: #D4AE45; }
 .form-note {
 font-family: ‘Inter’, sans-serif;
 font-size: 13px; font-weight: 300;
-color: var(–white-ghost);
-margin-top: 14px; font-style: italic;
+color: rgba(248,246,242,0.2);
+margin-top: 13px; font-style: italic;
 }
 .success-msg {
 display: none; padding: 22px 28px;
 border: 1px solid rgba(201,160,48,0.3);
-border-radius: 2px; background: var(–gold-ghost);
+background: rgba(201,160,48,0.06);
 }
 .success-msg p {
 font-family: ‘Playfair Display’, Georgia, serif;
-font-style: italic; font-size: 22px; color: var(–gold);
+font-style: italic; font-size: 22px; color: #C9A030;
 }
 
-/* ─────────────────────────────────────
-WHAT WE’RE BUILDING
-───────────────────────────────────── */
+/* ── RULE DIVIDER ── */
+.rule-div {
+display: flex; align-items: center;
+padding: 0 32px; max-width: 900px; margin: 0 auto;
+}
+.rule-div .rl { flex: 1; height: 1px; background: rgba(201,160,48,0.15); }
+.rule-div .rd {
+width: 6px; height: 6px;
+background: #C9A030; transform: rotate(45deg);
+flex-shrink: 0; opacity: 0.45; margin: 0 20px;
+}
+
+/* ── BUILDING SECTION ── */
 .building {
 position: relative; z-index: 1;
-background: var(–navy-mid);
+background: #112B4E;
 padding: 64px 32px;
-border-top: 1px solid var(–gold-faint);
-border-bottom: 1px solid var(–gold-faint);
+border-top: 1px solid rgba(201,160,48,0.12);
+border-bottom: 1px solid rgba(201,160,48,0.12);
 }
 .building-inner {
 max-width: 860px; margin: 0 auto;
 display: flex; flex-direction: column; align-items: center;
 }
-.building-label {
+.section-label {
 font-family: ‘Inter’, sans-serif;
 font-size: 12px; font-weight: 500;
 letter-spacing: 4px; text-transform: uppercase;
-color: var(–gold-dim);
+color: rgba(201,160,48,0.5);
 margin-bottom: 52px;
 }
 .building-grid {
 display: grid;
 grid-template-columns: repeat(3, 1fr);
-gap: 48px 40px;
-width: 100%;
+gap: 40px 48px; width: 100%;
 }
 .building-item {
 display: flex; flex-direction: column; align-items: center;
-text-align: center;
-padding-top: 28px;
-border-top: 1px solid var(–gold-faint);
+text-align: center; padding-top: 28px;
+border-top: 1px solid rgba(201,160,48,0.15);
 position: relative;
 }
-/* Gold top-rule accent on each item */
 .building-item::before {
 content: ‘’;
 position: absolute; top: -1px; left: 50%;
 transform: translateX(-50%);
 width: 40px; height: 1px;
-background: var(–gold);
-opacity: 0.8;
+background: #C9A030; opacity: 0.8;
 }
 .building-item h3 {
 font-family: ‘Playfair Display’, Georgia, serif;
-font-size: 21px; font-weight: 600;
-color: var(–white);
-margin-bottom: 12px;
-letter-spacing: 0.2px;
+font-size: 22px; font-weight: 600;
+color: #F8F6F2; margin-bottom: 12px;
 }
 .building-item p {
 font-family: ‘Inter’, sans-serif;
 font-size: 15px; font-weight: 300;
-color: var(–white-dim);
-line-height: 1.75;
+color: rgba(248,246,242,0.6); line-height: 1.75;
 }
 
-/* ─────────────────────────────────────
-PILLS
-───────────────────────────────────── */
+/* ── PILLS ── */
 .pills-section {
 position: relative; z-index: 1;
-background: var(–navy);
-padding: 60px 32px 64px;
-text-align: center;
+background: #0C2340;
+padding: 60px 32px 64px; text-align: center;
 }
 .pills-label {
 font-family: ‘Inter’, sans-serif;
 font-size: 12px; font-weight: 500;
 letter-spacing: 4px; text-transform: uppercase;
-color: var(–gold-dim);
-margin-bottom: 28px;
+color: rgba(201,160,48,0.5); margin-bottom: 28px;
 }
 .pills {
 display: flex; gap: 10px; flex-wrap: wrap;
@@ -410,48 +324,35 @@ justify-content: center;
 max-width: 600px; margin: 0 auto 48px;
 }
 .pill {
-border: 1px solid var(–gold-faint);
-border-radius: 100px;
-padding: 9px 22px;
+border: 1px solid rgba(201,160,48,0.18);
+border-radius: 100px; padding: 9px 22px;
 font-family: ‘Inter’, sans-serif;
 font-size: 12.5px; font-weight: 400;
 letter-spacing: 2px; text-transform: uppercase;
-color: var(–white-faint);
+color: rgba(248,246,242,0.35);
 transition: border-color 0.2s, color 0.2s, background 0.2s;
-cursor: default;
 }
 .pill:hover {
 border-color: rgba(201,160,48,0.4);
 color: rgba(248,246,242,0.65);
-background: var(–gold-ghost);
+background: rgba(201,160,48,0.07);
 }
-
-/* ─────────────────────────────────────
-CLOSING
-───────────────────────────────────── */
-.closing {
-margin-top: 8px;
-padding: 0 0 8px;
-}
+.closing { margin-top: 8px; }
 .closing p {
 font-family: ‘Playfair Display’, Georgia, serif;
 font-style: italic;
 font-size: clamp(20px, 3vw, 28px);
-color: var(–white-faint);
-letter-spacing: 0.3px;
+color: rgba(248,246,242,0.3);
 }
 
-/* ─────────────────────────────────────
-FOOTER
-───────────────────────────────────── */
+/* ── FOOTER ── */
 footer {
 position: relative; z-index: 1;
-background: rgba(6,16,28,0.7);
-border-top: 1px solid var(–gold-faint);
-padding: 36px 32px 44px;
-text-align: center;
+background: #080F1A;
+border-top: 1px solid rgba(201,160,48,0.1);
+padding: 36px 32px 44px; text-align: center;
 }
-.foot-ornament { margin-bottom: 24px; }
+.foot-orn { margin-bottom: 24px; }
 .foot-brand {
 font-family: ‘Playfair Display’, Georgia, serif;
 font-size: 15px; font-weight: 700;
@@ -466,19 +367,16 @@ color: rgba(248,246,242,0.15);
 letter-spacing: 2px; text-transform: uppercase;
 line-height: 2.4;
 }
-.foot-links a { color: var(–gold-dim); text-decoration: none; transition: color 0.2s; }
-.foot-links a:hover { color: var(–gold); }
+.foot-links a { color: rgba(201,160,48,0.4); text-decoration: none; transition: color 0.2s; }
+.foot-links a:hover { color: #C9A030; }
 .foot-finnish {
 margin-top: 20px;
 font-family: ‘Playfair Display’, Georgia, serif;
 font-style: italic; font-size: 13px;
 color: rgba(248,246,242,0.1);
-letter-spacing: 0.3px;
 }
 
-/* ─────────────────────────────────────
-ANIMATION
-───────────────────────────────────── */
+/* ── ANIMATION ── */
 @keyframes fadeUp {
 from { opacity: 0; transform: translateY(14px); }
 to   { opacity: 1; transform: translateY(0); }
@@ -487,81 +385,60 @@ to   { opacity: 1; transform: translateY(0); }
 .building-item:nth-child(2) { animation: fadeUp 0.7s ease 0.25s both; }
 .building-item:nth-child(3) { animation: fadeUp 0.7s ease 0.4s both; }
 
-/* ─────────────────────────────────────
-MOBILE
-───────────────────────────────────── */
+/* ── MOBILE ── */
 @media (max-width: 640px) {
 .hero { padding: 52px 24px 60px; }
 .building-grid { grid-template-columns: 1fr; gap: 36px; }
-.building-item { padding-top: 24px; }
-.form-btn { padding: 18px 18px; font-size: 11px; letter-spacing: 2px; }
+.building { padding: 52px 24px; }
+.form-btn { padding: 18px 16px; font-size: 10.5px; }
 .value-prop h2 { font-size: 28px; }
-.rule-divider { padding: 0 20px; }
+.orn-text { font-size: 10px; letter-spacing: 2.5px; }
 }
 @media (max-width: 400px) {
 .form-row { flex-direction: column; }
-.form-btn { padding: 15px; width: 100%; text-align: center; }
-.definition-inner p { font-size: 13px; }
+.form-btn { padding: 15px; width: 100%; }
 }
 </style>
 
 </head>
 <body>
 
-<!-- ══════════════════════════════
-     HERO
-══════════════════════════════ -->
-
 <section class="hero">
 <div class="hero-inner">
 
-  <!-- Eyebrow ornament -->
-
   <div class="hero-eyebrow">
     <div class="ornament">
-      <div class="ornament-line"></div>
-      <div class="ornament-diamond"></div>
-      <span class="ornament-text">Opening Soon &nbsp;·&nbsp; Historic Roswell, Georgia</span>
-      <div class="ornament-diamond"></div>
-      <div class="ornament-line r"></div>
+      <div class="orn-line"></div>
+      <div class="orn-diamond"></div>
+      <span class="orn-text">Opening Soon &nbsp;·&nbsp; Historic Roswell, Georgia</span>
+      <div class="orn-diamond"></div>
+      <div class="orn-line r"></div>
     </div>
   </div>
 
-  <!-- Pre-headline -->
-
   <p class="pre-headline">A Modern Outfitter for the Field, River, and the Everyday.</p>
-
-  <!-- Logo -->
 
   <div class="logo-wrap">
     <img src="Logo.png" alt="Erä Outfitters — Fly Fishing and Upland Hunting, Roswell Georgia"/>
   </div>
 
-  <!-- Definition — framed like a plaque -->
-
   <div class="definition">
-    <div class="definition-inner">
+    <div class="definition-box">
       <p>er&#228; (n.) &#8212; Finnish. The act of hunting and fishing in the wilderness.</p>
     </div>
   </div>
-
-  <!-- Value prop -->
 
   <div class="value-prop">
     <h2>Premium gear. Real community.<br>No gatekeeping.</h2>
     <p>A carefully curated shop and gathering place for fishermen, hunters, and the curious.</p>
   </div>
 
-  <!-- Location -->
-
   <div class="location-tag">
-    <svg width="12" height="15" viewBox="0 0 12 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="12" height="15" viewBox="0 0 12 15" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity:0.35;">
       <path d="M6 0C2.69 0 0 2.69 0 6C0 10.5 6 15 6 15C6 15 12 10.5 12 6C12 2.69 9.31 0 6 0ZM6 8.25C4.76 8.25 3.75 7.24 3.75 6C3.75 4.76 4.76 3.75 6 3.75C7.24 3.75 8.25 4.76 8.25 6C8.25 7.24 7.24 8.25 6 8.25Z" fill="#C9A030"/>
     </svg>
     <span>Historic Roswell, Georgia</span>
   </div>
-
-  <!-- Email -->
 
   <div class="email-section">
     <p class="email-heading">Be among the first to know</p>
@@ -581,46 +458,32 @@ MOBILE
 </div>
 </section>
 
-<!-- ══════════════════════════════
-     WHAT WE'RE BUILDING
-══════════════════════════════ -->
-
 <section class="building">
 <div class="building-inner">
-  <p class="building-label">What We&#39;re Building</p>
+  <p class="section-label">What We&#39;re Building</p>
   <div class="building-grid">
-
-```
-<div class="building-item">
-  <h3>Hunting</h3>
-  <p>Gear and apparel built for the field. Dove, quail, and all upland birds — no pretension, no gatekeeping.</p>
-</div>
-
-<div class="building-item">
-  <h3>Fishing</h3>
-  <p>Fly and tackle for Southern tailwaters. The Chattahoochee, Toccoa, and every river worth fishing.</p>
-</div>
-
-<div class="building-item">
-  <h3>Community</h3>
-  <p>Pig roasts, crawfish boils, fly tying nights, live music, and a bar worth coming back to.</p>
-</div>
-```
-
+    <div class="building-item">
+      <h3>Hunting</h3>
+      <p>Gear and apparel built for the field. Dove, quail, and all upland birds — no pretension, no gatekeeping.</p>
+    </div>
+    <div class="building-item">
+      <h3>Fishing</h3>
+      <p>Fly and tackle for Southern tailwaters. The Chattahoochee, Toccoa, and every river worth fishing.</p>
+    </div>
+    <div class="building-item">
+      <h3>Community</h3>
+      <p>Pig roasts, crawfish boils, fly tying nights, live music, and a bar worth coming back to.</p>
+    </div>
   </div>
 </div>
 </section>
 
-<!-- ══════════════════════════════
-     PILLS
-══════════════════════════════ -->
-
 <section class="pills-section">
 
-  <div class="rule-divider" style="margin-bottom: 52px;">
-    <div class="rd-line"></div>
-    <div class="rd-diamond"></div>
-    <div class="rd-line"></div>
+  <div class="rule-div" style="margin-bottom:52px;">
+    <div class="rl"></div>
+    <div class="rd"></div>
+    <div class="rl"></div>
   </div>
 
   <p class="pills-label">Also on the agenda</p>
@@ -635,10 +498,10 @@ MOBILE
     <div class="pill">Pig Roasts</div>
   </div>
 
-  <div class="rule-divider" style="margin-bottom: 40px;">
-    <div class="rd-line"></div>
-    <div class="rd-diamond"></div>
-    <div class="rd-line"></div>
+  <div class="rule-div" style="margin-bottom:40px;">
+    <div class="rl"></div>
+    <div class="rd"></div>
+    <div class="rl"></div>
   </div>
 
   <div class="closing">
@@ -647,16 +510,12 @@ MOBILE
 
 </section>
 
-<!-- ══════════════════════════════
-     FOOTER
-══════════════════════════════ -->
-
 <footer>
-  <div class="foot-ornament">
-    <div class="ornament" style="max-width:320px;">
-      <div class="ornament-line"></div>
-      <div class="ornament-diamond"></div>
-      <div class="ornament-line r"></div>
+  <div class="foot-orn">
+    <div class="ornament" style="max-width:280px;">
+      <div class="orn-line"></div>
+      <div class="orn-diamond"></div>
+      <div class="orn-line r"></div>
     </div>
   </div>
   <div class="foot-brand">Er&#228; Outfitters</div>
