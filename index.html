@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Erä Outfitters — Coming to Roswell, Georgia</title>
+<meta name="description" content="Fly fishing and upland hunting. Coming soon to Canton Street, Historic Roswell, Georgia.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400;1,700&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+–pine:  #1E2D1C;
+–bark:  #2A1A0C;
+–gold:  #C9A030;
+–cream: #F4EDD8;
+–smoke: #7A7060;
+–ember: #B85525;
+}
+
+html, body {
+height: 100%;
+background: var(–pine);
+color: var(–cream);
+font-family: ‘Crimson Pro’, Georgia, serif;
+overflow-x: hidden;
+}
+
+/* ── GRAIN OVERLAY ── */
+body::before {
+content: ‘’;
+position: fixed; inset: 0; z-index: 0;
+background-image: url(“data:image/svg+xml,%3Csvg viewBox=‘0 0 256 256’ xmlns=‘http://www.w3.org/2000/svg’%3E%3Cfilter id=‘noise’%3E%3CfeTurbulence type=‘fractalNoise’ baseFrequency=‘0.9’ numOctaves=‘4’ stitchTiles=‘stitch’/%3E%3C/filter%3E%3Crect width=‘100%25’ height=‘100%25’ filter=‘url(%23noise)’ opacity=‘1’/%3E%3C/svg%3E”);
+opacity: 0.045;
+pointer-events: none;
+}
+
+/* ── BACKGROUND VIGNETTE ── */
+body::after {
+content: ‘’;
+position: fixed; inset: 0; z-index: 0;
+background: radial-gradient(ellipse at 50% 40%, transparent 30%, rgba(10,16,10,0.65) 100%);
+pointer-events: none;
+}
+
+/* ── LAYOUT ── */
+.page {
+position: relative; z-index: 1;
+min-height: 100vh;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+padding: 60px 24px;
+text-align: center;
+}
+
+/* ── TOP RULE ── */
+.top-rule {
+display: flex;
+align-items: center;
+gap: 14px;
+margin-bottom: 52px;
+opacity: 0;
+animation: fadeUp 0.8s ease 0.1s forwards;
+}
+.rule-line {
+width: 60px; height: 1px;
+background: linear-gradient(to right, transparent, var(–gold));
+}
+.rule-line.right {
+background: linear-gradient(to left, transparent, var(–gold));
+}
+.rule-diamond {
+width: 7px; height: 7px;
+background: var(–gold);
+transform: rotate(45deg);
+flex-shrink: 0;
+}
+.top-eyebrow {
+font-family: ‘Crimson Pro’, serif;
+font-size: 13px;
+letter-spacing: 4px;
+text-transform: uppercase;
+color: var(–gold);
+font-weight: 300;
+}
+
+/* ── LOGO WORDMARK ── */
+.logo-wrap {
+opacity: 0;
+animation: fadeUp 1s ease 0.3s forwards;
+margin-bottom: 8px;
+}
+.logo-era {
+font-family: ‘Playfair Display’, serif;
+font-size: clamp(88px, 18vw, 160px);
+font-weight: 700;
+line-height: 0.9;
+color: var(–cream);
+letter-spacing: -2px;
+text-shadow: 0 2px 40px rgba(0,0,0,0.4);
+}
+.logo-outfitters {
+font-family: ‘Crimson Pro’, serif;
+font-size: clamp(14px, 2.5vw, 20px);
+letter-spacing: 8px;
+text-transform: uppercase;
+color: var(–gold);
+font-weight: 300;
+margin-top: 2px;
+display: block;
+}
+
+/* ── DIVIDER ── */
+.mid-rule {
+display: flex;
+align-items: center;
+gap: 14px;
+margin: 28px 0 32px;
+opacity: 0;
+animation: fadeUp 0.8s ease 0.5s forwards;
+width: min(320px, 80vw);
+}
+.mid-line {
+flex: 1; height: 1px;
+background: rgba(201,160,48,0.3);
+}
+.mid-text {
+font-size: 11px;
+letter-spacing: 3px;
+text-transform: uppercase;
+color: rgba(201,160,48,0.6);
+font-family: ‘Crimson Pro’, serif;
+font-weight: 300;
+white-space: nowrap;
+}
+
+/* ── TAGLINE ── */
+.tagline {
+opacity: 0;
+animation: fadeUp 0.8s ease 0.6s forwards;
+margin-bottom: 12px;
+}
+.tagline p {
+font-family: ‘Playfair Display’, serif;
+font-style: italic;
+font-size: clamp(18px, 3vw, 26px);
+font-weight: 400;
+color: rgba(244,237,216,0.75);
+line-height: 1.5;
+max-width: 480px;
+}
+
+/* ── SUB TAGLINE ── */
+.sub-tagline {
+opacity: 0;
+animation: fadeUp 0.8s ease 0.75s forwards;
+margin-bottom: 52px;
+}
+.sub-tagline p {
+font-size: 14px;
+letter-spacing: 2px;
+text-transform: uppercase;
+color: rgba(244,237,216,0.35);
+font-weight: 300;
+}
+
+/* ── EMAIL FORM ── */
+.form-wrap {
+opacity: 0;
+animation: fadeUp 0.8s ease 0.9s forwards;
+width: min(420px, 90vw);
+margin-bottom: 48px;
+}
+.form-label {
+font-size: 12px;
+letter-spacing: 2.5px;
+text-transform: uppercase;
+color: var(–gold);
+font-weight: 300;
+margin-bottom: 14px;
+display: block;
+}
+.form-row {
+display: flex;
+gap: 0;
+border: 1px solid rgba(201,160,48,0.35);
+border-radius: 2px;
+overflow: hidden;
+transition: border-color 0.2s;
+}
+.form-row:focus-within {
+border-color: rgba(201,160,48,0.7);
+}
+.form-input {
+flex: 1;
+background: rgba(255,255,255,0.05);
+border: none;
+outline: none;
+padding: 14px 18px;
+font-family: ‘Crimson Pro’, serif;
+font-size: 16px;
+color: var(–cream);
+letter-spacing: 0.5px;
+}
+.form-input::placeholder {
+color: rgba(244,237,216,0.25);
+font-style: italic;
+}
+.form-btn {
+background: var(–gold);
+border: none;
+padding: 14px 22px;
+font-family: ‘Crimson Pro’, serif;
+font-size: 12px;
+letter-spacing: 2px;
+text-transform: uppercase;
+color: var(–pine);
+font-weight: 400;
+cursor: pointer;
+transition: background 0.2s;
+white-space: nowrap;
+}
+.form-btn:hover { background: #d9b040; }
+.form-btn:active { background: #b98e28; }
+
+.form-note {
+font-size: 12px;
+color: rgba(244,237,216,0.25);
+margin-top: 10px;
+font-style: italic;
+letter-spacing: 0.5px;
+}
+
+/* ── SUCCESS STATE ── */
+.success-msg {
+display: none;
+padding: 14px 24px;
+border: 1px solid rgba(201,160,48,0.4);
+border-radius: 2px;
+background: rgba(201,160,48,0.08);
+}
+.success-msg p {
+font-family: ‘Playfair Display’, serif;
+font-style: italic;
+font-size: 17px;
+color: var(–gold);
+}
+
+/* ── BOTTOM PILLS ── */
+.pills {
+opacity: 0;
+animation: fadeUp 0.8s ease 1.1s forwards;
+display: flex;
+gap: 8px;
+flex-wrap: wrap;
+justify-content: center;
+margin-bottom: 60px;
+}
+.pill {
+border: 1px solid rgba(201,160,48,0.2);
+border-radius: 100px;
+padding: 6px 16px;
+font-size: 12px;
+letter-spacing: 1.5px;
+text-transform: uppercase;
+color: rgba(244,237,216,0.4);
+font-weight: 300;
+}
+
+/* ── FOOTER ── */
+.foot {
+opacity: 0;
+animation: fadeUp 0.8s ease 1.3s forwards;
+border-top: 1px solid rgba(201,160,48,0.12);
+padding-top: 28px;
+width: min(480px, 90vw);
+text-align: center;
+}
+.foot-brand {
+font-family: ‘Playfair Display’, serif;
+font-size: 15px;
+font-weight: 700;
+color: rgba(244,237,216,0.5);
+letter-spacing: 1px;
+margin-bottom: 6px;
+}
+.foot-sub {
+font-size: 12px;
+color: rgba(244,237,216,0.2);
+letter-spacing: 1.5px;
+text-transform: uppercase;
+font-weight: 300;
+line-height: 1.8;
+}
+.foot-sub a {
+color: rgba(201,160,48,0.45);
+text-decoration: none;
+transition: color 0.2s;
+}
+.foot-sub a:hover { color: var(–gold); }
+
+/* ── FINNISH LINE ── */
+.finnish-line {
+opacity: 0;
+animation: fadeUp 0.8s ease 1.5s forwards;
+margin-top: 24px;
+font-family: ‘Playfair Display’, serif;
+font-style: italic;
+font-size: 13px;
+color: rgba(244,237,216,0.18);
+letter-spacing: 0.5px;
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+from { opacity: 0; transform: translateY(16px); }
+to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── MOBILE ── */
+@media (max-width: 480px) {
+.page { padding: 48px 20px; }
+.form-btn { padding: 14px 16px; font-size: 11px; }
+}
+</style>
+
+</head>
+<body>
+<div class="page">
+
+  <!-- Top ornament -->
+
+  <div class="top-rule">
+    <div class="rule-line"></div>
+    <div class="rule-diamond"></div>
+    <span class="top-eyebrow">Coming to Roswell, Georgia</span>
+    <div class="rule-diamond"></div>
+    <div class="rule-line right"></div>
+  </div>
+
+  <!-- Logo -->
+
+  <div class="logo-wrap">
+    <div class="logo-era">ERÄ</div>
+    <span class="logo-outfitters">Outfitters</span>
+  </div>
+
+  <!-- Mid divider -->
+
+  <div class="mid-rule">
+    <div class="mid-line"></div>
+    <span class="mid-text">Fly Fishing · Upland Hunting</span>
+    <div class="mid-line"></div>
+  </div>
+
+  <!-- Tagline -->
+
+  <div class="tagline">
+    <p>A shop, a community, and a place<br>where everyone belongs.</p>
+  </div>
+
+  <!-- Sub tagline -->
+
+  <div class="sub-tagline">
+    <p>Canton Street · Historic Roswell, GA</p>
+  </div>
+
+  <!-- Email form -->
+
+  <div class="form-wrap">
+    <span class="form-label">Be the first to know</span>
+
+```
+<div id="formContainer">
+  <div class="form-row">
+    <input
+      type="email"
+      class="form-input"
+      id="emailInput"
+      placeholder="your@email.com"
+      autocomplete="email"
+    />
+    <button class="form-btn" onclick="handleSubmit()">Notify Me</button>
+  </div>
+  <p class="form-note">No spam. Just the opening date, the first event, and the Gate City collab.</p>
+</div>
+
+<div class="success-msg" id="successMsg">
+  <p>You're on the list. We'll be in touch.</p>
+</div>
+```
+
+  </div>
+
+  <!-- Descriptor pills -->
+
+  <div class="pills">
+    <div class="pill">Dove Season</div>
+    <div class="pill">Fly Tying</div>
+    <div class="pill">Bird Dogs</div>
+    <div class="pill">Pig Roasts</div>
+    <div class="pill">Live Music</div>
+    <div class="pill">The Bar</div>
+  </div>
+
+  <!-- Footer -->
+
+  <div class="foot">
+    <div class="foot-brand">ERÄ OUTFITTERS</div>
+    <div class="foot-sub">
+      <a href="https://instagram.com/eraoutfitter" target="_blank">@eraoutfitter</a>
+      &nbsp;·&nbsp;
+      <a href="mailto:hello@eraoutfitters.com">hello@eraoutfitters.com</a>
+      &nbsp;·&nbsp;
+      Roswell, Georgia
+    </div>
+  </div>
+
+  <!-- Finnish meaning -->
+
+  <div class="finnish-line">
+    erä — Finnish. hunting and fishing in the wilderness.
+  </div>
+
+</div>
+
+<script>
+function handleSubmit() {
+  const email = document.getElementById('emailInput').value.trim();
+  if (!email || !email.includes('@')) {
+    document.getElementById('emailInput').style.borderBottom = '1px solid #B85525';
+    document.getElementById('emailInput').focus();
+    return;
+  }
+  // Hide form, show success
+  document.getElementById('formContainer').style.display = 'none';
+  document.getElementById('successMsg').style.display = 'block';
+
+  // In production: send email to your list via Mailchimp, Klaviyo, or Formspree
+  // For now, emails are captured visually — connect a form service to store them
+  console.log('Email captured:', email);
+}
+
+// Submit on Enter key
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('emailInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') handleSubmit();
+  });
+});
+</script>
+
+</body>
+</html>
