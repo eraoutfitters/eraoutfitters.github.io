@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Erä Outfitters — Coming to Roswell, Georgia</title>
-<meta name="description" content="Fly fishing and upland hunting. Coming soon to Canton Street, Historic Roswell, Georgia.">
+<meta name="description" content="Fly fishing and upland hunting. Coming soon to Historic Roswell, Georgia.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400;1,700&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
 <style>
@@ -13,39 +13,42 @@
 
 :root {
 –pine:  #1E2D1C;
-–bark:  #2A1A0C;
 –gold:  #C9A030;
 –cream: #F4EDD8;
 –smoke: #7A7060;
 –ember: #B85525;
 }
 
-html, body {
-height: 100%;
-background: var(–pine);
-color: var(–cream);
+html {
+background: #1E2D1C;
+}
+
+body {
+min-height: 100vh;
+background: #1E2D1C;
+color: #F4EDD8;
 font-family: ‘Crimson Pro’, Georgia, serif;
 overflow-x: hidden;
 }
 
-/* ── GRAIN OVERLAY ── */
+/* GRAIN OVERLAY */
 body::before {
 content: ‘’;
 position: fixed; inset: 0; z-index: 0;
-background-image: url(“data:image/svg+xml,%3Csvg viewBox=‘0 0 256 256’ xmlns=‘http://www.w3.org/2000/svg’%3E%3Cfilter id=‘noise’%3E%3CfeTurbulence type=‘fractalNoise’ baseFrequency=‘0.9’ numOctaves=‘4’ stitchTiles=‘stitch’/%3E%3C/filter%3E%3Crect width=‘100%25’ height=‘100%25’ filter=‘url(%23noise)’ opacity=‘1’/%3E%3C/svg%3E”);
-opacity: 0.045;
+background-image: url(“data:image/svg+xml,%3Csvg viewBox=‘0 0 200 200’ xmlns=‘http://www.w3.org/2000/svg’%3E%3Cfilter id=‘n’%3E%3CfeTurbulence type=‘fractalNoise’ baseFrequency=‘0.9’ numOctaves=‘4’ stitchTiles=‘stitch’/%3E%3C/filter%3E%3Crect width=‘100%25’ height=‘100%25’ filter=‘url(%23n)’/%3E%3C/svg%3E”);
+opacity: 0.04;
 pointer-events: none;
 }
 
-/* ── BACKGROUND VIGNETTE ── */
+/* VIGNETTE */
 body::after {
 content: ‘’;
 position: fixed; inset: 0; z-index: 0;
-background: radial-gradient(ellipse at 50% 40%, transparent 30%, rgba(10,16,10,0.65) 100%);
+background: radial-gradient(ellipse at 50% 40%, transparent 30%, rgba(8,14,8,0.6) 100%);
 pointer-events: none;
 }
 
-/* ── LAYOUT ── */
+/* LAYOUT */
 .page {
 position: relative; z-index: 1;
 min-height: 100vh;
@@ -57,7 +60,7 @@ padding: 60px 24px;
 text-align: center;
 }
 
-/* ── TOP RULE ── */
+/* TOP ORNAMENT */
 .top-rule {
 display: flex;
 align-items: center;
@@ -68,14 +71,14 @@ animation: fadeUp 0.8s ease 0.1s forwards;
 }
 .rule-line {
 width: 60px; height: 1px;
-background: linear-gradient(to right, transparent, var(–gold));
+background: linear-gradient(to right, transparent, #C9A030);
 }
 .rule-line.right {
-background: linear-gradient(to left, transparent, var(–gold));
+background: linear-gradient(to left, transparent, #C9A030);
 }
 .rule-diamond {
 width: 7px; height: 7px;
-background: var(–gold);
+background: #C9A030;
 transform: rotate(45deg);
 flex-shrink: 0;
 }
@@ -84,11 +87,11 @@ font-family: ‘Crimson Pro’, serif;
 font-size: 13px;
 letter-spacing: 4px;
 text-transform: uppercase;
-color: var(–gold);
+color: #C9A030;
 font-weight: 300;
 }
 
-/* ── LOGO WORDMARK ── */
+/* LOGO */
 .logo-wrap {
 opacity: 0;
 animation: fadeUp 1s ease 0.3s forwards;
@@ -99,22 +102,22 @@ font-family: ‘Playfair Display’, serif;
 font-size: clamp(88px, 18vw, 160px);
 font-weight: 700;
 line-height: 0.9;
-color: var(–cream);
+color: #F4EDD8;
 letter-spacing: -2px;
-text-shadow: 0 2px 40px rgba(0,0,0,0.4);
+text-shadow: 0 2px 40px rgba(0,0,0,0.5);
 }
 .logo-outfitters {
 font-family: ‘Crimson Pro’, serif;
 font-size: clamp(14px, 2.5vw, 20px);
 letter-spacing: 8px;
 text-transform: uppercase;
-color: var(–gold);
+color: #C9A030;
 font-weight: 300;
 margin-top: 2px;
 display: block;
 }
 
-/* ── DIVIDER ── */
+/* DIVIDER */
 .mid-rule {
 display: flex;
 align-items: center;
@@ -124,10 +127,7 @@ opacity: 0;
 animation: fadeUp 0.8s ease 0.5s forwards;
 width: min(320px, 80vw);
 }
-.mid-line {
-flex: 1; height: 1px;
-background: rgba(201,160,48,0.3);
-}
+.mid-line { flex: 1; height: 1px; background: rgba(201,160,48,0.3); }
 .mid-text {
 font-size: 11px;
 letter-spacing: 3px;
@@ -138,7 +138,7 @@ font-weight: 300;
 white-space: nowrap;
 }
 
-/* ── TAGLINE ── */
+/* TAGLINE */
 .tagline {
 opacity: 0;
 animation: fadeUp 0.8s ease 0.6s forwards;
@@ -148,13 +148,12 @@ margin-bottom: 12px;
 font-family: ‘Playfair Display’, serif;
 font-style: italic;
 font-size: clamp(18px, 3vw, 26px);
-font-weight: 400;
 color: rgba(244,237,216,0.75);
 line-height: 1.5;
 max-width: 480px;
 }
 
-/* ── SUB TAGLINE ── */
+/* SUB TAGLINE */
 .sub-tagline {
 opacity: 0;
 animation: fadeUp 0.8s ease 0.75s forwards;
@@ -168,7 +167,7 @@ color: rgba(244,237,216,0.35);
 font-weight: 300;
 }
 
-/* ── EMAIL FORM ── */
+/* EMAIL FORM */
 .form-wrap {
 opacity: 0;
 animation: fadeUp 0.8s ease 0.9s forwards;
@@ -179,22 +178,19 @@ margin-bottom: 48px;
 font-size: 12px;
 letter-spacing: 2.5px;
 text-transform: uppercase;
-color: var(–gold);
+color: #C9A030;
 font-weight: 300;
 margin-bottom: 14px;
 display: block;
 }
 .form-row {
 display: flex;
-gap: 0;
 border: 1px solid rgba(201,160,48,0.35);
 border-radius: 2px;
 overflow: hidden;
 transition: border-color 0.2s;
 }
-.form-row:focus-within {
-border-color: rgba(201,160,48,0.7);
-}
+.form-row:focus-within { border-color: rgba(201,160,48,0.7); }
 .form-input {
 flex: 1;
 background: rgba(255,255,255,0.05);
@@ -203,39 +199,30 @@ outline: none;
 padding: 14px 18px;
 font-family: ‘Crimson Pro’, serif;
 font-size: 16px;
-color: var(–cream);
-letter-spacing: 0.5px;
+color: #F4EDD8;
 }
-.form-input::placeholder {
-color: rgba(244,237,216,0.25);
-font-style: italic;
-}
+.form-input::placeholder { color: rgba(244,237,216,0.25); font-style: italic; }
 .form-btn {
-background: var(–gold);
+background: #C9A030;
 border: none;
 padding: 14px 22px;
 font-family: ‘Crimson Pro’, serif;
 font-size: 12px;
 letter-spacing: 2px;
 text-transform: uppercase;
-color: var(–pine);
-font-weight: 400;
+color: #1E2D1C;
 cursor: pointer;
 transition: background 0.2s;
 white-space: nowrap;
+font-weight: 600;
 }
 .form-btn:hover { background: #d9b040; }
-.form-btn:active { background: #b98e28; }
-
 .form-note {
 font-size: 12px;
 color: rgba(244,237,216,0.25);
 margin-top: 10px;
 font-style: italic;
-letter-spacing: 0.5px;
 }
-
-/* ── SUCCESS STATE ── */
 .success-msg {
 display: none;
 padding: 14px 24px;
@@ -247,10 +234,10 @@ background: rgba(201,160,48,0.08);
 font-family: ‘Playfair Display’, serif;
 font-style: italic;
 font-size: 17px;
-color: var(–gold);
+color: #C9A030;
 }
 
-/* ── BOTTOM PILLS ── */
+/* PILLS */
 .pills {
 opacity: 0;
 animation: fadeUp 0.8s ease 1.1s forwards;
@@ -271,7 +258,7 @@ color: rgba(244,237,216,0.4);
 font-weight: 300;
 }
 
-/* ── FOOTER ── */
+/* FOOTER */
 .foot {
 opacity: 0;
 animation: fadeUp 0.8s ease 1.3s forwards;
@@ -301,9 +288,9 @@ color: rgba(201,160,48,0.45);
 text-decoration: none;
 transition: color 0.2s;
 }
-.foot-sub a:hover { color: var(–gold); }
+.foot-sub a:hover { color: #C9A030; }
 
-/* ── FINNISH LINE ── */
+/* FINNISH LINE */
 .finnish-line {
 opacity: 0;
 animation: fadeUp 0.8s ease 1.5s forwards;
@@ -312,27 +299,23 @@ font-family: ‘Playfair Display’, serif;
 font-style: italic;
 font-size: 13px;
 color: rgba(244,237,216,0.18);
-letter-spacing: 0.5px;
 }
 
-/* ── ANIMATIONS ── */
+/* ANIMATION */
 @keyframes fadeUp {
 from { opacity: 0; transform: translateY(16px); }
 to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ── MOBILE ── */
 @media (max-width: 480px) {
 .page { padding: 48px 20px; }
-.form-btn { padding: 14px 16px; font-size: 11px; }
+.form-btn { padding: 14px 14px; font-size: 11px; }
 }
 </style>
 
 </head>
 <body>
 <div class="page">
-
-  <!-- Top ornament -->
 
   <div class="top-rule">
     <div class="rule-line"></div>
@@ -342,61 +325,44 @@ to   { opacity: 1; transform: translateY(0); }
     <div class="rule-line right"></div>
   </div>
 
-  <!-- Logo -->
-
   <div class="logo-wrap">
-    <div class="logo-era">ERÄ</div>
+    <div class="logo-era">ER&#196;</div>
     <span class="logo-outfitters">Outfitters</span>
   </div>
 
-  <!-- Mid divider -->
-
   <div class="mid-rule">
     <div class="mid-line"></div>
-    <span class="mid-text">Fly Fishing · Upland Hunting</span>
+    <span class="mid-text">Fly Fishing &middot; Upland Hunting</span>
     <div class="mid-line"></div>
   </div>
-
-  <!-- Tagline -->
 
   <div class="tagline">
     <p>A shop, a community, and a place<br>where everyone belongs.</p>
   </div>
 
-  <!-- Sub tagline -->
-
   <div class="sub-tagline">
-    <p>Canton Street · Historic Roswell, GA</p>
+    <p>Historic Roswell, Georgia</p>
   </div>
-
-  <!-- Email form -->
 
   <div class="form-wrap">
     <span class="form-label">Be the first to know</span>
-
-```
-<div id="formContainer">
-  <div class="form-row">
-    <input
-      type="email"
-      class="form-input"
-      id="emailInput"
-      placeholder="your@email.com"
-      autocomplete="email"
-    />
-    <button class="form-btn" onclick="handleSubmit()">Notify Me</button>
+    <div id="formContainer">
+      <div class="form-row">
+        <input
+          type="email"
+          class="form-input"
+          id="emailInput"
+          placeholder="your@email.com"
+          autocomplete="email"
+        />
+        <button class="form-btn" onclick="handleSubmit()">Notify Me</button>
+      </div>
+      <p class="form-note">No spam. Just the opening date, the first event, and the Gate City collab.</p>
+    </div>
+    <div class="success-msg" id="successMsg">
+      <p>You&#39;re on the list. We&#39;ll be in touch.</p>
+    </div>
   </div>
-  <p class="form-note">No spam. Just the opening date, the first event, and the Gate City collab.</p>
-</div>
-
-<div class="success-msg" id="successMsg">
-  <p>You're on the list. We'll be in touch.</p>
-</div>
-```
-
-  </div>
-
-  <!-- Descriptor pills -->
 
   <div class="pills">
     <div class="pill">Dove Season</div>
@@ -407,47 +373,37 @@ to   { opacity: 1; transform: translateY(0); }
     <div class="pill">The Bar</div>
   </div>
 
-  <!-- Footer -->
-
   <div class="foot">
-    <div class="foot-brand">ERÄ OUTFITTERS</div>
+    <div class="foot-brand">ER&#196; OUTFITTERS</div>
     <div class="foot-sub">
       <a href="https://instagram.com/eraoutfitter" target="_blank">@eraoutfitter</a>
-      &nbsp;·&nbsp;
+      &nbsp;&middot;&nbsp;
       <a href="mailto:hello@eraoutfitters.com">hello@eraoutfitters.com</a>
-      &nbsp;·&nbsp;
+      &nbsp;&middot;&nbsp;
       Roswell, Georgia
     </div>
   </div>
 
-  <!-- Finnish meaning -->
-
   <div class="finnish-line">
-    erä — Finnish. hunting and fishing in the wilderness.
+    er&#228; &#8212; Finnish. hunting and fishing in the wilderness.
   </div>
 
 </div>
 
 <script>
 function handleSubmit() {
-  const email = document.getElementById('emailInput').value.trim();
-  if (!email || !email.includes('@')) {
-    document.getElementById('emailInput').style.borderBottom = '1px solid #B85525';
+  var email = document.getElementById('emailInput').value.trim();
+  if (!email || email.indexOf('@') === -1) {
+    document.getElementById('emailInput').style.outline = '1px solid #B85525';
     document.getElementById('emailInput').focus();
     return;
   }
-  // Hide form, show success
   document.getElementById('formContainer').style.display = 'none';
   document.getElementById('successMsg').style.display = 'block';
-
-  // In production: send email to your list via Mailchimp, Klaviyo, or Formspree
-  // For now, emails are captured visually — connect a form service to store them
-  console.log('Email captured:', email);
 }
 
-// Submit on Enter key
-document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('emailInput').addEventListener('keydown', (e) => {
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('emailInput').addEventListener('keydown', function(e) {
     if (e.key === 'Enter') handleSubmit();
   });
 });
