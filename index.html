@@ -44,7 +44,7 @@ EYEBROW — full width, bold, centered
 width: 100%;
 max-width: 100vw;
 padding: 20px 16px;
-background: #1a2419;
+background: #0f1a0e;
 display: flex;
 align-items: center;
 justify-content: center;
@@ -478,14 +478,14 @@ MOBILE
 }
 </style>
 
-<style>#building-section,#building-section *~*,div#building-section{background-color:#1a2419 !important;}</style>
+<style>#building-section,#building-section *~*,div#building-section{background-color:#0f1a0e !important;}</style>
 
 </head>
 <body>
 
 <!-- EYEBROW BAND -->
 
-<div class="eyebrow-band" style="background:#1a2419 !important;">
+<div class="eyebrow-band" style="background:#0f1a0e !important;">
   <div class="eyebrow-line"></div>
   <div class="eyebrow-diamond"></div>
   <span class="eyebrow-text">Coming Soon &nbsp;·&nbsp; Historic Roswell, Georgia</span>
@@ -562,7 +562,7 @@ MOBILE
 </div>
 </section>
 <!-- WHAT WE'RE BUILDING -->
-<section class="building" id="building-section" style="box-shadow: inset 0 0 0 9999px #1a2419 !important;">
+<section class="building" id="building-section" style="box-shadow: inset 0 0 0 9999px #0f1a0e !important;">
 <div class="building-inner">
   <p class="section-label">What We&#39;re Building</p>
   <div class="building-grid">
@@ -596,23 +596,26 @@ MOBILE
   <div class="foot-links">
     <a href="https://instagram.com/eraoutfitter" target="_blank" class="foot-link">@eraoutfitter</a>
     <div class="foot-sep"></div>
-    <a href="/cdn-cgi/l/email-protection#d7a4bfb8a797b2a5b6b8a2a3b1bea3a3b2a5a4f9b4b8ba" class="foot-link"><span class="__cf_email__" data-cfemail="33405b5c43735641525c4647555a47475641401d505c5e">[email&#160;protected]</span></a>
+    <a href="#" class="foot-link" id="eml"></a>
     <div class="foot-sep"></div>
     <span class="foot-link" style="cursor:default;">Roswell, Georgia</span>
   </div>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var input = document.getElementById('emailInput');
+  if (input) {
+    input.addEventListener('focus', function() { this.style.outline = 'none'; });
+  }
+  var el = document.getElementById('eml');
+  if (el) {
+    var addr = 'shop' + '@' + 'eraoutfitters' + '.' + 'com';
+    el.textContent = addr;
+    el.href = 'mailto:' + addr;
+  }
+});
+</script>
 
-function handleSubmit() {
-var email = document.getElementById(‘emailInput’).value.trim();
-if (!email || email.indexOf(’@’) === -1) {
-document.getElementById(‘emailInput’).style.outline = ‘2px solid rgba(196,180,138,0.5)’;
-document.getElementById(‘emailInput’).focus();
-return;
-}
-document.getElementById(‘formContainer’).style.display = ‘none’;
-document.getElementById(‘successMsg’).style.display = ‘block’;
-}
-document.addEventListener(‘DOMContentLoaded’, function() {
-document.getElementById(’ema
+</body>
+</html>
