@@ -44,6 +44,7 @@ EYEBROW — full width, bold, centered
 width: 100%;
 max-width: 100vw;
 padding: 20px 16px;
+background: #1a2419;
 display: flex;
 align-items: center;
 justify-content: center;
@@ -64,7 +65,7 @@ background: linear-gradient(to left, transparent, rgba(196,180,138,0.5));
 }
 .eyebrow-diamond {
 width: 7px; height: 7px;
-background: #C4B48A;
+background: rgba(200,200,195,0.5);
 transform: rotate(45deg);
 flex-shrink: 0;
 opacity: 0.8;
@@ -162,7 +163,7 @@ flex-direction: column;
 align-items: center;
 padding: 18px 32px;
 position: relative;
-background: rgba(196,180,138,0.04);
+background: transparent;
 }
 /* Top rule with diamonds */
 .definition-box::before {
@@ -477,14 +478,14 @@ MOBILE
 }
 </style>
 
-<style>#building-section,#building-section *~*,div#building-section{background-color:#080f07 !important;}</style>
+<style>#building-section,#building-section *~*,div#building-section{background-color:#1a2419 !important;}</style>
 
 </head>
 <body>
 
 <!-- EYEBROW BAND -->
 
-<div class="eyebrow-band">
+<div class="eyebrow-band" style="background:#1a2419 !important;">
   <div class="eyebrow-line"></div>
   <div class="eyebrow-diamond"></div>
   <span class="eyebrow-text">Coming Soon &nbsp;·&nbsp; Historic Roswell, Georgia</span>
@@ -561,7 +562,7 @@ MOBILE
 </div>
 </section>
 <!-- WHAT WE'RE BUILDING -->
-<section class="building" id="building-section" style="box-shadow: inset 0 0 0 9999px #080f07 !important;">
+<section class="building" id="building-section" style="box-shadow: inset 0 0 0 9999px #1a2419 !important;">
 <div class="building-inner">
   <p class="section-label">What We&#39;re Building</p>
   <div class="building-grid">
