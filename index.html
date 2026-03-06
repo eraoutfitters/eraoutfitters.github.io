@@ -15,7 +15,7 @@
 <style>
 
 - { box-sizing: border-box; margin: 0; padding: 0; }
-  html { background: #1E3020; overflow-x: hidden; }
+  html { background: #1E3020; overflow-x: hidden; margin: 0; padding: 0; }
 
 body {
 background: #1E3020;
@@ -26,6 +26,8 @@ font-weight: 300;
 line-height: 1.65;
 overflow-x: hidden;
 max-width: 100vw;
+margin-top: 0;
+padding-top: 0;
 -webkit-font-smoothing: antialiased;
 }
 
@@ -485,7 +487,7 @@ MOBILE
 
 <!-- EYEBROW BAND -->
 
-<div class="eyebrow-band" style="background:#0f1a0e !important;">
+<div class="eyebrow-band" style="background:#0f1a0e !important;margin-top:0;padding-top:16px;">
   <div class="eyebrow-line"></div>
   <div class="eyebrow-diamond"></div>
   <span class="eyebrow-text">Coming Soon &nbsp;·&nbsp; Historic Roswell, Georgia</span>
@@ -504,16 +506,18 @@ MOBILE
 
   <div class="definition">
     <div class="definition-box">
-      <div class="def-ornament">
-        <div class="def-orn-line"></div>
-        <div class="def-orn-diamond"></div>
-        <div class="def-orn-line"></div>
+      <!-- Top rule -->
+      <div style="display:flex;align-items:center;gap:12px;width:100%;margin-bottom:14px;">
+        <div style="flex:1;height:1px;background:rgba(196,180,138,0.5);"></div>
+        <div style="width:7px;height:7px;background:#C4B48A;transform:rotate(45deg);opacity:0.8;flex-shrink:0;"></div>
+        <div style="flex:1;height:1px;background:rgba(196,180,138,0.5);"></div>
       </div>
       <p>er&#228; (n.) &#8212; Finnish. The act of hunting<br>and fishing in the wilderness</p>
-      <div class="def-ornament def-ornament-bottom">
-        <div class="def-orn-line"></div>
-        <div class="def-orn-diamond"></div>
-        <div class="def-orn-line"></div>
+      <!-- Bottom rule -->
+      <div style="display:flex;align-items:center;gap:12px;width:100%;margin-top:14px;">
+        <div style="flex:1;height:1px;background:rgba(196,180,138,0.5);"></div>
+        <div style="width:7px;height:7px;background:#C4B48A;transform:rotate(45deg);opacity:0.8;flex-shrink:0;"></div>
+        <div style="flex:1;height:1px;background:rgba(196,180,138,0.5);"></div>
       </div>
     </div>
   </div>
