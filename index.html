@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="en" style="background:#0C2340;color:#F8F6F2;">
+<html lang="en" style="background:#22301F;color:#F2E8D0;">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,375 +8,375 @@
 <meta name="description" content="A modern outfitter for the field, river, and the everyday. Opening soon in Historic Roswell, Georgia.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Nunito+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
 
-/* Hard-coded colors — no CSS variables on critical text */
-
 - { box-sizing: border-box; margin: 0; padding: 0; }
-
-html {
-background: #0C2340;
-}
+  html { background: #22301F; }
 
 body {
-background: #0C2340;
-color: #F8F6F2;
-font-family: ‘Inter’, system-ui, sans-serif;
-font-size: 17px;
+background: #22301F;
+color: #F2E8D0;
+font-family: ‘Nunito Sans’, system-ui, sans-serif;
+font-size: 18px;
 font-weight: 300;
 line-height: 1.65;
 overflow-x: hidden;
 -webkit-font-smoothing: antialiased;
 }
 
-/* Grain texture */
+/* Grain */
 body::before {
 content: ‘’;
 position: fixed; inset: 0; z-index: 0; pointer-events: none;
 background-image: url(“data:image/svg+xml,%3Csvg viewBox=‘0 0 300 300’ xmlns=‘http://www.w3.org/2000/svg’%3E%3Cfilter id=‘n’%3E%3CfeTurbulence type=‘fractalNoise’ baseFrequency=‘0.8’ numOctaves=‘4’ stitchTiles=‘stitch’/%3E%3C/filter%3E%3Crect width=‘100%25’ height=‘100%25’ filter=‘url(%23n)’/%3E%3C/svg%3E”);
-opacity: 0.025;
+opacity: 0.03;
 }
 
-/* ── HERO ── */
+/* ─────────────────────────────
+EYEBROW — full width, bold, centered
+───────────────────────────────── */
+.eyebrow-band {
+width: 100%;
+padding: 20px 24px;
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 0;
+opacity: 0;
+animation: fadeUp 0.8s ease 0.1s forwards;
+}
+.eyebrow-line {
+flex: 1;
+height: 1px;
+max-width: 120px;
+background: linear-gradient(to right, transparent, rgba(168,144,106,0.5));
+}
+.eyebrow-line.r {
+background: linear-gradient(to left, transparent, rgba(168,144,106,0.5));
+}
+.eyebrow-diamond {
+width: 7px; height: 7px;
+background: #A8906A;
+transform: rotate(45deg);
+flex-shrink: 0;
+opacity: 0.8;
+margin: 0 16px;
+}
+.eyebrow-text {
+font-family: ‘Nunito Sans’, sans-serif;
+font-size: clamp(13px, 3.2vw, 20px);
+font-weight: 700;
+letter-spacing: clamp(2px, 1vw, 4px);
+text-transform: uppercase;
+color: rgba(168,144,106,0.85);
+white-space: nowrap;
+}
+
+/* ─────────────────────────────
+HERO
+───────────────────────────────── */
 .hero {
 position: relative;
-background: #0C2340;
+background: #22301F;
 display: flex;
 flex-direction: column;
 align-items: center;
-padding: 60px 32px 72px;
+padding: 8px 32px 72px;
 text-align: center;
 overflow: hidden;
 }
 .hero::before {
 content: ‘’;
 position: absolute; top: 0; left: 0; right: 0; height: 3px;
-background: linear-gradient(90deg, transparent 0%, #C9A030 40%, #C9A030 60%, transparent 100%);
+background: linear-gradient(90deg, transparent 0%, #A8906A 40%, #A8906A 60%, transparent 100%);
 opacity: 0.55;
 }
 .hero-inner {
 position: relative; z-index: 1;
 display: flex; flex-direction: column; align-items: center;
-width: 100%; max-width: 660px;
+width: 100%; max-width: 680px;
 }
 
-/* ── ORNAMENT SYSTEM ── */
-.ornament {
-display: flex; align-items: center;
-width: 100%; max-width: 580px; margin: 0 auto;
-}
-.orn-line {
-flex: 1; height: 1px;
-background: linear-gradient(to right, transparent, rgba(201,160,48,0.5));
-}
-.orn-line.r {
-background: linear-gradient(to left, transparent, rgba(201,160,48,0.5));
-}
-.orn-diamond {
-width: 7px; height: 7px;
-background: #C9A030;
-transform: rotate(45deg);
-flex-shrink: 0; opacity: 0.7;
-margin: 0 14px;
-}
-.orn-text {
-font-family: ‘Inter’, sans-serif;
-font-size: 11px; font-weight: 500;
-letter-spacing: 3.5px; text-transform: uppercase;
-color: rgba(201,160,48,0.65);
-white-space: nowrap; padding: 0 4px;
-}
-
-/* ── EYEBROW ── */
-.hero-eyebrow {
-margin-bottom: 36px;
-opacity: 0; animation: fadeUp 0.8s ease 0.1s forwards;
-width: 100%;
-}
-
-/* ── PRE-HEADLINE ── */
+/* ─────────────────────────────
+PRE-HEADLINE
+───────────────────────────────── */
 .pre-headline {
-font-family: ‘Playfair Display’, Georgia, serif;
-font-size: clamp(18px, 3vw, 24px);
-font-style: italic; font-weight: 400;
-color: rgba(248,246,242,0.45);
+font-family: ‘Lora’, Georgia, serif;
+font-size: clamp(20px, 3.5vw, 32px);
+font-style: italic;
+font-weight: 400;
+color: rgba(242,232,208,0.42);
 margin-bottom: 32px;
-max-width: 500px; line-height: 1.5;
+max-width: 540px;
+line-height: 1.45;
 opacity: 0; animation: fadeUp 0.8s ease 0.22s forwards;
 }
 
-/* ── LOGO ── */
+/* ─────────────────────────────
+LOGO
+───────────────────────────────── */
 .logo-wrap {
 position: relative;
 width: min(380px, 84vw);
 margin-bottom: 0;
 opacity: 0; animation: fadeUp 1s ease 0.38s forwards;
-/* No border-radius — let the gradient blending do the work */
 }
-.logo-wrap img {
-width: 100%; height: auto; display: block;
-}
-/* Blend all four edges into the navy background */
+.logo-wrap img { width: 100%; height: auto; display: block; }
 .logo-wrap::after {
 content: ‘’;
 position: absolute; inset: 0;
 background:
-linear-gradient(to right,  #0C2340 0%,   transparent 15%, transparent 85%, #0C2340 100%),
-linear-gradient(to bottom, #0C2340 0%,   transparent 14%, transparent 82%, #0C2340 100%);
+linear-gradient(to right,  #22301F 0%, transparent 14%, transparent 86%, #22301F 100%),
+linear-gradient(to bottom, #22301F 0%, transparent 14%, transparent 82%, #22301F 100%);
 pointer-events: none;
 }
 
-/* ── DEFINITION ── */
-.definition {
-margin: 20px 0 34px;
+/* ─────────────────────────────
+VALUE PROP
+───────────────────────────────── */
+.value-prop {
+margin: 28px 0 16px;
 opacity: 0; animation: fadeUp 0.8s ease 0.56s forwards;
 }
-.definition-box {
-display: inline-block;
-padding: 13px 26px;
-border: 1px solid rgba(201,160,48,0.22);
-background: rgba(201,160,48,0.06);
-}
-.definition-box p {
-font-family: ‘Playfair Display’, Georgia, serif;
-font-style: italic;
-font-size: clamp(14px, 2vw, 16px);
-color: rgba(201,160,48,0.6);
-line-height: 1.55;
-}
-
-/* ── VALUE PROP ── */
-.value-prop {
-margin-bottom: 14px;
-opacity: 0; animation: fadeUp 0.8s ease 0.7s forwards;
-}
 .value-prop h2 {
-font-family: ‘Playfair Display’, Georgia, serif;
+font-family: ‘Lora’, Georgia, serif;
 font-size: clamp(28px, 5.5vw, 44px);
 font-weight: 700;
-color: #F8F6F2;
+color: #F2E8D0;
 line-height: 1.2;
-margin-bottom: 18px;
+margin-bottom: 20px;
 letter-spacing: -0.5px;
 }
 .value-prop p {
-font-family: ‘Inter’, sans-serif;
-font-size: clamp(16px, 2.2vw, 19px);
+font-family: ‘Nunito Sans’, sans-serif;
+font-size: clamp(20px, 2.8vw, 26px);
 font-weight: 300;
-color: rgba(248,246,242,0.65);
-max-width: 440px; line-height: 1.75; margin: 0 auto;
+color: rgba(242,232,208,0.62);
+max-width: 480px;
+line-height: 1.7;
+margin: 0 auto;
 }
 
-/* ── LOCATION ── */
+/* ─────────────────────────────
+LOCATION
+───────────────────────────────── */
 .location-tag {
-display: inline-flex; align-items: center; gap: 8px;
-margin: 22px 0 44px;
-opacity: 0; animation: fadeUp 0.8s ease 0.82s forwards;
+display: inline-flex; align-items: center; gap: 10px;
+margin: 22px 0 48px;
+opacity: 0; animation: fadeUp 0.8s ease 0.68s forwards;
 }
 .location-tag span {
-font-family: ‘Inter’, sans-serif;
-font-size: 12px; font-weight: 400;
-letter-spacing: 2.5px; text-transform: uppercase;
-color: rgba(248,246,242,0.3);
+font-family: ‘Nunito Sans’, sans-serif;
+font-size: clamp(16px, 2.2vw, 20px);
+font-weight: 400;
+letter-spacing: 2.5px;
+text-transform: uppercase;
+color: rgba(242,232,208,0.28);
 }
 
-/* ── EMAIL ── */
+/* ─────────────────────────────
+EMAIL CAPTURE
+───────────────────────────────── */
 .email-section {
-width: min(500px, 94vw);
-opacity: 0; animation: fadeUp 0.8s ease 0.94s forwards;
+width: min(520px, 94vw);
+opacity: 0; animation: fadeUp 0.8s ease 0.82s forwards;
 }
 .email-heading {
-font-family: ‘Playfair Display’, Georgia, serif;
-font-size: clamp(22px, 3.5vw, 30px);
-font-weight: 600; color: #F8F6F2;
-margin-bottom: 8px;
+font-family: ‘Lora’, Georgia, serif;
+font-size: clamp(26px, 4vw, 36px);
+font-weight: 600;
+color: #F2E8D0;
+margin-bottom: 10px;
 }
 .email-subhead {
-font-family: ‘Inter’, sans-serif;
-font-size: clamp(14px, 1.9vw, 16px);
-font-weight: 300; color: rgba(248,246,242,0.45);
-margin-bottom: 24px; line-height: 1.65;
+font-family: ‘Nunito Sans’, sans-serif;
+font-size: clamp(18px, 2.4vw, 22px);
+font-weight: 300;
+color: rgba(242,232,208,0.42);
+margin-bottom: 26px;
+line-height: 1.6;
 }
 .form-row {
 display: flex;
-border: 1px solid rgba(201,160,48,0.4);
+border: 1px solid rgba(168,144,106,0.4);
 overflow: hidden;
 transition: border-color 0.25s, box-shadow 0.25s;
 background: rgba(255,255,255,0.04);
 }
 .form-row:focus-within {
-border-color: #C9A030;
-box-shadow: 0 0 0 3px rgba(201,160,48,0.1);
+border-color: #A8906A;
+box-shadow: 0 0 0 3px rgba(168,144,106,0.1);
 }
 .form-input {
 flex: 1; min-width: 0;
 background: transparent; border: none; outline: none;
-padding: 18px 20px;
-font-family: ‘Inter’, sans-serif;
-font-size: 16px; font-weight: 300;
-color: #F8F6F2;
+padding: 20px 22px;
+font-family: ‘Nunito Sans’, sans-serif;
+font-size: clamp(16px, 2vw, 20px);
+font-weight: 300;
+color: #F2E8D0;
 }
-.form-input::placeholder { color: rgba(248,246,242,0.2); }
+.form-input::placeholder { color: rgba(242,232,208,0.2); }
 .form-btn {
-background: #C9A030; border: none;
-padding: 18px 26px;
-font-family: ‘Inter’, sans-serif;
-font-size: 11.5px; font-weight: 600;
-letter-spacing: 2.2px; text-transform: uppercase;
-color: #0C2340;
+background: #A8906A; border: none;
+padding: 20px 28px;
+font-family: ‘Nunito Sans’, sans-serif;
+font-size: clamp(12px, 1.6vw, 15px);
+font-weight: 700;
+letter-spacing: 2px;
+text-transform: uppercase;
+color: #22301F;
 cursor: pointer;
 transition: background 0.2s;
 white-space: nowrap; flex-shrink: 0;
 }
-.form-btn:hover { background: #D4AE45; }
+.form-btn:hover { background: #B89D7A; }
 .form-note {
-font-family: ‘Inter’, sans-serif;
-font-size: 13px; font-weight: 300;
-color: rgba(248,246,242,0.2);
-margin-top: 13px; font-style: italic;
+font-family: ‘Nunito Sans’, sans-serif;
+font-size: clamp(14px, 1.8vw, 17px);
+font-weight: 300;
+color: rgba(242,232,208,0.2);
+margin-top: 14px;
+font-style: italic;
 }
 .success-msg {
-display: none; padding: 22px 28px;
-border: 1px solid rgba(201,160,48,0.3);
-background: rgba(201,160,48,0.06);
+display: none; padding: 24px 32px;
+border: 1px solid rgba(168,144,106,0.3);
+background: rgba(168,144,106,0.06);
 }
 .success-msg p {
-font-family: ‘Playfair Display’, Georgia, serif;
-font-style: italic; font-size: 22px; color: #C9A030;
+font-family: ‘Lora’, Georgia, serif;
+font-style: italic;
+font-size: 26px;
+color: #A8906A;
 }
 
-/* ── RULE DIVIDER ── */
-.rule-div {
-display: flex; align-items: center;
-padding: 0 32px; max-width: 900px; margin: 0 auto;
-}
-.rule-div .rl { flex: 1; height: 1px; background: rgba(201,160,48,0.15); }
-.rule-div .rd {
-width: 6px; height: 6px;
-background: #C9A030; transform: rotate(45deg);
-flex-shrink: 0; opacity: 0.45; margin: 0 20px;
-}
-
-/* ── BUILDING SECTION ── */
+/* ─────────────────────────────
+WHAT WE’RE BUILDING
+───────────────────────────────── */
 .building {
 position: relative; z-index: 1;
-background: #112B4E;
-padding: 64px 32px;
-border-top: 1px solid rgba(201,160,48,0.12);
-border-bottom: 1px solid rgba(201,160,48,0.12);
+background: rgba(0,0,0,0.18);
+padding: 68px 32px;
+border-top: 1px solid rgba(168,144,106,0.12);
+border-bottom: 1px solid rgba(168,144,106,0.12);
 }
 .building-inner {
-max-width: 860px; margin: 0 auto;
+max-width: 900px; margin: 0 auto;
 display: flex; flex-direction: column; align-items: center;
 }
 .section-label {
-font-family: ‘Inter’, sans-serif;
-font-size: 12px; font-weight: 500;
-letter-spacing: 4px; text-transform: uppercase;
-color: rgba(201,160,48,0.5);
-margin-bottom: 52px;
+font-family: ‘Nunito Sans’, sans-serif;
+font-size: clamp(16px, 2.2vw, 22px);
+font-weight: 700;
+letter-spacing: 4px;
+text-transform: uppercase;
+color: rgba(168,144,106,0.55);
+margin-bottom: 56px;
 }
 .building-grid {
 display: grid;
 grid-template-columns: repeat(3, 1fr);
-gap: 40px 48px; width: 100%;
+gap: 40px 52px; width: 100%;
 }
 .building-item {
 display: flex; flex-direction: column; align-items: center;
-text-align: center; padding-top: 28px;
-border-top: 1px solid rgba(201,160,48,0.15);
+text-align: center; padding-top: 32px;
+border-top: 1px solid rgba(168,144,106,0.15);
 position: relative;
 }
 .building-item::before {
 content: ‘’;
 position: absolute; top: -1px; left: 50%;
 transform: translateX(-50%);
-width: 40px; height: 1px;
-background: #C9A030; opacity: 0.8;
+width: 44px; height: 2px;
+background: #A8906A; opacity: 0.8;
 }
 .building-item h3 {
-font-family: ‘Playfair Display’, Georgia, serif;
-font-size: 22px; font-weight: 600;
-color: #F8F6F2; margin-bottom: 12px;
+font-family: ‘Lora’, Georgia, serif;
+font-size: clamp(24px, 3.2vw, 34px);
+font-weight: 600;
+color: #F2E8D0; margin-bottom: 14px;
 }
 .building-item p {
-font-family: ‘Inter’, sans-serif;
-font-size: 15px; font-weight: 300;
-color: rgba(248,246,242,0.6); line-height: 1.75;
+font-family: ‘Nunito Sans’, sans-serif;
+font-size: clamp(16px, 2vw, 20px);
+font-weight: 300;
+color: rgba(242,232,208,0.58);
+line-height: 1.75;
 }
 
-/* ── PILLS ── */
-.pills-section {
-position: relative; z-index: 1;
-background: #0C2340;
-padding: 60px 32px 64px; text-align: center;
-}
-.pills-label {
-font-family: ‘Inter’, sans-serif;
-font-size: 12px; font-weight: 500;
-letter-spacing: 4px; text-transform: uppercase;
-color: rgba(201,160,48,0.5); margin-bottom: 28px;
-}
-.pills {
-display: flex; gap: 10px; flex-wrap: wrap;
-justify-content: center;
-max-width: 600px; margin: 0 auto 48px;
-}
-.pill {
-border: 1px solid rgba(201,160,48,0.18);
-border-radius: 100px; padding: 9px 22px;
-font-family: ‘Inter’, sans-serif;
-font-size: 12.5px; font-weight: 400;
-letter-spacing: 2px; text-transform: uppercase;
-color: rgba(248,246,242,0.35);
-transition: border-color 0.2s, color 0.2s, background 0.2s;
-}
-.pill:hover {
-border-color: rgba(201,160,48,0.4);
-color: rgba(248,246,242,0.65);
-background: rgba(201,160,48,0.07);
-}
-.closing { margin-top: 8px; }
-.closing p {
-font-family: ‘Playfair Display’, Georgia, serif;
-font-style: italic;
-font-size: clamp(20px, 3vw, 28px);
-color: rgba(248,246,242,0.3);
-}
-
-/* ── FOOTER ── */
+/* ─────────────────────────────
+FOOTER
+───────────────────────────────── */
 footer {
 position: relative; z-index: 1;
-background: #080F1A;
-border-top: 1px solid rgba(201,160,48,0.1);
-padding: 36px 32px 44px; text-align: center;
-}
-.foot-orn { margin-bottom: 24px; }
-.foot-brand {
-font-family: ‘Playfair Display’, Georgia, serif;
-font-size: 15px; font-weight: 700;
-color: rgba(248,246,242,0.22);
-letter-spacing: 3.5px; text-transform: uppercase;
-margin-bottom: 12px;
-}
-.foot-links {
-font-family: ‘Inter’, sans-serif;
-font-size: 12.5px; font-weight: 400;
-color: rgba(248,246,242,0.15);
-letter-spacing: 2px; text-transform: uppercase;
-line-height: 2.4;
-}
-.foot-links a { color: rgba(201,160,48,0.4); text-decoration: none; transition: color 0.2s; }
-.foot-links a:hover { color: #C9A030; }
-.foot-finnish {
-margin-top: 20px;
-font-family: ‘Playfair Display’, Georgia, serif;
-font-style: italic; font-size: 13px;
-color: rgba(248,246,242,0.1);
+background: rgba(8,14,8,0.65);
+border-top: 1px solid rgba(168,144,106,0.1);
+padding: 48px 32px 56px;
+text-align: center;
 }
 
-/* ── ANIMATION ── */
+/* Ornament above brand name */
+.foot-ornament {
+display: flex; align-items: center; justify-content: center;
+gap: 0; margin-bottom: 28px;
+max-width: 240px; margin-left: auto; margin-right: auto;
+}
+.fo-line {
+flex: 1; height: 1px;
+background: rgba(168,144,106,0.3);
+}
+.fo-diamond {
+width: 6px; height: 6px;
+background: #A8906A; transform: rotate(45deg);
+flex-shrink: 0; opacity: 0.6;
+margin: 0 14px;
+}
+
+/* Brand name — prominent */
+.foot-brand {
+font-family: ‘Lora’, Georgia, serif;
+font-size: clamp(22px, 3vw, 30px);
+font-weight: 700;
+color: rgba(242,232,208,0.35);
+letter-spacing: 4px;
+text-transform: uppercase;
+margin-bottom: 22px;
+}
+
+/* Links row — diamonds as separators */
+.foot-links {
+display: flex;
+align-items: center;
+justify-content: center;
+flex-wrap: wrap;
+gap: 12px 0;
+}
+.foot-link {
+font-family: ‘Nunito Sans’, sans-serif;
+font-size: clamp(13px, 1.8vw, 16px);
+font-weight: 400;
+letter-spacing: 1.8px;
+text-transform: uppercase;
+color: rgba(168,144,106,0.5);
+text-decoration: none;
+transition: color 0.2s;
+}
+.foot-link:hover { color: #A8906A; }
+.foot-sep {
+width: 5px; height: 5px;
+background: #A8906A;
+transform: rotate(45deg);
+opacity: 0.35;
+margin: 0 18px;
+flex-shrink: 0;
+}
+
+/* ─────────────────────────────
+ANIMATION
+───────────────────────────────── */
 @keyframes fadeUp {
 from { opacity: 0; transform: translateY(14px); }
 to   { opacity: 1; transform: translateY(0); }
@@ -385,78 +385,78 @@ to   { opacity: 1; transform: translateY(0); }
 .building-item:nth-child(2) { animation: fadeUp 0.7s ease 0.25s both; }
 .building-item:nth-child(3) { animation: fadeUp 0.7s ease 0.4s both; }
 
-/* ── MOBILE ── */
-@media (max-width: 640px) {
-.hero { padding: 52px 24px 60px; }
-.building-grid { grid-template-columns: 1fr; gap: 36px; }
-.building { padding: 52px 24px; }
-.form-btn { padding: 18px 16px; font-size: 10.5px; }
-.value-prop h2 { font-size: 28px; }
-.orn-text { font-size: 10px; letter-spacing: 2.5px; }
+/* ─────────────────────────────
+MOBILE
+───────────────────────────────── */
+@media (max-width: 660px) {
+.hero { padding: 8px 24px 60px; }
+.building-grid { grid-template-columns: 1fr; gap: 40px; }
+.building { padding: 56px 24px; }
+.form-btn { padding: 20px 16px; }
+.foot-links { flex-direction: column; gap: 16px; }
+.foot-sep { display: none; }
 }
-@media (max-width: 400px) {
+@media (max-width: 420px) {
 .form-row { flex-direction: column; }
-.form-btn { padding: 15px; width: 100%; }
+.form-btn { padding: 16px; width: 100%; }
 }
 </style>
 
 </head>
 <body>
 
+<!-- EYEBROW BAND -->
+
+<div class="eyebrow-band">
+  <div class="eyebrow-line"></div>
+  <div class="eyebrow-diamond"></div>
+  <span class="eyebrow-text">Opening Soon &nbsp;·&nbsp; Historic Roswell, Georgia</span>
+  <div class="eyebrow-diamond"></div>
+  <div class="eyebrow-line r"></div>
+</div>
+
+<!-- HERO -->
+
 <section class="hero">
 <div class="hero-inner">
 
-  <div class="hero-eyebrow">
-    <div class="ornament">
-      <div class="orn-line"></div>
-      <div class="orn-diamond"></div>
-      <span class="orn-text">Opening Soon &nbsp;·&nbsp; Historic Roswell, Georgia</span>
-      <div class="orn-diamond"></div>
-      <div class="orn-line r"></div>
-    </div>
-  </div>
-
-  <p class="pre-headline">A Modern Outfitter for the Field, River, and the Everyday.</p>
+  <p class="pre-headline">A Modern Outfitter for the Field, River, and the Everyday</p>
 
   <div class="logo-wrap">
-    <img src="Logo.png" alt="Erä Outfitters — Fly Fishing and Upland Hunting, Roswell Georgia"/>
-  </div>
-
-  <div class="definition">
-    <div class="definition-box">
-      <p>er&#228; (n.) &#8212; Finnish. The act of hunting and fishing in the wilderness.</p>
-    </div>
+    <img src="logo.png" alt="Erä Outfitters — Fly Fishing and Upland Hunting, Roswell Georgia"/>
   </div>
 
   <div class="value-prop">
-    <h2>Premium gear. Real community.<br>No gatekeeping.</h2>
-    <p>A carefully curated shop and gathering place for fishermen, hunters, and the curious.</p>
+    <h2>Premium gear, real community,<br>no gatekeeping</h2>
+    <p>A carefully curated shop and gathering place for fishermen, hunters, and the curious</p>
   </div>
 
   <div class="location-tag">
-    <svg width="12" height="15" viewBox="0 0 12 15" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity:0.35;">
-      <path d="M6 0C2.69 0 0 2.69 0 6C0 10.5 6 15 6 15C6 15 12 10.5 12 6C12 2.69 9.31 0 6 0ZM6 8.25C4.76 8.25 3.75 7.24 3.75 6C3.75 4.76 4.76 3.75 6 3.75C7.24 3.75 8.25 4.76 8.25 6C8.25 7.24 7.24 8.25 6 8.25Z" fill="#C9A030"/>
+    <svg width="14" height="17" viewBox="0 0 12 15" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity:0.35;flex-shrink:0;">
+      <path d="M6 0C2.69 0 0 2.69 0 6C0 10.5 6 15 6 15C6 15 12 10.5 12 6C12 2.69 9.31 0 6 0ZM6 8.25C4.76 8.25 3.75 7.24 3.75 6C3.75 4.76 4.76 3.75 6 3.75C7.24 3.75 8.25 4.76 8.25 6C8.25 7.24 7.24 8.25 6 8.25Z" fill="#A8906A"/>
     </svg>
     <span>Historic Roswell, Georgia</span>
   </div>
 
   <div class="email-section">
     <p class="email-heading">Be among the first to know</p>
-    <p class="email-subhead">Join the list for opening day, first events, and early access.</p>
+    <p class="email-subhead">Join the list for opening day, first events, and early access</p>
     <div id="formContainer">
       <div class="form-row">
         <input type="email" class="form-input" id="emailInput" placeholder="your@email.com" autocomplete="email"/>
         <button class="form-btn" onclick="handleSubmit()">Get Early Access</button>
       </div>
-      <p class="form-note">No spam. Just the opening date, first events, and updates on our progress.</p>
+      <p class="form-note">No spam — just the opening date, first events, and updates on our progress</p>
     </div>
     <div class="success-msg" id="successMsg">
-      <p>You&#39;re on the list. We&#39;ll be in touch.</p>
+      <p>You&#39;re on the list — we&#39;ll be in touch</p>
     </div>
   </div>
 
 </div>
 </section>
+
+<!-- WHAT WE'RE BUILDING -->
 
 <section class="building">
 <div class="building-inner">
@@ -464,76 +464,45 @@ to   { opacity: 1; transform: translateY(0); }
   <div class="building-grid">
     <div class="building-item">
       <h3>Hunting</h3>
-      <p>Gear and apparel built for the field. Dove, quail, and all upland birds — no pretension, no gatekeeping.</p>
+      <p>Gear and apparel built for the field — dove, quail, and all upland birds</p>
     </div>
     <div class="building-item">
       <h3>Fishing</h3>
-      <p>Fly and tackle for Southern tailwaters. The Chattahoochee, Toccoa, and every river worth fishing.</p>
+      <p>Fly and tackle for Southern tailwaters — the Chattahoochee, Toccoa, and beyond</p>
     </div>
     <div class="building-item">
       <h3>Community</h3>
-      <p>Pig roasts, crawfish boils, fly tying nights, live music, and a bar worth coming back to.</p>
+      <p>Pig roasts, crawfish boils, fly tying nights, live music, and a bar worth coming back to</p>
     </div>
   </div>
 </div>
 </section>
 
-<section class="pills-section">
-
-  <div class="rule-div" style="margin-bottom:52px;">
-    <div class="rl"></div>
-    <div class="rd"></div>
-    <div class="rl"></div>
-  </div>
-
-  <p class="pills-label">Also on the agenda</p>
-  <div class="pills">
-    <div class="pill">Dove Season</div>
-    <div class="pill">Fly Tying</div>
-    <div class="pill">Upland Birds</div>
-    <div class="pill">Bird Dogs</div>
-    <div class="pill">Crawfish Boils</div>
-    <div class="pill">Live Music</div>
-    <div class="pill">The Bar</div>
-    <div class="pill">Pig Roasts</div>
-  </div>
-
-  <div class="rule-div" style="margin-bottom:40px;">
-    <div class="rl"></div>
-    <div class="rd"></div>
-    <div class="rl"></div>
-  </div>
-
-  <div class="closing">
-    <p>From the tailwater to the field.</p>
-  </div>
-
-</section>
+<!-- FOOTER -->
 
 <footer>
-  <div class="foot-orn">
-    <div class="ornament" style="max-width:280px;">
-      <div class="orn-line"></div>
-      <div class="orn-diamond"></div>
-      <div class="orn-line r"></div>
-    </div>
+  <div class="foot-ornament">
+    <div class="fo-line"></div>
+    <div class="fo-diamond"></div>
+    <div class="fo-line"></div>
   </div>
+
   <div class="foot-brand">Er&#228; Outfitters</div>
+
   <div class="foot-links">
-    <a href="https://instagram.com/eraoutfitter" target="_blank">@eraoutfitter</a>
-    &nbsp;&nbsp;·&nbsp;&nbsp;
-    <a href="mailto:shop@eraoutfitters.com">shop@eraoutfitters.com</a>
-    &nbsp;&nbsp;·&nbsp;&nbsp;
-    Roswell, Georgia
+    <a href="https://instagram.com/eraoutfitter" target="_blank" class="foot-link">@eraoutfitter</a>
+    <div class="foot-sep"></div>
+    <a href="mailto:shop@eraoutfitters.com" class="foot-link">shop@eraoutfitters.com</a>
+    <div class="foot-sep"></div>
+    <span class="foot-link" style="cursor:default;">Roswell, Georgia</span>
   </div>
-  <p class="foot-finnish">er&#228; &#8212; Finnish. hunting and fishing in the wilderness.</p>
 </footer>
 
 <script>
 function handleSubmit() {
   var email = document.getElementById('emailInput').value.trim();
   if (!email || email.indexOf('@') === -1) {
-    document.getElementById('emailInput').style.outline = '2px solid rgba(201,160,48,0.5)';
+    document.getElementById('emailInput').style.outline = '2px solid rgba(168,144,106,0.5)';
     document.getElementById('emailInput').focus();
     return;
   }
