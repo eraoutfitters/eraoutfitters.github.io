@@ -93,7 +93,7 @@ body::before {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 4px 32px 0px;
+  padding: 36px 32px 0;
   text-align: center;
   overflow: hidden;
 }
@@ -105,7 +105,7 @@ body::before {
 }
 .hero-inner {
   position: relative; z-index: 1;
-  display: flex; flex-direction: column; align-items: center; gap: 0;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
   width: 100%; max-width: 680px;
 }
 
@@ -154,7 +154,7 @@ body::before {
    DEFINITION
 ───────────────────────────────── */
 .definition {
-  margin: 4px 0 6px;
+  margin: 16px 0 20px;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -257,7 +257,8 @@ body::before {
 .email-section {
   width: min(520px, 94vw);
   opacity: 0; animation: fadeUp 0.8s ease 0.82s forwards;
-  margin-bottom: 0;
+  margin-top: 8px;
+  margin-bottom: 56px;
   padding-bottom: 0;
 }
 .email-heading {
@@ -470,7 +471,7 @@ footer {
    MOBILE
 ───────────────────────────────── */
 @media (max-width: 660px) {
-  .hero { padding: 8px 24px 60px; }
+  .hero { padding: 28px 24px 0; }
   .building-grid { grid-template-columns: 1fr; gap: 24px; }
   .building { padding: 16px 24px 32px; }
   .form-btn { padding: 20px 16px; }
@@ -525,7 +526,7 @@ footer {
 
   <!-- Location — standalone, below definition box -->
 
-  <div class="value-prop" style="padding:16px 32px 0;width:min(500px,92vw);box-sizing:border-box;">
+  <div class="value-prop" style="padding:24px 32px 8px;width:min(500px,92vw);box-sizing:border-box;">
     <h2>Premium gear, real community,<br>no gatekeeping</h2>
     <p>A carefully curated shop and gathering place for fishermen, hunters, and the curious</p>
   </div>  <div class="email-section">
@@ -549,26 +550,20 @@ footer {
 </div>
 </section>
 <!-- SHOP THE COLLECTION (Buy Button embed) -->
-<section style="background:#1E3020;padding:48px 16px 40px;text-align:center;">
+<section style="background:#1E3020;padding:56px 16px 56px;text-align:center;border-top:1px solid rgba(196,180,138,0.15);">
 
-  <!-- Shopify Buy Button overrides -->
+  <p style="font-family:'Nunito Sans',sans-serif;font-size:clamp(10px,2vw,12px);font-weight:700;letter-spacing:4px;text-transform:uppercase;color:rgba(196,180,138,0.5);margin:0 0 36px;">Shop the Collection</p>
+
+  <!-- Shopify Buy Button — no blend mode (ruins dark shirts) -->
   <style>
-    /* Blend white product image backgrounds into page */
-    #collection-component-1772862158263 iframe {
-      mix-blend-mode: multiply;
+    #collection-component-1772862158263 {
+      max-width: 1060px;
+      margin: 0 auto;
     }
-
-    /* Responsive grid: 4 cols desktop, 2 tablet, 1 mobile */
-    @media (min-width: 900px) {
-      #collection-component-1772862158263 .shopify-buy__collection-products {
-        max-width: 1100px;
-        margin: 0 auto;
-      }
-    }
+    /* Constrain on mobile */
     @media (max-width: 599px) {
       #collection-component-1772862158263 iframe {
         width: 100% !important;
-        max-width: 340px;
       }
     }
   </style>
