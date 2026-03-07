@@ -105,7 +105,7 @@ body::before {
 }
 .hero-inner {
   position: relative; z-index: 1;
-  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  display: flex; flex-direction: column; align-items: center; gap: 0;
   width: 100%; max-width: 680px;
 }
 
@@ -154,7 +154,7 @@ body::before {
    DEFINITION
 ───────────────────────────────── */
 .definition {
-  margin: 16px 0 20px;
+  margin: 20px 0 0;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -227,25 +227,25 @@ body::before {
    VALUE PROP
 ───────────────────────────────── */
 .value-prop {
-  margin: 10px 0 6px;
+  margin: 0;
   opacity: 0; animation: fadeUp 0.8s ease 0.56s forwards;
 }
 .value-prop h2 {
   font-family: 'Lora', Georgia, serif;
-  font-size: clamp(28px, 5.5vw, 44px);
+  font-size: clamp(24px, 4vw, 36px);
   font-weight: 700;
   color: #F2E8D0;
   line-height: 1.2;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   letter-spacing: -0.5px;
 }
 .value-prop p {
   font-family: 'Nunito Sans', sans-serif;
-  font-size: clamp(20px, 2.8vw, 26px);
+  font-size: clamp(16px, 2.2vw, 20px);
   font-weight: 300;
   color: rgba(242,232,208,0.62);
   max-width: 480px;
-  line-height: 1.7;
+  line-height: 1.6;
   margin: 0 auto;
 }
 
@@ -257,8 +257,8 @@ body::before {
 .email-section {
   width: min(520px, 94vw);
   opacity: 0; animation: fadeUp 0.8s ease 0.82s forwards;
-  margin-top: 8px;
-  margin-bottom: 56px;
+  margin-top: 20px;
+  margin-bottom: 48px;
   padding-bottom: 0;
 }
 .email-heading {
@@ -491,7 +491,7 @@ footer {
 <div class="eyebrow-band" style="background:#0f1a0e !important;margin-top:0;padding-top:20px;padding-bottom:20px;">
   <div class="eyebrow-line"></div>
   <div class="eyebrow-diamond"></div>
-  <span class="eyebrow-text">Coming Soon &nbsp;·&nbsp; Historic Roswell, Georgia</span>
+  <span class="eyebrow-text">Coming Soon &nbsp;·&nbsp; Roswell, Georgia</span>
   <div class="eyebrow-diamond"></div>
   <div class="eyebrow-line r"></div>
 </div>
@@ -526,7 +526,7 @@ footer {
 
   <!-- Location — standalone, below definition box -->
 
-  <div class="value-prop" style="padding:24px 32px 8px;width:min(500px,92vw);box-sizing:border-box;">
+  <div class="value-prop" style="padding:20px 32px 4px;width:min(500px,92vw);box-sizing:border-box;">
     <h2>Premium gear, real community,<br>no gatekeeping</h2>
     <p>A carefully curated shop and gathering place for fishermen, hunters, and the curious</p>
   </div>  <div class="email-section">
