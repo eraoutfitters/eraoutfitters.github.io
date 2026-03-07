@@ -525,25 +525,10 @@ footer {
 
   <!-- Location — standalone, below definition box -->
 
-
-  <!-- Shop button -->
-  <div style="margin:8px 0 20px;text-align:center;">
-    <a href="https://shop.eraoutfitters.com" target="_blank" style="display:inline-flex;align-items:center;gap:10px;font-family:'Nunito Sans',sans-serif;font-size:clamp(13px,1.8vw,15px);font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#1E3020;text-decoration:none;background:#C4B48A;padding:18px 40px;border-radius:2px;">
-      Shop the Collection
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 7H13M7 1L13 7L7 13" stroke="#1E3020" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </a>
-    <p style="font-family:'Nunito Sans',sans-serif;font-size:12px;font-weight:300;color:#7a6a48;margin-top:10px;letter-spacing:1px;text-transform:uppercase;">Comfort Colors Long Sleeve — Available Now</p>
-  </div>
-
-  <div class="value-prop" style="padding:20px 32px;width:min(500px,92vw);box-sizing:border-box;">
+  <div class="value-prop" style="padding:16px 32px 0;width:min(500px,92vw);box-sizing:border-box;">
     <h2>Premium gear, real community,<br>no gatekeeping</h2>
     <p>A carefully curated shop and gathering place for fishermen, hunters, and the curious</p>
-  </div>
-
-
-
-
-  <div class="email-section">
+  </div>  <div class="email-section">
     <p class="email-heading">Be among the first to know</p>
     <p class="email-subhead">Join the list for opening day, first events, and early access</p>
     <form style="margin:0;padding:0;position:relative;overflow:hidden;" action="https://eraoutfitters.us10.list-manage.com/subscribe/post?u=f6e6c6ba682dcca7138938074&amp;id=c5f58615a8&amp;f_id=000c4ee4f0" method="post" target="_blank" novalidate>
@@ -564,18 +549,28 @@ footer {
 </div>
 </section>
 <!-- SHOP THE COLLECTION (Buy Button embed) -->
-<section style="background:#1E3020;padding:40px 24px 20px;text-align:center;">
-  <p style="font-family:'Nunito Sans',sans-serif;font-size:clamp(10px,2vw,13px);font-weight:700;letter-spacing:4px;text-transform:uppercase;color:rgba(196,180,138,0.55);margin-bottom:32px;">Shop the Collection</p>
+<section style="background:#1E3020;padding:48px 16px 40px;text-align:center;">
 
   <!-- Shopify Buy Button overrides -->
   <style>
-    /* Force dark background on all Shopify iframes/containers */
-    #collection-component-1772862158263 iframe,
-    .shopify-buy-frame { background: transparent !important; }
+    /* Blend white product image backgrounds into page */
+    #collection-component-1772862158263 iframe {
+      mix-blend-mode: multiply;
+    }
 
-    /* Product title and price color */
-    .shopify-buy__product__title { color: #F2E8D0 !important; }
-    .shopify-buy__product__price { color: #C4B48A !important; }
+    /* Responsive grid: 4 cols desktop, 2 tablet, 1 mobile */
+    @media (min-width: 900px) {
+      #collection-component-1772862158263 .shopify-buy__collection-products {
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+    }
+    @media (max-width: 599px) {
+      #collection-component-1772862158263 iframe {
+        width: 100% !important;
+        max-width: 340px;
+      }
+    }
   </style>
 
   <div id='collection-component-1772862158263'></div>
