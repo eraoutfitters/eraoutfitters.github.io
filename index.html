@@ -93,7 +93,7 @@ body::before {
 }
 .hero-bg {
   position: absolute; inset: 0;
-  background-image: url('bird-hunter.png');
+  background-image: url('hero.jpg');
   background-size: cover;
   background-position: center 30%;
   opacity: 0.55;
@@ -312,15 +312,25 @@ body::before {
   position: relative;
   overflow: hidden;
 }
-.brand-story::before {
+.brand-story::after {
   content: '';
   position: absolute; inset: 0;
+  background-image: url('heritage.jpg');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.07;
+  filter: saturate(0.3);
+  pointer-events: none;
+}
+.brand-story::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 1;
   background:
     radial-gradient(ellipse 70% 60% at 50% 50%, rgba(196,180,138,0.04) 0%, transparent 70%);
   pointer-events: none;
 }
 .brand-story-inner {
-  position: relative; z-index: 1;
+  position: relative; z-index: 2;
   max-width: 680px;
   margin: 0 auto;
 }
@@ -388,7 +398,7 @@ body::before {
 .community::before {
   content: '';
   position: absolute; inset: 0;
-  background-image: url('outdoor-gathering.png');
+  background-image: url('river.jpg');
   background-size: cover;
   background-position: center;
   opacity: 0.08;
@@ -642,7 +652,7 @@ footer {
 <section class="categories">
 
   <div class="cat-tile">
-    <div class="cat-tile-bg" style="background-image: url('bird-hunter.png');"></div>
+    <div class="cat-tile-bg" style="background-image: url('hunting.jpg');"></div>
     <div class="cat-tile-overlay"></div>
     <div class="cat-tile-content">
       <svg class="cat-tile-icon" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
@@ -658,7 +668,7 @@ footer {
   </div>
 
   <div class="cat-tile">
-    <div class="cat-tile-bg" style="background-image: url('forest-aerial-1.png'); background-position: center 40%;"></div>
+    <div class="cat-tile-bg" style="background-image: url('fishing.jpg'); background-position: center 40%;"></div>
     <div class="cat-tile-overlay"></div>
     <div class="cat-tile-content">
       <svg class="cat-tile-icon" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
@@ -676,7 +686,7 @@ footer {
   </div>
 
   <div class="cat-tile">
-    <div class="cat-tile-bg" style="background-image: url('outdoor-gathering.png');"></div>
+    <div class="cat-tile-bg" style="background-image: url('hunting-dog.jpg'); background-position: center 20%;"></div>
     <div class="cat-tile-overlay"></div>
     <div class="cat-tile-content">
       <svg class="cat-tile-icon" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
@@ -872,7 +882,7 @@ footer {
 var bg = document.getElementById('heroBg');
 var img = new Image();
 img.onload = function() { bg.classList.add('loaded'); };
-img.src = 'bird-hunter.png';
+img.src = 'hero.jpg';
 
 // Scroll reveal
 var reveals = document.querySelectorAll('.reveal');
