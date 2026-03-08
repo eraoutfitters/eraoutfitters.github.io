@@ -611,6 +611,63 @@ footer {
   .form-btn { padding: 16px; width: 100%; }
 }
 
+/* ─── SHOP STAGE / CURTAIN ──────────────────── */
+#shopStage {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: none;
+  overflow: hidden;
+}
+.shop-curtain {
+  position: absolute;
+  left: 0;
+  right: 0;
+  background: #0f1a0e;
+  z-index: 2;
+  transition: transform 0.65s cubic-bezier(0.77, 0, 0.175, 1);
+  pointer-events: none;
+}
+.shop-curtain-top    { top: 0;    height: 50%; transform: translateY(0); }
+.shop-curtain-bottom { bottom: 0; height: 50%; transform: translateY(0); }
+
+#shopStage.is-parted .shop-curtain-top    { transform: translateY(-22px); }
+#shopStage.is-parted .shop-curtain-bottom { transform: translateY(22px); }
+#shopStage.is-open   .shop-curtain-top    { transform: translateY(-100%); }
+#shopStage.is-open   .shop-curtain-bottom { transform: translateY(100%); }
+
+.shop-stage-inner {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow-y: auto;
+  background: #0f1a0e;
+  padding: 48px 24px 80px;
+}
+.shop-stage-close {
+  position: fixed;
+  top: 20px;
+  right: 24px;
+  background: none;
+  border: 1px solid rgba(196,180,138,0.3);
+  color: #C4B48A;
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 10px 20px;
+  cursor: pointer;
+  z-index: 3;
+  transition: border-color 0.2s, opacity 0.4s 0.3s;
+  opacity: 0;
+  pointer-events: none;
+}
+#shopStage.is-open .shop-stage-close {
+  opacity: 1;
+  pointer-events: auto;
+}
+
 </style>
 </head>
 <body>
@@ -718,81 +775,16 @@ footer {
   </div>
 </section>
 
-<!-- ─── SHOP MODAL ───────────────────────────── -->
-<div id="shopModal" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(6,14,6,0.92);overflow-y:auto;backdrop-filter:blur(4px);">
-  <div style="max-width:1100px;margin:0 auto;padding:48px 24px 80px;position:relative;">
-    <button onclick="document.getElementById('shopModal').style.display='none'" style="position:fixed;top:20px;right:24px;background:none;border:1px solid rgba(196,180,138,0.3);color:#C4B48A;font-family:'Nunito Sans',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:10px 20px;cursor:pointer;z-index:1001;transition:border-color 0.2s;">✕ &nbsp;Close</button>
+<!-- ─── SHOP STAGE ───────────────────────────── -->
+<div id="shopStage">
+  <div class="shop-curtain shop-curtain-top"></div>
+  <div class="shop-curtain shop-curtain-bottom"></div>
+  <div class="shop-stage-inner">
+    <button class="shop-stage-close" onclick="closeShop()">✕ &nbsp;Close</button>
     <p style="font-family:'Nunito Sans',sans-serif;font-size:clamp(10px,1.6vw,12px);font-weight:700;letter-spacing:5px;text-transform:uppercase;color:rgba(196,180,138,0.5);margin:0 0 40px;text-align:center;">Shop the Collection</p>
-    <section class="shop-section" style="background:transparent;padding:0;">
-  <span class="shop-label">Shop the Collection</span>
-  <div id='collection-component-1772862158263'></div>
-  <script type="text/javascript">
-  /*<![CDATA[*/
-  var shopReady = false;
-  function openShopModal() {
-    document.getElementById('shopModal').style.display = 'block';
-    if (shopReady) return;
-    shopReady = true;
-    var scriptURL = 'https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js';
-    if (window.ShopifyBuy) {
-      if (window.ShopifyBuy.UI) { ShopifyBuyInit(); } else { loadScript(); }
-    } else { loadScript(); }
-    function loadScript() {
-      var script = document.createElement('script');
-      script.async = true;
-      script.src = scriptURL;
-      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(script);
-      script.onload = ShopifyBuyInit;
-    }
-    function ShopifyBuyInit() {
-      var client = ShopifyBuy.buildClient({
-        domain: 'mddjp6-nx.myshopify.com',
-        storefrontAccessToken: '836bad8b766009eed91de538b32f0bf5',
-      });
-      ShopifyBuy.UI.onReady(client).then(function (ui) {
-        ui.createComponent('collection', {
-          id: '305777508422',
-          node: document.getElementById('collection-component-1772862158263'),
-          moneyFormat: '%24%7B%7Bamount%7D%7D',
-          options: {
-            "product": {
-              "styles": {
-                "product": {
-                  "background-color": "transparent",
-                  "@media (min-width: 601px)": { "max-width": "calc(33.33333% - 30px)", "margin-left": "30px", "margin-bottom": "50px", "width": "calc(33.33333% - 30px)" },
-                  "img": { "height": "calc(100% - 15px)", "position": "absolute", "left": "0", "right": "0", "top": "0" },
-                  "imgWrapper": { "padding-top": "calc(75% + 15px)", "position": "relative", "height": "0" }
-                },
-                "title": { "color": "#F2E8D0", "font-family": "Nunito Sans, sans-serif" },
-                "price": { "color": "#C4B48A", "font-family": "Nunito Sans, sans-serif" },
-                "compareAt": { "color": "#8a7a56" },
-                "button": { ":hover": { "background-color": "#b0a27c" }, "background-color": "#c4b48a", "color": "#1E3020", "font-family": "Nunito Sans, sans-serif", "font-weight": "700", "letter-spacing": "2px", ":focus": { "background-color": "#b0a27c" } }
-              },
-              "text": { "button": "Add to cart" }
-            },
-            "productSet": { "styles": { "products": { "background-color": "transparent", "@media (min-width: 601px)": { "margin-left": "-30px" } } } },
-            "modalProduct": {
-              "contents": { "img": false, "imgWithCarousel": true, "button": false, "buttonWithQuantity": true },
-              "styles": {
-                "product": { "@media (min-width: 601px)": { "max-width": "100%", "margin-left": "0px", "margin-bottom": "0px" } },
-                "button": { ":hover": { "background-color": "#b0a27c" }, "background-color": "#c4b48a", "color": "#1E3020", "font-family": "Nunito Sans, sans-serif", "font-weight": "700", ":focus": { "background-color": "#b0a27c" } }
-              },
-              "text": { "button": "Add to cart" }
-            },
-            "option": {},
-            "cart": {
-              "styles": { "button": { ":hover": { "background-color": "#b0a27c" }, "background-color": "#c4b48a", "color": "#1E3020", "font-family": "Nunito Sans, sans-serif", "font-weight": "700", ":focus": { "background-color": "#b0a27c" } } },
-              "text": { "total": "Subtotal", "button": "Checkout" }
-            },
-            "toggle": { "styles": { "toggle": { "background-color": "#c4b48a", ":hover": { "background-color": "#b0a27c" }, ":focus": { "background-color": "#b0a27c" } } } }
-          }
-        });
-      });
-    }
-  }
-  /*]]>*/
-  </script>
-</section>
+    <div style="max-width:1060px;margin:0 auto;">
+      <div id='collection-component-1772862158263'></div>
+    </div>
   </div>
 </div>
 
@@ -893,6 +885,95 @@ var observer = new IntersectionObserver(function(entries) {
   });
 }, { threshold: 0.12 });
 reveals.forEach(function(el) { observer.observe(el); });
+
+// ─── SHOP CURTAIN ───────────────────────────
+var shopReady = false;
+
+function openShopModal() {
+  var stage = document.getElementById('shopStage');
+  stage.style.display = 'block';
+  void stage.offsetWidth; // force reflow so transitions fire
+  // crack the curtains open slightly first — then swing fully open
+  stage.classList.add('is-parted');
+  setTimeout(function () {
+    stage.classList.remove('is-parted');
+    stage.classList.add('is-open');
+  }, 420);
+  if (!shopReady) {
+    shopReady = true;
+    initShop();
+  }
+}
+
+function closeShop() {
+  var stage = document.getElementById('shopStage');
+  // fly from open → parted
+  stage.classList.remove('is-open');
+  stage.classList.add('is-parted');
+  // then parted → closed
+  setTimeout(function () { stage.classList.remove('is-parted'); }, 480);
+  // hide after curtains finish closing
+  setTimeout(function () { stage.style.display = 'none'; }, 1150);
+}
+
+function initShop() {
+  var scriptURL = 'https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js';
+  if (window.ShopifyBuy) {
+    if (window.ShopifyBuy.UI) { ShopifyBuyInit(); } else { loadScript(); }
+  } else { loadScript(); }
+  function loadScript() {
+    var script = document.createElement('script');
+    script.async = true;
+    script.src = scriptURL;
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(script);
+    script.onload = ShopifyBuyInit;
+  }
+  function ShopifyBuyInit() {
+    var client = ShopifyBuy.buildClient({
+      domain: 'mddjp6-nx.myshopify.com',
+      storefrontAccessToken: '836bad8b766009eed91de538b32f0bf5',
+    });
+    ShopifyBuy.UI.onReady(client).then(function (ui) {
+      ui.createComponent('collection', {
+        id: '305777508422',
+        node: document.getElementById('collection-component-1772862158263'),
+        moneyFormat: '%24%7B%7Bamount%7D%7D',
+        options: {
+          "product": {
+            "styles": {
+              "product": {
+                "background-color": "transparent",
+                "@media (min-width: 601px)": { "max-width": "calc(33.33333% - 30px)", "margin-left": "30px", "margin-bottom": "50px", "width": "calc(33.33333% - 30px)" },
+                "img": { "height": "calc(100% - 15px)", "position": "absolute", "left": "0", "right": "0", "top": "0" },
+                "imgWrapper": { "padding-top": "calc(75% + 15px)", "position": "relative", "height": "0" }
+              },
+              "title": { "color": "#F2E8D0", "font-family": "Nunito Sans, sans-serif" },
+              "price": { "color": "#C4B48A", "font-family": "Nunito Sans, sans-serif" },
+              "compareAt": { "color": "#8a7a56" },
+              "button": { ":hover": { "background-color": "#b0a27c" }, "background-color": "#c4b48a", "color": "#1E3020", "font-family": "Nunito Sans, sans-serif", "font-weight": "700", "letter-spacing": "2px", ":focus": { "background-color": "#b0a27c" } }
+            },
+            "text": { "button": "Add to cart" }
+          },
+          "productSet": { "styles": { "products": { "background-color": "transparent", "@media (min-width: 601px)": { "margin-left": "-30px" } } } },
+          "modalProduct": {
+            "contents": { "img": false, "imgWithCarousel": true, "button": false, "buttonWithQuantity": true },
+            "styles": {
+              "product": { "@media (min-width: 601px)": { "max-width": "100%", "margin-left": "0px", "margin-bottom": "0px" } },
+              "button": { ":hover": { "background-color": "#b0a27c" }, "background-color": "#c4b48a", "color": "#1E3020", "font-family": "Nunito Sans, sans-serif", "font-weight": "700", ":focus": { "background-color": "#b0a27c" } }
+            },
+            "text": { "button": "Add to cart" }
+          },
+          "option": {},
+          "cart": {
+            "styles": { "button": { ":hover": { "background-color": "#b0a27c" }, "background-color": "#c4b48a", "color": "#1E3020", "font-family": "Nunito Sans, sans-serif", "font-weight": "700", ":focus": { "background-color": "#b0a27c" } } },
+            "text": { "total": "Subtotal", "button": "Checkout" }
+          },
+          "toggle": { "styles": { "toggle": { "background-color": "#c4b48a", ":hover": { "background-color": "#b0a27c" }, ":focus": { "background-color": "#b0a27c" } } } }
+        }
+      });
+    });
+  }
+}
 
 // Email obfuscation
 document.addEventListener('DOMContentLoaded', function() {
