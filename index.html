@@ -106,16 +106,44 @@ body::before {
   background-position: center;
 }
 .hero-media-item.is-video {
+  overflow: hidden;
+  pointer-events: none;
+}
+/* Main (foreground) video — cover on desktop */
+.vp-main {
+  position: absolute; inset: 0;
   width: 100%; height: 100%;
   object-fit: cover;
   object-position: center;
-  /* Suppress all native video UI across browsers */
-  pointer-events: none;
+  z-index: 1;
 }
-.hero-media-item.is-video::-webkit-media-controls          { display: none !important; }
-.hero-media-item.is-video::-webkit-media-controls-panel    { display: none !important; }
-.hero-media-item.is-video::-webkit-media-controls-overlay-play-button { display: none !important; }
-.hero-media-item.is-video::--webkit-media-controls-start-playback-button { display: none !important; }
+/* Blurred background clone — hidden on desktop, no bandwidth used */
+.vp-blur { display: none; }
+
+@media (max-width: 767px) {
+  /* Show full video without cropping on mobile */
+  .vp-main { object-fit: contain; }
+  /* Blurred clone fills the letterbox bars */
+  .vp-blur {
+    display: block;
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center;
+    filter: blur(24px) brightness(0.5);
+    transform: scale(1.14); /* push blurred edges outside frame */
+    z-index: 0;
+  }
+}
+/* Suppress native controls on both video layers */
+.vp-main::-webkit-media-controls,
+.vp-blur::-webkit-media-controls                             { display: none !important; }
+.vp-main::-webkit-media-controls-panel,
+.vp-blur::-webkit-media-controls-panel                       { display: none !important; }
+.vp-main::-webkit-media-controls-overlay-play-button,
+.vp-blur::-webkit-media-controls-overlay-play-button         { display: none !important; }
+.vp-main::-webkit-media-controls-start-playback-button,
+.vp-blur::-webkit-media-controls-start-playback-button       { display: none !important; }
 .hero-gradient {
   position: absolute; inset: 0;
   z-index: 4;
@@ -1087,62 +1115,86 @@ footer {
   var skipTimer    = null;
   var els          = [];
 
+  // Helper: stamp all required autoplay attributes onto a <video> element
+  function makeVideoEl(src, cls) {
+    var v = document.createElement('video');
+    v.muted       = true;
+    v.autoplay    = true;
+    v.loop        = false;
+    v.playsInline = true;
+    v.controls    = false;
+    v.preload     = 'auto';
+    v.setAttribute('muted', '');
+    v.setAttribute('autoplay', '');
+    v.setAttribute('playsinline', '');
+    v.setAttribute('webkit-playsinline', '');
+    v.setAttribute('x5-playsinline', '');
+    v.setAttribute('x5-video-player-type', 'h5');
+    v.setAttribute('disableremoteplayback', '');
+    v.className = cls;
+    v.src       = src;
+    return v;
+  }
+
   // Build elements
   media.forEach(function (m) {
     var el;
     if (m.type === 'video') {
-      el = document.createElement('video');
-      // All four attributes required for iOS Safari autoplay without fullscreen
-      el.muted           = true;
-      el.autoplay        = true;
-      el.loop            = false; // we manage looping via the ended event
-      el.playsInline     = true;
-      el.controls        = false;
-      el.preload         = 'auto';
-      el.setAttribute('muted', '');
-      el.setAttribute('autoplay', '');
-      el.setAttribute('playsinline', '');
-      el.setAttribute('webkit-playsinline', '');
-      el.setAttribute('x5-playsinline', '');        // WeChat/UC browser
-      el.setAttribute('x5-video-player-type', 'h5'); // QQ browser
-      el.setAttribute('disableremoteplayback', '');  // suppress AirPlay/cast button
+      // Wrapper div is the fade/z-index target; videos live inside it
+      el = document.createElement('div');
       el.className = 'hero-media-item is-video';
-      el.src       = m.src;
+
+      var videoMain = makeVideoEl(m.src, 'vp-main');
+      el.appendChild(videoMain);
+
+      // Blur clone only created on mobile — desktop hides it via CSS anyway
+      // but we skip creation entirely to avoid loading the same stream twice
+      var videoBlur = null;
+      if (isMobile) {
+        videoBlur = makeVideoEl(m.src, 'vp-blur');
+        el.appendChild(videoBlur);
+      }
+
+      container.appendChild(el);
+      els.push({ el: el, videoMain: videoMain, videoBlur: videoBlur, type: 'video' });
     } else {
       el = document.createElement('div');
       el.className = 'hero-media-item is-image';
       el.style.backgroundImage = "url('" + m.src + "')";
+      container.appendChild(el);
+      els.push({ el: el, type: 'image' });
     }
-    container.appendChild(el);
-    els.push({ el: el, type: m.type });
   });
 
-  // Wire ended event on all videos
+  // Wire ended/playing events on the main video of each item
   els.forEach(function (item, i) {
     if (item.type !== 'video') return;
-    item.el.addEventListener('ended', function () {
+    item.videoMain.addEventListener('ended', function () {
       if (cur === i) goTo(i + 1);
     });
-    // If video stalls/suspends after starting, the skip timer handles it
-    item.el.addEventListener('playing', function () {
-      // Video actually started — cancel the stall skip timer
-      clearTimeout(skipTimer);
+    item.videoMain.addEventListener('playing', function () {
+      clearTimeout(skipTimer); // video started — cancel stall guard
     });
   });
 
   function playVideo(item, onFail) {
     clearTimeout(skipTimer);
-    item.el.currentTime = 0;
+    item.videoMain.currentTime = 0;
+    if (item.videoBlur) item.videoBlur.currentTime = 0;
 
-    // Stall guard: if video hasn't started within VIDEO_SKIP ms, skip forward
+    // Stall guard: skip if main video hasn't started within VIDEO_SKIP ms
     skipTimer = setTimeout(function () {
-      if (item.el.paused || item.el.readyState < 2) {
-        item.el.pause();
+      if (item.videoMain.paused || item.videoMain.readyState < 2) {
+        item.videoMain.pause();
+        if (item.videoBlur) item.videoBlur.pause();
         onFail();
       }
     }, VIDEO_SKIP);
 
-    var p = item.el.play();
+    var p = item.videoMain.play();
+    // Blur play failure is non-fatal — ignore its promise
+    if (item.videoBlur) item.videoBlur.play().catch(function () {});
+
     if (p && typeof p.then === 'function') {
       p.then(function () {
         clearTimeout(skipTimer);
@@ -1168,9 +1220,12 @@ footer {
     void next.el.offsetWidth; // force reflow
     next.el.style.opacity = '1';
 
-    // After crossfade completes, drop previous behind
+    // After crossfade completes, drop previous behind and pause its video
     setTimeout(function () {
-      if (prev.type === 'video') prev.el.pause();
+      if (prev.type === 'video') {
+        prev.videoMain.pause();
+        if (prev.videoBlur) prev.videoBlur.pause();
+      }
       prev.el.style.opacity = '0';
       prev.el.style.zIndex  = '1';
       next.el.style.zIndex  = '2';
@@ -1178,7 +1233,6 @@ footer {
 
     if (next.type === 'video') {
       playVideo(next, function () {
-        // Play failed or stalled — skip to next item
         imgTimer = setTimeout(function () { goTo(cur + 1); }, 0);
       });
     } else {
