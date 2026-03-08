@@ -91,27 +91,34 @@ body::before {
   overflow: hidden;
   background: #0f1a0e;
 }
-.hero-bg {
+#hero-media {
   position: absolute; inset: 0;
-  background-image: url('hero.jpg');
-  background-size: cover;
-  background-position: center 30%;
-  opacity: 0.55;
-  transform: scale(1.03);
-  transition: transform 8s ease;
+  z-index: 0;
 }
-.hero-bg.loaded { transform: scale(1); }
+.hero-media-item {
+  position: absolute; inset: 0;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+  z-index: 1;
+}
+.hero-media-item.is-image {
+  background-size: cover;
+  background-position: center;
+}
+.hero-media-item.is-video {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
 .hero-gradient {
   position: absolute; inset: 0;
+  z-index: 4;
   background:
-    linear-gradient(to bottom,
-      rgba(6,14,6,0.6) 0%,
-      rgba(6,14,6,0.15) 35%,
-      rgba(6,14,6,0.15) 60%,
-      rgba(6,14,6,0.85) 100%);
+    linear-gradient(to bottom, rgba(15,26,14,0.3) 0%, transparent 25%, transparent 70%, rgba(15,26,14,0.5) 100%),
+    rgba(15,26,14,0.60);
 }
 .hero-inner {
-  position: relative; z-index: 2;
+  position: relative; z-index: 5;
   display: flex; flex-direction: column; align-items: center;
   gap: 0;
   padding: 40px 24px 80px;
@@ -182,7 +189,7 @@ body::before {
   position: absolute;
   bottom: 28px; left: 50%;
   transform: translateX(-50%);
-  z-index: 2;
+  z-index: 5;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -634,7 +641,7 @@ footer {
 
 <!-- ─── HERO ─────────────────────────────────── -->
 <section class="hero">
-  <div class="hero-bg" id="heroBg"></div>
+  <div id="hero-media"></div>
   <div class="hero-gradient"></div>
   <div class="hero-inner">
     <img src="logo.svg" alt="Era Outfitters" class="hero-logo">
@@ -818,11 +825,112 @@ footer {
 </footer>
 
 <script>
-// Hero bg load
-var bg = document.getElementById('heroBg');
-var img = new Image();
-img.onload = function() { bg.classList.add('loaded'); };
-img.src = 'hero.jpg';
+// ─── HERO MEDIA ROTATOR ──────────────────────
+(function () {
+  var isMobile = window.matchMedia('(max-width: 768px)').matches;
+
+  // Edit this list to change hero media — mix images and videos freely
+  var ALL_MEDIA = [
+    { type: 'image', src: 'media/era-9.jpg'  },
+    { type: 'video', src: 'media/era-12.mp4' },
+    { type: 'image', src: 'media/era-7.jpg'  },
+    { type: 'video', src: 'media/era-13.mp4' },
+    { type: 'image', src: 'media/era-1.jpg'  },
+    { type: 'video', src: 'media/era-15.mp4' },
+    { type: 'image', src: 'media/era-8.jpg'  },
+    { type: 'video', src: 'media/era-14.mp4' },
+    { type: 'image', src: 'media/era-6.jpg'  },
+  ];
+
+  // Mobile: images only to avoid video decode overhead
+  var media = isMobile
+    ? ALL_MEDIA.filter(function (m) { return m.type === 'image'; })
+    : ALL_MEDIA;
+
+  if (!media.length) return;
+
+  var container = document.getElementById('hero-media');
+  var FADE     = 1200;   // ms — must match CSS transition
+  var IMG_HOLD = 5000;   // ms images stay visible
+  var cur      = 0;
+  var imgTimer = null;
+  var els      = [];
+
+  // Build elements
+  media.forEach(function (m) {
+    var el;
+    if (m.type === 'video') {
+      el = document.createElement('video');
+      el.muted        = true;
+      el.playsInline  = true;
+      el.preload      = 'auto';
+      el.setAttribute('playsinline', '');
+      el.setAttribute('webkit-playsinline', '');
+      el.className    = 'hero-media-item is-video';
+      el.src          = m.src;
+    } else {
+      el = document.createElement('div');
+      el.className    = 'hero-media-item is-image';
+      el.style.backgroundImage = "url('" + m.src + "')";
+    }
+    container.appendChild(el);
+    els.push({ el: el, type: m.type });
+  });
+
+  // Wire ended event on all videos
+  els.forEach(function (item, i) {
+    if (item.type === 'video') {
+      item.el.addEventListener('ended', function () {
+        if (cur === i) goTo(i + 1);
+      });
+    }
+  });
+
+  function goTo(idx) {
+    var prevIdx = cur;
+    cur = ((idx % els.length) + els.length) % els.length;
+
+    clearTimeout(imgTimer);
+
+    var next = els[cur];
+    var prev = els[prevIdx];
+
+    // Bring next layer up and fade in
+    next.el.style.zIndex  = '3';
+    void next.el.offsetWidth; // force reflow
+    next.el.style.opacity = '1';
+
+    // After crossfade completes, drop previous behind
+    setTimeout(function () {
+      prev.el.style.opacity = '0';
+      prev.el.style.zIndex  = '1';
+      next.el.style.zIndex  = '2';
+    }, FADE);
+
+    if (next.type === 'video') {
+      next.el.currentTime = 0;
+      next.el.play().catch(function () {
+        // Video blocked (e.g. aggressive mobile policy) — skip to next
+        imgTimer = setTimeout(function () { goTo(cur + 1); }, IMG_HOLD);
+      });
+    } else {
+      imgTimer = setTimeout(function () { goTo(cur + 1); }, IMG_HOLD);
+    }
+  }
+
+  // Show first item
+  var first = els[0];
+  first.el.style.zIndex  = '2';
+  first.el.style.opacity = '1';
+
+  if (first.type === 'video') {
+    first.el.play().catch(function () {
+      imgTimer = setTimeout(function () { goTo(1); }, IMG_HOLD);
+    });
+  } else {
+    imgTimer = setTimeout(function () { goTo(1); }, IMG_HOLD);
+  }
+}());
 
 // Scroll reveal
 var reveals = document.querySelectorAll('.reveal');
