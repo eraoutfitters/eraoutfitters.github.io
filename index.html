@@ -109,7 +109,13 @@ body::before {
   width: 100%; height: 100%;
   object-fit: cover;
   object-position: center;
+  /* Suppress all native video UI across browsers */
+  pointer-events: none;
 }
+.hero-media-item.is-video::-webkit-media-controls          { display: none !important; }
+.hero-media-item.is-video::-webkit-media-controls-panel    { display: none !important; }
+.hero-media-item.is-video::-webkit-media-controls-overlay-play-button { display: none !important; }
+.hero-media-item.is-video::--webkit-media-controls-start-playback-button { display: none !important; }
 .hero-gradient {
   position: absolute; inset: 0;
   z-index: 4;
@@ -1040,6 +1046,15 @@ footer {
 (function () {
   var isMobile = window.matchMedia('(max-width: 768px)').matches;
 
+  // Detect slow connection — serve images only if bandwidth is very low
+  var conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+  var slowConn = conn && (
+    conn.saveData === true ||
+    conn.effectiveType === 'slow-2g' ||
+    conn.effectiveType === '2g'
+  );
+  var videosAllowed = !slowConn;
+
   // Edit this list to change hero media — mix images and videos freely
   var ALL_MEDIA = [
     { type: 'image', src: 'media/era-13.jpg' }, // fly fisher + yellow lab — fishing & dog
@@ -1055,35 +1070,47 @@ footer {
     { type: 'image', src: 'media/era-5.jpg'  }, // dove hunt — hunting
   ];
 
-  // Mobile: images only to avoid video decode overhead
-  var media = isMobile
-    ? ALL_MEDIA.filter(function (m) { return m.type === 'image'; })
-    : ALL_MEDIA;
+  // Filter out videos on slow connections; keep all on fast connections
+  // (mobile gets videos too — iOS Safari supports autoplay when muted+playsinline)
+  var media = videosAllowed
+    ? ALL_MEDIA
+    : ALL_MEDIA.filter(function (m) { return m.type === 'image'; });
 
   if (!media.length) return;
 
   var container = document.getElementById('hero-media');
-  var FADE     = 1200;   // ms — must match CSS transition
-  var IMG_HOLD = 5000;   // ms images stay visible
-  var cur      = 0;
-  var imgTimer = null;
-  var els      = [];
+  var FADE         = 1200;  // ms — must match CSS transition
+  var IMG_HOLD     = 5000;  // ms images stay visible
+  var VIDEO_SKIP   = 3000;  // ms to wait before skipping a stalled video
+  var cur          = 0;
+  var imgTimer     = null;
+  var skipTimer    = null;
+  var els          = [];
 
   // Build elements
   media.forEach(function (m) {
     var el;
     if (m.type === 'video') {
       el = document.createElement('video');
-      el.muted        = true;
-      el.playsInline  = true;
-      el.preload      = 'auto';
+      // All four attributes required for iOS Safari autoplay without fullscreen
+      el.muted           = true;
+      el.autoplay        = true;
+      el.loop            = false; // we manage looping via the ended event
+      el.playsInline     = true;
+      el.controls        = false;
+      el.preload         = 'auto';
+      el.setAttribute('muted', '');
+      el.setAttribute('autoplay', '');
       el.setAttribute('playsinline', '');
       el.setAttribute('webkit-playsinline', '');
-      el.className    = 'hero-media-item is-video';
-      el.src          = m.src;
+      el.setAttribute('x5-playsinline', '');        // WeChat/UC browser
+      el.setAttribute('x5-video-player-type', 'h5'); // QQ browser
+      el.setAttribute('disableremoteplayback', '');  // suppress AirPlay/cast button
+      el.className = 'hero-media-item is-video';
+      el.src       = m.src;
     } else {
       el = document.createElement('div');
-      el.className    = 'hero-media-item is-image';
+      el.className = 'hero-media-item is-image';
       el.style.backgroundImage = "url('" + m.src + "')";
     }
     container.appendChild(el);
@@ -1092,18 +1119,46 @@ footer {
 
   // Wire ended event on all videos
   els.forEach(function (item, i) {
-    if (item.type === 'video') {
-      item.el.addEventListener('ended', function () {
-        if (cur === i) goTo(i + 1);
+    if (item.type !== 'video') return;
+    item.el.addEventListener('ended', function () {
+      if (cur === i) goTo(i + 1);
+    });
+    // If video stalls/suspends after starting, the skip timer handles it
+    item.el.addEventListener('playing', function () {
+      // Video actually started — cancel the stall skip timer
+      clearTimeout(skipTimer);
+    });
+  });
+
+  function playVideo(item, onFail) {
+    clearTimeout(skipTimer);
+    item.el.currentTime = 0;
+
+    // Stall guard: if video hasn't started within VIDEO_SKIP ms, skip forward
+    skipTimer = setTimeout(function () {
+      if (item.el.paused || item.el.readyState < 2) {
+        item.el.pause();
+        onFail();
+      }
+    }, VIDEO_SKIP);
+
+    var p = item.el.play();
+    if (p && typeof p.then === 'function') {
+      p.then(function () {
+        clearTimeout(skipTimer);
+      }).catch(function () {
+        clearTimeout(skipTimer);
+        onFail();
       });
     }
-  });
+  }
 
   function goTo(idx) {
     var prevIdx = cur;
     cur = ((idx % els.length) + els.length) % els.length;
 
     clearTimeout(imgTimer);
+    clearTimeout(skipTimer);
 
     var next = els[cur];
     var prev = els[prevIdx];
@@ -1115,16 +1170,16 @@ footer {
 
     // After crossfade completes, drop previous behind
     setTimeout(function () {
+      if (prev.type === 'video') prev.el.pause();
       prev.el.style.opacity = '0';
       prev.el.style.zIndex  = '1';
       next.el.style.zIndex  = '2';
     }, FADE);
 
     if (next.type === 'video') {
-      next.el.currentTime = 0;
-      next.el.play().catch(function () {
-        // Video blocked (e.g. aggressive mobile policy) — skip to next
-        imgTimer = setTimeout(function () { goTo(cur + 1); }, IMG_HOLD);
+      playVideo(next, function () {
+        // Play failed or stalled — skip to next item
+        imgTimer = setTimeout(function () { goTo(cur + 1); }, 0);
       });
     } else {
       imgTimer = setTimeout(function () { goTo(cur + 1); }, IMG_HOLD);
@@ -1137,8 +1192,8 @@ footer {
   first.el.style.opacity = '1';
 
   if (first.type === 'video') {
-    first.el.play().catch(function () {
-      imgTimer = setTimeout(function () { goTo(1); }, IMG_HOLD);
+    playVideo(first, function () {
+      imgTimer = setTimeout(function () { goTo(1); }, 0);
     });
   } else {
     imgTimer = setTimeout(function () { goTo(1); }, IMG_HOLD);
