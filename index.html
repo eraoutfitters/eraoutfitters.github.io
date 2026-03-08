@@ -633,7 +633,7 @@ footer {
     <p class="hero-tagline">Field &amp; Fly Shop &nbsp;·&nbsp; Roswell, Georgia</p>
     <h1 class="hero-headline">Fish. Shoot. Gather.</h1>
     <p class="hero-copy">Premium gear, and a Roswell gathering place.</p>
-    <a href="#" onclick="document.getElementById('shopModal').style.display='block';return false;" class="hero-btn">
+    <a href="#" onclick="openShopModal();return false;" class="hero-btn">
       Explore the Shop
       <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M1 7H13M7 1L13 7L7 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </a>
@@ -661,7 +661,7 @@ footer {
       </svg>
       <h3>Hunting</h3>
       <p>Gear and apparel built for the field | dove, quail, and all upland birds.</p>
-      <a href="#" onclick="document.getElementById('shopModal').style.display='block';return false;" class="cat-tile-link">
+      <a href="#" onclick="openShopModal();return false;" class="cat-tile-link">
         Shop Hunting <svg width="11" height="11" viewBox="0 0 14 14" fill="none"><path d="M1 7H13M7 1L13 7L7 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </a>
     </div>
@@ -679,7 +679,7 @@ footer {
       </svg>
       <h3>Fishing</h3>
       <p>Fly and tackle for Southern tailwaters | the Chattahoochee, Toccoa, and beyond.</p>
-      <a href="#" onclick="document.getElementById('shopModal').style.display='block';return false;" class="cat-tile-link">
+      <a href="#" onclick="openShopModal();return false;" class="cat-tile-link">
         Shop Fishing <svg width="11" height="11" viewBox="0 0 14 14" fill="none"><path d="M1 7H13M7 1L13 7L7 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </a>
     </div>
@@ -728,7 +728,11 @@ footer {
   <div id='collection-component-1772862158263'></div>
   <script type="text/javascript">
   /*<![CDATA[*/
-  (function () {
+  var shopReady = false;
+  function openShopModal() {
+    document.getElementById('shopModal').style.display = 'block';
+    if (shopReady) return;
+    shopReady = true;
     var scriptURL = 'https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js';
     if (window.ShopifyBuy) {
       if (window.ShopifyBuy.UI) { ShopifyBuyInit(); } else { loadScript(); }
@@ -785,7 +789,7 @@ footer {
         });
       });
     }
-  })();
+  }
   /*]]>*/
   </script>
 </section>
