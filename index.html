@@ -616,8 +616,11 @@ footer {
   position: fixed;
   inset: 0;
   z-index: 1000;
-  display: none;
   overflow: hidden;
+  pointer-events: none; /* main page stays fully interactive */
+}
+#shopStage.is-open {
+  pointer-events: all;
 }
 .shop-curtain {
   position: absolute;
@@ -626,7 +629,12 @@ footer {
   background: #0f1a0e;
   z-index: 2;
   transition: transform 0.65s cubic-bezier(0.77, 0, 0.175, 1);
+  pointer-events: all;
+  cursor: pointer;
+}
+#shopStage.is-open .shop-curtain {
   pointer-events: none;
+  cursor: default;
 }
 .shop-curtain-top    { top: 0;    height: 50%; transform: translateY(0); }
 .shop-curtain-bottom { bottom: 0; height: 50%; transform: translateY(0); }
@@ -776,9 +784,9 @@ footer {
 </section>
 
 <!-- ─── SHOP STAGE ───────────────────────────── -->
-<div id="shopStage">
-  <div class="shop-curtain shop-curtain-top"></div>
-  <div class="shop-curtain shop-curtain-bottom"></div>
+<div id="shopStage" class="is-parted">
+  <div class="shop-curtain shop-curtain-top" onclick="openShopModal()"></div>
+  <div class="shop-curtain shop-curtain-bottom" onclick="openShopModal()"></div>
   <div class="shop-stage-inner">
     <button class="shop-stage-close" onclick="closeShop()">✕ &nbsp;Close</button>
     <p style="font-family:'Nunito Sans',sans-serif;font-size:clamp(10px,1.6vw,12px);font-weight:700;letter-spacing:5px;text-transform:uppercase;color:rgba(196,180,138,0.5);margin:0 0 40px;text-align:center;">Shop the Collection</p>
@@ -887,33 +895,16 @@ var observer = new IntersectionObserver(function(entries) {
 reveals.forEach(function(el) { observer.observe(el); });
 
 // ─── SHOP CURTAIN ───────────────────────────
-var shopReady = false;
-
 function openShopModal() {
   var stage = document.getElementById('shopStage');
-  stage.style.display = 'block';
-  void stage.offsetWidth; // force reflow so transitions fire
-  // crack the curtains open slightly first — then swing fully open
-  stage.classList.add('is-parted');
-  setTimeout(function () {
-    stage.classList.remove('is-parted');
-    stage.classList.add('is-open');
-  }, 420);
-  if (!shopReady) {
-    shopReady = true;
-    initShop();
-  }
+  stage.classList.remove('is-parted');
+  stage.classList.add('is-open');
 }
 
 function closeShop() {
   var stage = document.getElementById('shopStage');
-  // fly from open → parted
   stage.classList.remove('is-open');
   stage.classList.add('is-parted');
-  // then parted → closed
-  setTimeout(function () { stage.classList.remove('is-parted'); }, 480);
-  // hide after curtains finish closing
-  setTimeout(function () { stage.style.display = 'none'; }, 1150);
 }
 
 function initShop() {
@@ -975,8 +966,9 @@ function initShop() {
   }
 }
 
-// Email obfuscation
+// Email obfuscation + shop pre-load
 document.addEventListener('DOMContentLoaded', function() {
+  initShop();
   var input = document.getElementById('emailInput');
   if (input) { input.addEventListener('focus', function() { this.style.outline = 'none'; }); }
   var el = document.getElementById('eml');
