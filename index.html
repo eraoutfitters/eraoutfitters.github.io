@@ -631,9 +631,9 @@ footer {
   <div class="hero-inner">
     <img src="logo.svg" alt="Era Outfitters" class="hero-logo">
     <p class="hero-tagline">Field &amp; Fly Shop &nbsp;·&nbsp; Roswell, Georgia</p>
-    <h1 class="hero-headline">Born from the Field,<br>Built for the South.</h1>
-    <p class="hero-copy">Premium gear, heritage apparel, and a gathering place for those who live outdoors.</p>
-    <a href="https://shop.eraoutfitters.com" target="_blank" class="hero-btn">
+    <h1 class="hero-headline">Fish. Shoot. Gather.</h1>
+    <p class="hero-copy">Premium gear, and a Roswell gathering place.</p>
+    <a href="#" onclick="document.getElementById('shopModal').style.display='block';return false;" class="hero-btn">
       Explore the Shop
       <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M1 7H13M7 1L13 7L7 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </a>
@@ -645,7 +645,7 @@ footer {
 
 <!-- ─── DEFINITION STRIP ──────────────────────── -->
 <div class="def-strip">
-  <p>er&#228; (Finnish) &#8212; untamed backcountry where traditional outdoor life takes place.</p>
+  <p>er&#228; &#8212; untamed backcountry where fishing or hunting take place.</p>
 </div>
 
 <!-- ─── CATEGORY TILES ───────────────────────── -->
@@ -661,7 +661,7 @@ footer {
       </svg>
       <h3>Hunting</h3>
       <p>Gear and apparel built for the field — dove, quail, and all upland birds.</p>
-      <a href="https://shop.eraoutfitters.com" target="_blank" class="cat-tile-link">
+      <a href="#" onclick="document.getElementById('shopModal').style.display='block';return false;" class="cat-tile-link">
         Shop Hunting <svg width="11" height="11" viewBox="0 0 14 14" fill="none"><path d="M1 7H13M7 1L13 7L7 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </a>
     </div>
@@ -679,7 +679,7 @@ footer {
       </svg>
       <h3>Fishing</h3>
       <p>Fly and tackle for Southern tailwaters — the Chattahoochee, Toccoa, and beyond.</p>
-      <a href="https://shop.eraoutfitters.com" target="_blank" class="cat-tile-link">
+      <a href="#" onclick="document.getElementById('shopModal').style.display='block';return false;" class="cat-tile-link">
         Shop Fishing <svg width="11" height="11" viewBox="0 0 14 14" fill="none"><path d="M1 7H13M7 1L13 7L7 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </a>
     </div>
@@ -714,12 +714,16 @@ footer {
       <div class="brand-divider-diamond"></div>
       <div class="brand-divider-line"></div>
     </div>
-    <p>Era Outfitters is coming to Historic Canton Street in Roswell, Georgia — a curated field shop and gathering place for fishermen, hunters, and the curious. We believe the best outdoor experiences happen when great gear meets great company.</p>
+    <p>Era Outfitters is coming to Historic Downtown Roswell — a curated field shop and gathering place for fishermen, hunters, and the curious. We believe the best outdoor experiences happen when great gear meets great company.</p>
   </div>
 </section>
 
-<!-- ─── SHOP THE COLLECTION ───────────────────── -->
-<section class="shop-section">
+<!-- ─── SHOP MODAL ───────────────────────────── -->
+<div id="shopModal" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(6,14,6,0.92);overflow-y:auto;backdrop-filter:blur(4px);">
+  <div style="max-width:1100px;margin:0 auto;padding:48px 24px 80px;position:relative;">
+    <button onclick="document.getElementById('shopModal').style.display='none'" style="position:fixed;top:20px;right:24px;background:none;border:1px solid rgba(196,180,138,0.3);color:#C4B48A;font-family:'Nunito Sans',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:10px 20px;cursor:pointer;z-index:1001;transition:border-color 0.2s;">✕ &nbsp;Close</button>
+    <p style="font-family:'Nunito Sans',sans-serif;font-size:clamp(10px,1.6vw,12px);font-weight:700;letter-spacing:5px;text-transform:uppercase;color:rgba(196,180,138,0.5);margin:0 0 40px;text-align:center;">Shop the Collection</p>
+    <section class="shop-section" style="background:transparent;padding:0;">
   <span class="shop-label">Shop the Collection</span>
   <div id='collection-component-1772862158263'></div>
   <script type="text/javascript">
@@ -755,8 +759,8 @@ footer {
                   "img": { "height": "calc(100% - 15px)", "position": "absolute", "left": "0", "right": "0", "top": "0" },
                   "imgWrapper": { "padding-top": "calc(75% + 15px)", "position": "relative", "height": "0" }
                 },
-                "title": { "color": "#1E3020", "font-family": "Nunito Sans, sans-serif" },
-                "price": { "color": "#4a6b4a", "font-family": "Nunito Sans, sans-serif" },
+                "title": { "color": "#F2E8D0", "font-family": "Nunito Sans, sans-serif" },
+                "price": { "color": "#C4B48A", "font-family": "Nunito Sans, sans-serif" },
                 "compareAt": { "color": "#8a7a56" },
                 "button": { ":hover": { "background-color": "#b0a27c" }, "background-color": "#c4b48a", "color": "#1E3020", "font-family": "Nunito Sans, sans-serif", "font-weight": "700", "letter-spacing": "2px", ":focus": { "background-color": "#b0a27c" } }
               },
@@ -785,26 +789,21 @@ footer {
   /*]]>*/
   </script>
 </section>
+  </div>
+</div>
 
 <!-- ─── COMMUNITY & EVENTS ───────────────────── -->
 <section class="community" id="community">
   <div class="community-inner">
 
     <div class="community-left reveal">
-      <span class="section-label">What We're Building</span>
-      <h2>A Clubhouse for the Southern Outdoors</h2>
-      <p>Coming to Historic Canton Street in Roswell — a place where the season never really ends. Cold drinks, good company, and a reason to stay a little longer.</p>
+      <p class="section-label">Coming Soon · Historic Downtown Roswell</p>
+      <h2>Not just a store — a place to begin, improve, and explore.</h2>
+      <p>A place where the season never really ends. Cold drinks, good company, and a reason to stay a little longer.</p>
     </div>
 
     <div class="community-right reveal reveal-delay-2">
       <ul class="events-list">
-        <li>
-          <div class="event-diamond"></div>
-          <div>
-            <div class="event-name">Fly Tying Nights</div>
-            <div class="event-desc">Weekly · In-store</div>
-          </div>
-        </li>
         <li>
           <div class="event-diamond"></div>
           <div>
@@ -816,7 +815,7 @@ footer {
           <div class="event-diamond"></div>
           <div>
             <div class="event-name">Crawfish Boils</div>
-            <div class="event-desc">Spring · Canton Street</div>
+            <div class="event-desc">Spring Series</div>
           </div>
         </li>
         <li>
@@ -829,8 +828,8 @@ footer {
         <li>
           <div class="event-diamond"></div>
           <div>
-            <div class="event-name">Outdoor Film Nights</div>
-            <div class="event-desc">Monthly · Members</div>
+            <div class="event-name">Testing Grounds</div>
+            <div class="event-desc">Phase 2</div>
           </div>
         </li>
       </ul>
@@ -842,8 +841,8 @@ footer {
 <!-- ─── EMAIL SIGNUP ─────────────────────────── -->
 <section class="email-section">
   <div class="email-inner reveal">
-    <span class="section-label">Stay in the Loop</span>
-    <h2>Be Among the First to Know</h2>
+    <span class="section-label">Join the Community</span>
+    <h2>Stay in the Loop</h2>
     <p class="sub">Join the list for opening day, first events, and early access to new gear.</p>
     <form style="margin:0;padding:0;position:relative;overflow:hidden;"
       action="https://eraoutfitters.us10.list-manage.com/subscribe/post?u=f6e6c6ba682dcca7138938074&amp;id=c5f58615a8&amp;f_id=000c4ee4f0"
