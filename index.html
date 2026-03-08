@@ -366,24 +366,9 @@ body::before {
 
 /* ─── SHOP SECTION (IN-FLOW) ────────────────── */
 #shopSection {
-  position: relative;
   background: #0f1a0e;
-  overflow: hidden;
   min-height: 100vh;
 }
-.shop-curtain {
-  position: absolute;
-  left: 0;
-  right: 0;
-  background: #0f1a0e;
-  z-index: 2;
-  transition: transform 0.9s cubic-bezier(0.77, 0, 0.175, 1);
-  pointer-events: none;
-}
-.shop-curtain-top    { top: 0;    height: 50%; transform: translateY(-22px); }
-.shop-curtain-bottom { bottom: 0; height: 50%; transform: translateY(22px); }
-#shopSection.is-open .shop-curtain-top    { transform: translateY(-100%); }
-#shopSection.is-open .shop-curtain-bottom { transform: translateY(100%); }
 .shop-section-inner {
   position: relative;
   z-index: 1;
@@ -809,8 +794,6 @@ footer {
 
 <!-- ─── SHOP ─────────────────────────────────── -->
 <section id="shopSection">
-  <div class="shop-curtain shop-curtain-top"></div>
-  <div class="shop-curtain shop-curtain-bottom"></div>
   <div class="shop-section-inner">
     <p class="shop-section-label">Shop the Collection</p>
     <div id='collection-component-1772862158263'></div>
@@ -855,15 +838,6 @@ function openShopModal() {
   document.getElementById('shopSection').scrollIntoView({ behavior: 'smooth' });
 }
 
-// ─── SHOP — curtain opens on scroll-into-view ─
-var shopSection = document.getElementById('shopSection');
-var shopCurtainObserver = new IntersectionObserver(function(entries) {
-  if (entries[0].isIntersecting) {
-    shopSection.classList.add('is-open');
-    shopCurtainObserver.disconnect();
-  }
-}, { threshold: 0.15 });
-shopCurtainObserver.observe(shopSection);
 
 function initShop() {
   var scriptURL = 'https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js';
