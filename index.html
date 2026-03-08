@@ -364,40 +364,50 @@ body::before {
 .brand-divider-line { flex: 1; height: 1px; background: rgba(196,180,138,0.25); }
 .brand-divider-diamond { width: 6px; height: 6px; background: #C4B48A; transform: rotate(45deg); opacity: 0.5; flex-shrink: 0; }
 
-/* ─── SHOP SECTION (IN-FLOW) ────────────────── */
-#shopSection {
-  position: relative;
-  background: #0f1a0e;
-  overflow: hidden;
-  min-height: 100vh;
+/* ─── SHOP LAYER (behind the card) ──────────── */
+#shopLayer {
+  position: fixed;
+  inset: 0;
+  background: #F2E8D0;
+  z-index: 1;
+  overflow-y: auto;
 }
-.shop-curtain {
-  position: absolute;
-  left: 0;
-  right: 0;
-  background: #0f1a0e;
-  z-index: 2;
-  transition: transform 0.9s cubic-bezier(0.77, 0, 0.175, 1);
+#shopClose {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  justify-content: flex-end;
+  padding: 20px 24px 12px;
+  background: linear-gradient(to bottom, #F2E8D0 75%, transparent);
   pointer-events: none;
 }
-.shop-curtain-top    { top: 0;    height: 50%; transform: translateY(-22px); }
-.shop-curtain-bottom { bottom: 0; height: 50%; transform: translateY(22px); }
-#shopSection.is-open .shop-curtain-top    { transform: translateY(-100%); }
-#shopSection.is-open .shop-curtain-bottom { transform: translateY(100%); }
-.shop-section-inner {
-  position: relative;
-  z-index: 1;
-  padding: 80px 24px 80px;
+#shopCloseBtn {
+  background: none;
+  border: 1px solid rgba(30,48,32,0.25);
+  color: #1E3020;
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  pointer-events: auto;
+}
+.shop-layer-inner {
   max-width: 1100px;
   margin: 0 auto;
+  padding: 0 24px 100px;
 }
-.shop-section-label {
+.shop-layer-label {
   font-family: 'Nunito Sans', sans-serif;
   font-size: clamp(10px, 1.6vw, 12px);
   font-weight: 700;
   letter-spacing: 5px;
   text-transform: uppercase;
-  color: rgba(196,180,138,0.5);
+  color: rgba(30,48,32,0.4);
   margin-bottom: 40px;
   display: block;
   text-align: center;
@@ -408,6 +418,26 @@ body::before {
 }
 @media (max-width: 599px) {
   #collection-component-1772862158263 iframe { width: 100% !important; }
+}
+
+/* ─── MAIN CARD (slides over the shop) ───────── */
+#mainCard {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  overflow-y: auto;
+  transition: transform 0.95s cubic-bezier(0.77, 0, 0.175, 1);
+}
+#mainCard.shop-open {
+  transform: translateY(100vh);
+}
+#cardFade {
+  position: sticky;
+  bottom: 0;
+  height: 160px;
+  margin-top: -160px;
+  background: linear-gradient(to bottom, transparent, #F2E8D0);
+  pointer-events: none;
 }
 
 /* ─── COMMUNITY / EVENTS ────────────────────── */
@@ -638,6 +668,20 @@ footer {
 </head>
 <body>
 
+<!-- ─── SHOP LAYER ──────────────────────────── -->
+<div id="shopLayer">
+  <div id="shopClose">
+    <button id="shopCloseBtn" onclick="closeShop()">↑ &nbsp;Back to Site</button>
+  </div>
+  <div class="shop-layer-inner">
+    <p class="shop-layer-label">Shop the Collection</p>
+    <div id='collection-component-1772862158263'></div>
+  </div>
+</div>
+
+<!-- ─── MAIN CARD ────────────────────────────── -->
+<div id="mainCard">
+
 <!-- EYEBROW -->
 <div class="eyebrow-band">
   <div class="eyebrow-line"></div>
@@ -807,16 +851,6 @@ footer {
   </div>
 </section>
 
-<!-- ─── SHOP ─────────────────────────────────── -->
-<section id="shopSection">
-  <div class="shop-curtain shop-curtain-top"></div>
-  <div class="shop-curtain shop-curtain-bottom"></div>
-  <div class="shop-section-inner">
-    <p class="shop-section-label">Shop the Collection</p>
-    <div id='collection-component-1772862158263'></div>
-  </div>
-</section>
-
 <!-- ─── FOOTER ────────────────────────────────── -->
 <footer>
   <div class="foot-ornament">
@@ -833,6 +867,8 @@ footer {
     <span class="foot-link" style="cursor:default;">Roswell, Georgia</span>
   </div>
 </footer>
+<div id="cardFade"></div>
+</div><!-- /mainCard -->
 
 <script>
 // Hero bg load
@@ -850,20 +886,13 @@ var observer = new IntersectionObserver(function(entries) {
 }, { threshold: 0.12 });
 reveals.forEach(function(el) { observer.observe(el); });
 
-// ─── SHOP — scroll nav buttons to section ────
+// ─── SHOP SLIDE ──────────────────────────────
 function openShopModal() {
-  document.getElementById('shopSection').scrollIntoView({ behavior: 'smooth' });
+  document.getElementById('mainCard').classList.add('shop-open');
 }
-
-// ─── SHOP — curtain opens on scroll-into-view ─
-var shopSection = document.getElementById('shopSection');
-var shopCurtainObserver = new IntersectionObserver(function(entries) {
-  if (entries[0].isIntersecting) {
-    shopSection.classList.add('is-open');
-    shopCurtainObserver.disconnect();
-  }
-}, { threshold: 0.15 });
-shopCurtainObserver.observe(shopSection);
+function closeShop() {
+  document.getElementById('mainCard').classList.remove('shop-open');
+}
 
 function initShop() {
   var scriptURL = 'https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js';
