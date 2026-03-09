@@ -516,7 +516,11 @@ header p {
 
   <!-- Library -->
   <div class="panel-library">
-    <div class="panel-title">Media Library</div>
+    <div class="panel-title" style="justify-content:space-between;">
+      Media Library
+      <button class="btn btn-secondary" style="font-size:11px;padding:6px 14px;" onclick="document.getElementById('uploadInput').click()">↑ Upload</button>
+      <input type="file" id="uploadInput" accept="image/*,video/mp4" multiple style="display:none" onchange="uploadFiles(this)">
+    </div>
     <input class="library-search" id="libSearch" placeholder="Search files…" oninput="renderLibrary()">
     <div class="library-filter">
       <button class="filter-btn active" data-filter="all" onclick="setFilter(this,'all')">All</button>
@@ -862,6 +866,86 @@ function commitToGitHub() {
       btn.disabled = false;
       btn.textContent = '↑ Commit to GitHub';
     });
+}
+
+// ── Upload files to GitHub ─────────────────────────────────────
+function uploadFiles(input) {
+  var files = Array.from(input.files);
+  input.value = '';
+  if (!files.length) return;
+
+  var token  = localStorage.getItem('gh_token');
+  var repo   = localStorage.getItem('gh_repo')   || 'eraoutfitters/eraoutfitters.github.io';
+  var branch = localStorage.getItem('gh_branch') || 'main';
+
+  if (!token) { openSettings(); toast('Enter your GitHub token first'); return; }
+
+  var headers = {
+    'Authorization': 'Bearer ' + token,
+    'Accept': 'application/vnd.github+json',
+    'X-GitHub-Api-Version': '2022-11-28',
+    'Content-Type': 'application/json'
+  };
+
+  var total = files.length;
+  var done  = 0;
+
+  files.forEach(function(file) {
+    if (file.size > 95 * 1024 * 1024) {
+      toast(file.name + ' is too large (max 95 MB)');
+      total--;
+      return;
+    }
+
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      // Strip the data URL prefix to get raw base64
+      var base64 = e.target.result.split(',')[1];
+      var path   = 'media/' + file.name;
+      var apiUrl = 'https://api.github.com/repos/' + repo + '/contents/' + path;
+
+      // Check if file already exists (need its SHA to overwrite)
+      fetch(apiUrl + '?ref=' + branch, { headers: headers })
+        .then(function(r) { return r.ok ? r.json() : null; })
+        .then(function(existing) {
+          var body = {
+            message: 'Upload ' + file.name + ' via media-manager',
+            content: base64,
+            branch:  branch
+          };
+          if (existing && existing.sha) body.sha = existing.sha;
+
+          return fetch(apiUrl, { method: 'PUT', headers: headers, body: JSON.stringify(body) });
+        })
+        .then(function(r) { return r.json(); })
+        .then(function(result) {
+          if (result.content) {
+            // Detect type from extension
+            var ext  = file.name.split('.').pop().toLowerCase();
+            var type = (ext === 'mp4' || ext === 'mov' || ext === 'webm') ? 'video' : 'image';
+            var src  = path;
+            // Add to library if not already there
+            if (!LIBRARY.find(function(l) { return l.src === src; })) {
+              LIBRARY.unshift({ type: type, src: src });
+            }
+            done++;
+            if (done === total) {
+              renderLibrary();
+              toast('✓ Uploaded ' + done + ' file' + (done > 1 ? 's' : ''));
+            }
+          } else {
+            toast('Upload failed: ' + (result.message || 'unknown error'));
+          }
+        })
+        .catch(function(err) {
+          toast('Upload error — check your connection');
+          console.error(err);
+        });
+    };
+    reader.readAsDataURL(file);
+  });
+
+  toast('Uploading ' + total + ' file' + (total > 1 ? 's' : '') + '…');
 }
 
 // ── Toast ──────────────────────────────────────────────────────
