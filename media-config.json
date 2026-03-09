@@ -1,0 +1,13 @@
+[
+  { "type": "image", "src": "media/era-13.jpg" },
+  { "type": "video", "src": "media/era-6.mp4"  },
+  { "type": "image", "src": "media/era-10.jpg" },
+  { "type": "image", "src": "media/era-15.jpg" },
+  { "type": "video", "src": "media/era-13.mp4" },
+  { "type": "image", "src": "media/era-1.jpg"  },
+  { "type": "image", "src": "media/era-6.jpg"  },
+  { "type": "video", "src": "media/era-15.mp4" },
+  { "type": "image", "src": "media/era-2.jpg"  },
+  { "type": "image", "src": "media/era-16.jpg" },
+  { "type": "image", "src": "media/era-5.jpg"  }
+]

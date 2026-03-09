@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Era Outfitters — Hero Media Manager</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: #111;
+  color: #e8e0d0;
+  min-height: 100vh;
+}
+
+/* ── Header ── */
+header {
+  background: #1a2e1c;
+  padding: 18px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(196,180,138,0.15);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+header h1 {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #c4b48a;
+}
+header p {
+  font-size: 12px;
+  color: rgba(232,224,208,0.45);
+  letter-spacing: 0.5px;
+}
+.header-actions { display: flex; gap: 10px; align-items: center; }
+
+.btn {
+  padding: 9px 22px;
+  border-radius: 4px;
+  border: none;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+}
+.btn:active { transform: scale(0.97); }
+.btn-primary { background: #c4b48a; color: #1a2e1c; }
+.btn-primary:hover { background: #d4c49a; }
+.btn-secondary { background: rgba(255,255,255,0.08); color: #e8e0d0; border: 1px solid rgba(255,255,255,0.15); }
+.btn-secondary:hover { background: rgba(255,255,255,0.14); }
+.btn-danger { background: rgba(200,60,60,0.15); color: #e88; border: 1px solid rgba(200,60,60,0.25); }
+.btn-danger:hover { background: rgba(200,60,60,0.28); }
+
+/* ── Layout ── */
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 0;
+  height: calc(100vh - 61px);
+}
+
+/* ── Active Slideshow Panel ── */
+.panel-active {
+  padding: 28px 32px;
+  overflow-y: auto;
+  border-right: 1px solid rgba(255,255,255,0.07);
+}
+.panel-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(232,224,208,0.4);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.panel-title span {
+  background: rgba(196,180,138,0.15);
+  color: #c4b48a;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  letter-spacing: 0;
+}
+
+/* ── Card Grid ── */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 14px;
+  min-height: 120px;
+}
+.card-grid.drag-over {
+  outline: 2px dashed rgba(196,180,138,0.4);
+  outline-offset: 6px;
+  border-radius: 6px;
+}
+
+/* ── Media Card ── */
+.media-card {
+  background: #1c1c1c;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 2px solid transparent;
+  cursor: grab;
+  transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+  position: relative;
+  user-select: none;
+}
+.media-card:hover { border-color: rgba(196,180,138,0.3); }
+.media-card.dragging {
+  opacity: 0.4;
+  transform: scale(0.96);
+}
+.media-card.drag-target { border-color: #c4b48a; box-shadow: 0 0 0 3px rgba(196,180,138,0.2); }
+
+.card-thumb {
+  width: 100%;
+  aspect-ratio: 16/10;
+  background: #222;
+  overflow: hidden;
+  position: relative;
+}
+.card-thumb img,
+.card-thumb video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+}
+.card-thumb-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  color: rgba(255,255,255,0.15);
+}
+
+.type-badge {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  padding: 2px 7px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.type-badge.image { background: rgba(20,80,40,0.85); color: #7ecf9a; }
+.type-badge.video { background: rgba(60,30,100,0.85); color: #b09ee8; }
+
+.drag-handle {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  color: rgba(255,255,255,0.4);
+  font-size: 14px;
+  cursor: grab;
+  line-height: 1;
+}
+
+.card-info {
+  padding: 8px 10px 10px;
+}
+.card-filename {
+  font-size: 11px;
+  color: rgba(232,224,208,0.6);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 6px;
+}
+.card-actions { display: flex; gap: 6px; }
+.card-btn {
+  flex: 1;
+  padding: 5px;
+  border-radius: 3px;
+  border: none;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  cursor: pointer;
+  background: rgba(255,255,255,0.06);
+  color: rgba(232,224,208,0.5);
+  transition: background 0.15s, color 0.15s;
+}
+.card-btn:hover { background: rgba(255,255,255,0.12); color: #e8e0d0; }
+.card-btn.remove:hover { background: rgba(200,60,60,0.2); color: #e88; }
+
+.order-num {
+  position: absolute;
+  bottom: 6px;
+  right: 8px;
+  font-size: 18px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.08);
+  line-height: 1;
+  pointer-events: none;
+}
+
+/* ── Library Panel ── */
+.panel-library {
+  background: #161616;
+  padding: 28px 20px;
+  overflow-y: auto;
+}
+.library-search {
+  width: 100%;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 5px;
+  padding: 8px 12px;
+  font-size: 12px;
+  color: #e8e0d0;
+  margin-bottom: 16px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.library-search:focus { border-color: rgba(196,180,138,0.5); }
+.library-search::placeholder { color: rgba(232,224,208,0.25); }
+.library-filter {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+.filter-btn {
+  padding: 4px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: none;
+  color: rgba(232,224,208,0.45);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.filter-btn.active { background: rgba(196,180,138,0.15); border-color: rgba(196,180,138,0.4); color: #c4b48a; }
+
+.library-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.lib-card {
+  background: #1c1c1c;
+  border-radius: 6px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border-color 0.15s;
+  position: relative;
+}
+.lib-card:hover { border-color: rgba(196,180,138,0.35); }
+.lib-card.in-use { border-color: rgba(196,180,138,0.2); }
+.lib-card.in-use::after {
+  content: '✓';
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 18px;
+  height: 18px;
+  background: rgba(196,180,138,0.85);
+  color: #1a2e1c;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 18px;
+  text-align: center;
+}
+.lib-thumb {
+  width: 100%;
+  aspect-ratio: 1;
+  background: #222;
+  overflow: hidden;
+}
+.lib-thumb img,
+.lib-thumb video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+}
+.lib-name {
+  padding: 5px 7px;
+  font-size: 10px;
+  color: rgba(232,224,208,0.45);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.lib-type-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin-right: 4px;
+  vertical-align: middle;
+}
+.lib-type-dot.image { background: #7ecf9a; }
+.lib-type-dot.video { background: #b09ee8; }
+
+/* ── Toast ── */
+.toast {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: #1a2e1c;
+  color: #c4b48a;
+  padding: 10px 24px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border: 1px solid rgba(196,180,138,0.3);
+  opacity: 0;
+  transition: opacity 0.25s, transform 0.25s;
+  pointer-events: none;
+  z-index: 999;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── Empty state ── */
+.empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 48px 0;
+  color: rgba(232,224,208,0.2);
+  font-size: 13px;
+  letter-spacing: 1px;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Era Outfitters &nbsp;·&nbsp; Hero Media Manager</h1>
+    <p>Drag to reorder &nbsp;·&nbsp; Click library items to add or remove &nbsp;·&nbsp; Save to download updated config</p>
+  </div>
+  <div class="header-actions">
+    <button class="btn btn-secondary" onclick="reloadConfig()">↺ Reload</button>
+    <button class="btn btn-primary" onclick="saveConfig()">↓ Save media-config.json</button>
+  </div>
+</header>
+
+<div class="layout">
+
+  <!-- Active slideshow -->
+  <div class="panel-active">
+    <div class="panel-title">
+      Hero Slideshow <span id="activeCount">0</span>
+    </div>
+    <div class="card-grid" id="activeGrid"></div>
+  </div>
+
+  <!-- Library -->
+  <div class="panel-library">
+    <div class="panel-title">Media Library</div>
+    <input class="library-search" id="libSearch" placeholder="Search files…" oninput="renderLibrary()">
+    <div class="library-filter">
+      <button class="filter-btn active" data-filter="all" onclick="setFilter(this,'all')">All</button>
+      <button class="filter-btn" data-filter="image" onclick="setFilter(this,'image')">Images</button>
+      <button class="filter-btn" data-filter="video" onclick="setFilter(this,'video')">Videos</button>
+    </div>
+    <div class="library-grid" id="libraryGrid"></div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── All known media files in the repo ──────────────────────────
+var LIBRARY = [
+  { type: 'image', src: 'media/era-1.jpg'  },
+  { type: 'video', src: 'media/era-1.mp4'  },
+  { type: 'image', src: 'media/era-2.jpg'  },
+  { type: 'video', src: 'media/era-2.mp4'  },
+  { type: 'image', src: 'media/era-3.jpg'  },
+  { type: 'video', src: 'media/era-3.mp4'  },
+  { type: 'image', src: 'media/era-4.jpg'  },
+  { type: 'video', src: 'media/era-4.mp4'  },
+  { type: 'image', src: 'media/era-5.jpg'  },
+  { type: 'video', src: 'media/era-5.mp4'  },
+  { type: 'image', src: 'media/era-6.jpg'  },
+  { type: 'video', src: 'media/era-6.mp4'  },
+  { type: 'image', src: 'media/era-7.jpg'  },
+  { type: 'video', src: 'media/era-7.mp4'  },
+  { type: 'image', src: 'media/era-8.jpg'  },
+  { type: 'video', src: 'media/era-8.mp4'  },
+  { type: 'image', src: 'media/era-9.jpg'  },
+  { type: 'video', src: 'media/era-9.mp4'  },
+  { type: 'image', src: 'media/era-10.jpg' },
+  { type: 'video', src: 'media/era-10.mp4' },
+  { type: 'image', src: 'media/era-11.jpg' },
+  { type: 'video', src: 'media/era-11.mp4' },
+  { type: 'image', src: 'media/era-12.jpg' },
+  { type: 'video', src: 'media/era-12.mp4' },
+  { type: 'image', src: 'media/era-13.jpg' },
+  { type: 'video', src: 'media/era-13.mp4' },
+  { type: 'image', src: 'media/era-14.jpg' },
+  { type: 'video', src: 'media/era-14.mp4' },
+  { type: 'image', src: 'media/era-15.jpg' },
+  { type: 'video', src: 'media/era-15.mp4' },
+  { type: 'image', src: 'media/era-16.jpg' },
+  { type: 'image', src: 'hunting.jpg'       },
+  { type: 'image', src: 'fishing.jpg'       },
+  { type: 'image', src: 'hunting-dog.jpg'   },
+  { type: 'image', src: 'heritage.jpg'      },
+  { type: 'image', src: 'river.jpg'         },
+];
+
+// ── State ──────────────────────────────────────────────────────
+var activeItems = [];   // current slideshow order
+var libFilter   = 'all';
+var dragSrcIdx  = null;
+
+// ── Load config ────────────────────────────────────────────────
+function reloadConfig() {
+  fetch('media-config.json?v=' + Date.now())
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      activeItems = data.map(function(d) { return { type: d.type, src: d.src }; });
+      renderActive();
+      renderLibrary();
+      toast('Config loaded');
+    })
+    .catch(function() {
+      toast('Could not load media-config.json');
+    });
+}
+
+// ── Render active slideshow ────────────────────────────────────
+function renderActive() {
+  var grid = document.getElementById('activeGrid');
+  document.getElementById('activeCount').textContent = activeItems.length;
+  if (!activeItems.length) {
+    grid.innerHTML = '<div class="empty">No items — click library files to add them</div>';
+    return;
+  }
+  grid.innerHTML = '';
+  activeItems.forEach(function(item, idx) {
+    var card = document.createElement('div');
+    card.className = 'media-card';
+    card.draggable = true;
+    card.dataset.idx = idx;
+
+    var thumb = makeThumb(item, true);
+    var fname = item.src.split('/').pop();
+
+    card.innerHTML =
+      '<div class="card-thumb">' + thumb +
+        '<span class="type-badge ' + item.type + '">' + item.type + '</span>' +
+        '<span class="drag-handle">⠿</span>' +
+      '</div>' +
+      '<div class="card-info">' +
+        '<div class="card-filename" title="' + item.src + '">' + fname + '</div>' +
+        '<div class="card-actions">' +
+          '<button class="card-btn" onclick="moveItem(' + idx + ',-1)" title="Move left">← Earlier</button>' +
+          '<button class="card-btn" onclick="moveItem(' + idx + ',1)" title="Move right">Later →</button>' +
+          '<button class="card-btn remove" onclick="removeItem(' + idx + ')">✕</button>' +
+        '</div>' +
+      '</div>' +
+      '<span class="order-num">' + (idx + 1) + '</span>';
+
+    // Drag events
+    card.addEventListener('dragstart', function(e) {
+      dragSrcIdx = idx;
+      card.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    card.addEventListener('dragend', function() {
+      card.classList.remove('dragging');
+      document.querySelectorAll('.media-card').forEach(function(c) { c.classList.remove('drag-target'); });
+      dragSrcIdx = null;
+    });
+    card.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      if (dragSrcIdx !== null && dragSrcIdx !== idx) card.classList.add('drag-target');
+    });
+    card.addEventListener('dragleave', function() { card.classList.remove('drag-target'); });
+    card.addEventListener('drop', function(e) {
+      e.preventDefault();
+      card.classList.remove('drag-target');
+      if (dragSrcIdx === null || dragSrcIdx === idx) return;
+      var moved = activeItems.splice(dragSrcIdx, 1)[0];
+      activeItems.splice(idx, 0, moved);
+      renderActive();
+      renderLibrary();
+    });
+
+    grid.appendChild(card);
+  });
+}
+
+function makeThumb(item, lazy) {
+  if (item.type === 'image') {
+    return '<img src="' + item.src + '" loading="' + (lazy ? 'lazy' : 'eager') + '" onerror="this.parentNode.innerHTML=\'<div class=card-thumb-placeholder>🖼</div>\'">';
+  } else {
+    // Try matching jpg thumbnail first (era-6.mp4 → era-6.jpg)
+    var jpgSrc = item.src.replace(/\.mp4$/i, '.jpg');
+    return '<video src="' + item.src + '" preload="metadata" muted playsinline onerror="this.parentNode.innerHTML=\'<div class=card-thumb-placeholder>▶</div>\'"></video>';
+  }
+}
+
+// ── Active item actions ────────────────────────────────────────
+function removeItem(idx) {
+  activeItems.splice(idx, 1);
+  renderActive();
+  renderLibrary();
+}
+
+function moveItem(idx, dir) {
+  var newIdx = idx + dir;
+  if (newIdx < 0 || newIdx >= activeItems.length) return;
+  var tmp = activeItems[idx];
+  activeItems[idx] = activeItems[newIdx];
+  activeItems[newIdx] = tmp;
+  renderActive();
+}
+
+// ── Render library ─────────────────────────────────────────────
+function setFilter(btn, f) {
+  libFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
+  btn.classList.add('active');
+  renderLibrary();
+}
+
+function renderLibrary() {
+  var grid    = document.getElementById('libraryGrid');
+  var query   = document.getElementById('libSearch').value.toLowerCase();
+  var inUse   = activeItems.map(function(i) { return i.src; });
+
+  var filtered = LIBRARY.filter(function(item) {
+    if (libFilter !== 'all' && item.type !== libFilter) return false;
+    if (query && item.src.toLowerCase().indexOf(query) === -1) return false;
+    return true;
+  });
+
+  if (!filtered.length) {
+    grid.innerHTML = '<div class="empty" style="grid-column:1/-1">No files match</div>';
+    return;
+  }
+
+  grid.innerHTML = '';
+  filtered.forEach(function(item) {
+    var used = inUse.indexOf(item.src) !== -1;
+    var card = document.createElement('div');
+    card.className = 'lib-card' + (used ? ' in-use' : '');
+    card.title = used ? 'Click to remove from slideshow' : 'Click to add to slideshow';
+    var fname = item.src.split('/').pop();
+    card.innerHTML =
+      '<div class="lib-thumb">' + makeThumb(item, true) + '</div>' +
+      '<div class="lib-name"><span class="lib-type-dot ' + item.type + '"></span>' + fname + '</div>';
+    card.addEventListener('click', function() { toggleLibItem(item); });
+    grid.appendChild(card);
+  });
+}
+
+function toggleLibItem(item) {
+  var idx = activeItems.findIndex(function(i) { return i.src === item.src; });
+  if (idx !== -1) {
+    activeItems.splice(idx, 1);
+    toast('Removed from slideshow');
+  } else {
+    activeItems.push({ type: item.type, src: item.src });
+    toast('Added to slideshow');
+  }
+  renderActive();
+  renderLibrary();
+}
+
+// ── Save / download ────────────────────────────────────────────
+function saveConfig() {
+  if (!activeItems.length) { toast('Nothing to save'); return; }
+  var json = JSON.stringify(activeItems, null, 2);
+  var blob = new Blob([json], { type: 'application/json' });
+  var url  = URL.createObjectURL(blob);
+  var a    = document.createElement('a');
+  a.href     = url;
+  a.download = 'media-config.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('Saved! Replace media-config.json in repo and push.');
+}
+
+// ── Toast ──────────────────────────────────────────────────────
+var toastTimer;
+function toast(msg) {
+  var el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function() { el.classList.remove('show'); }, 2800);
+}
+
+// ── Init ──────────────────────────────────────────────────────
+reloadConfig();
+</script>
+</body>
+</html>

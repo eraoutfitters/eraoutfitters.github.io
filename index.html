@@ -1194,7 +1194,10 @@ footer {
 
 <script>
 // ─── HERO MEDIA ROTATOR ──────────────────────
-(function () {
+fetch('media-config.json?v=' + Date.now())
+  .then(function(r) { return r.json(); })
+  .then(function(ALL_MEDIA) {
+(function (ALL_MEDIA) {
   var isMobile = window.matchMedia('(max-width: 768px)').matches;
 
   // Detect slow connection — serve images only if bandwidth is very low
@@ -1206,23 +1209,7 @@ footer {
   );
   var videosAllowed = !slowConn;
 
-  // Edit this list to change hero media — mix images and videos freely
-  var ALL_MEDIA = [
-    { type: 'image', src: 'media/era-13.jpg' }, // fly fisher + yellow lab — fishing & dog
-    { type: 'video', src: 'media/era-6.mp4'  }, // hunters shooting shotguns — hunting
-    { type: 'image', src: 'media/era-10.jpg' }, // rainbow trout — fishing
-    { type: 'image', src: 'media/era-15.jpg' }, // pheasant — hunting
-    { type: 'video', src: 'media/era-13.mp4' }, // video
-    { type: 'image', src: 'media/era-1.jpg'  }, // yellow lab by lake — dog
-    { type: 'image', src: 'media/era-6.jpg'  }, // two hunters in field — hunting
-    { type: 'video', src: 'media/era-15.mp4' }, // video
-    { type: 'image', src: 'media/era-2.jpg'  }, // brown trout — fishing
-    { type: 'image', src: 'media/era-16.jpg' }, // shotgun on lap — hunting
-    { type: 'image', src: 'media/era-5.jpg'  }, // dove hunt — hunting
-  ];
-
-  // Filter out videos on slow connections; keep all on fast connections
-  // (mobile gets videos too — iOS Safari supports autoplay when muted+playsinline)
+  // Filter out videos on slow connections
   var media = videosAllowed
     ? ALL_MEDIA
     : ALL_MEDIA.filter(function (m) { return m.type === 'image'; });
@@ -1378,7 +1365,8 @@ footer {
 
   // Expose for arrow buttons
   window.heroNav = function(dir) { goTo(cur + dir); };
-}());
+}(ALL_MEDIA));
+  }).catch(function() { console.warn('media-config.json not found'); });
 
 // Scroll reveal
 var reveals = document.querySelectorAll('.reveal');
