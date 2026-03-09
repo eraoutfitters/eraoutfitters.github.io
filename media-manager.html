@@ -520,6 +520,11 @@ var dragSrcIdx  = null;
 
 // ── Load config ────────────────────────────────────────────────
 function reloadConfig() {
+  // file:// protocol blocks fetch — go straight to file picker
+  if (window.location.protocol === 'file:') {
+    document.getElementById('filePickerInput').click();
+    return;
+  }
   fetch('media-config.json?v=' + Date.now())
     .then(function(r) {
       if (!r.ok) throw new Error('not ok');
@@ -530,7 +535,6 @@ function reloadConfig() {
       toast('Config loaded');
     })
     .catch(function() {
-      // file:// protocol blocks fetch — ask user to pick the file
       document.getElementById('filePickerInput').click();
     });
 }
