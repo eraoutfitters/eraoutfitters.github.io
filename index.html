@@ -126,19 +126,8 @@ body::before {
 .vp-blur { display: none; }
 
 @media (max-width: 767px) {
-  /* Show full video without cropping on mobile */
-  .vp-main { object-fit: contain; }
-  /* Blurred clone fills the letterbox bars */
-  .vp-blur {
-    display: block;
-    position: absolute; inset: 0;
-    width: 100%; height: 100%;
-    object-fit: cover;
-    object-position: center;
-    filter: blur(24px) brightness(0.4);
-    transform: scale(1.14); /* push blurred edges outside frame */
-    z-index: 0;
-  }
+  /* Cover on mobile — fills the frame, always recognizable */
+  .vp-main { object-fit: cover; object-position: center top; }
   /* Lighten overlay on mobile so videos are easier to see */
   .hero-gradient {
     background:
