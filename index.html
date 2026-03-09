@@ -1417,7 +1417,16 @@ function renderDetail(idx) {
     if (opt.values.length === 1 && opt.name === 'Title') return;
     optionsHtml += '<div class="detail-option-label">' + escHtml(opt.name) + '</div>';
     optionsHtml += '<div class="option-btns">';
-    opt.values.forEach(function(val) {
+    var sizeOrder = ['XS','S','SM','S/M','SMALL','M','MD','M/L','MEDIUM','L','LG','LARGE','XL','1X','2X','XXL','2XL','3X','XXXL','3XL','4XL'];
+    var sortedVals = opt.values.slice().sort(function(a, b) {
+      var ai = sizeOrder.indexOf(a.toUpperCase());
+      var bi = sizeOrder.indexOf(b.toUpperCase());
+      if (ai === -1 && bi === -1) return 0;
+      if (ai === -1) return 1;
+      if (bi === -1) return -1;
+      return ai - bi;
+    });
+    sortedVals.forEach(function(val) {
       // Find variant for this option value given other selected options
       var isSelected = selVar && selVar.node.selectedOptions.some(function(so) {
         return so.name === opt.name && so.value === val;
