@@ -1394,8 +1394,7 @@ var SHOP_API     = 'https://' + SHOP_DOMAIN + '/api/2024-01/graphql.json';
 var _shopLoaded  = false;
 var _shopProducts = [];
 var _selectedVariants = {}; // productIdx -> variantId
-var _cardImgIdx = {};       // productIdx -> current image index
-var _cardColorSel = {};     // productIdx -> active color swatch index
+var _renderedCards = [];    // flat ordered list of {productIdx, activeColorVal}
 
 function getColorSwatches(p) {
   var seen = {}, swatches = [];
@@ -1484,84 +1483,98 @@ function renderProductGrid() {
     grid.innerHTML = '<p class="shop-loading">No products found.</p>';
     return;
   }
-  var html = '<div class="grid-scroll-wrap">';
-  html += '<div class="product-grid" id="productScrollRow">';
-  _shopProducts.forEach(function(p, i) {
-    var vEdges = (p.variants && p.variants.edges) || [];
-    var colorSwatches = getColorSwatches(p);
 
-    if (colorSwatches.length === 0) {
-      // No color option — single card
-      var price = vEdges.length ? formatMoney(parseFloat(vEdges[0].node.price.amount), vEdges[0].node.price.currencyCode) : '';
-      var imgNodes = (p.images && p.images.edges || []).map(function(e) { return e.node; });
-      var mainImgUrl = imgNodes.length ? escAttr(imgNodes[0].url) : '';
-      var mainImgAlt = imgNodes.length ? escAttr(imgNodes[0].altText || p.title) : escAttr(p.title);
-      html += '<div class="product-card" onclick="showProductDetail(' + i + ',null)">';
-      html += '<div class="card-img-wrap">';
-      if (mainImgUrl) html += '<img class="product-card-img" src="' + mainImgUrl + '" alt="' + mainImgAlt + '" loading="lazy">';
-      else html += '<div class="product-card-img"></div>';
-      html += '</div>';
-      html += '<div class="product-card-title">' + escHtml(p.title) + '</div>';
-      if (price) html += '<div class="product-card-price">' + escHtml(price) + '</div>';
+  // Build per-product swatch lists
+  var productSwatches = _shopProducts.map(function(p, i) {
+    var sw = getColorSwatches(p);
+    return { productIdx: i, swatches: sw.length ? sw : [null] };
+  });
+
+  // Interleave: round-robin across products (color round 0 of each, then round 1, etc.)
+  _renderedCards = [];
+  var maxColors = 0;
+  productSwatches.forEach(function(ps) { if (ps.swatches.length > maxColors) maxColors = ps.swatches.length; });
+  for (var round = 0; round < maxColors; round++) {
+    productSwatches.forEach(function(ps) {
+      if (round < ps.swatches.length) {
+        _renderedCards.push({ productIdx: ps.productIdx, activeColorVal: ps.swatches[round] ? ps.swatches[round].colorVal : null });
+      }
+    });
+  }
+
+  var html = '<div class="grid-scroll-wrap"><div class="product-grid" id="productScrollRow">';
+
+  _renderedCards.forEach(function(card, ci) {
+    var p = _shopProducts[card.productIdx];
+    var vEdges = (p.variants && p.variants.edges) || [];
+    var swatches = getColorSwatches(p);
+    var activeColorVal = card.activeColorVal;
+
+    // Image for active color
+    var activeSw = swatches.find(function(sw) { return sw.colorVal === activeColorVal; });
+    var imgNodes = (p.images && p.images.edges || []).map(function(e) { return e.node; });
+    var imgUrl = (activeSw && activeSw.imgUrl) ? escAttr(activeSw.imgUrl) : (imgNodes.length ? escAttr(imgNodes[0].url) : '');
+    var imgAlt = escAttr((activeColorVal ? activeColorVal + ' ' : '') + p.title);
+
+    // Price for active color
+    var colorVariant = activeColorVal ? vEdges.find(function(e2) {
+      return e2.node.selectedOptions.some(function(so) { return so.name.toLowerCase() === 'color' && so.value === activeColorVal; });
+    }) : null;
+    var price = (colorVariant || vEdges[0]) ? formatMoney(parseFloat((colorVariant || vEdges[0]).node.price.amount), (colorVariant || vEdges[0]).node.price.currencyCode) : '';
+
+    html += '<div class="product-card" id="pcard-' + ci + '" onclick="showProductDetailFromCard(' + ci + ')">';
+    html += '<div class="card-img-wrap">';
+    html += imgUrl ? '<img class="product-card-img" src="' + imgUrl + '" alt="' + imgAlt + '" loading="lazy">' : '<div class="product-card-img"></div>';
+    html += '</div>';
+
+    // Swatches
+    if (swatches.length > 1) {
+      html += '<div class="card-swatches" onclick="event.stopPropagation()">';
+      swatches.forEach(function(sw) {
+        var isActive = sw.colorVal === activeColorVal;
+        var bgStyle = sw.imgUrl ? 'background-image:url(' + escAttr(sw.imgUrl) + ');background-size:cover;' : 'background:#ccc;';
+        html += '<div class="card-swatch' + (isActive ? ' active' : '') + '" style="' + bgStyle + '" title="' + escAttr(sw.colorVal) + '" onclick="switchCardColor(' + ci + ',' + escAttr(JSON.stringify(sw.colorVal)) + ',event)"></div>';
+      });
       html += '</div>';
     } else {
-      // One card per color
-      colorSwatches.forEach(function(sw) {
-        var colorVariant = vEdges.find(function(e2) {
-          return e2.node.selectedOptions.some(function(so) {
-            return so.name.toLowerCase() === 'color' && so.value === sw.colorVal;
-          });
-        });
-        var price = colorVariant ? formatMoney(parseFloat(colorVariant.node.price.amount), colorVariant.node.price.currencyCode) : '';
-        var mainImgUrl = sw.imgUrl ? escAttr(sw.imgUrl) : '';
-        var mainImgAlt = escAttr(sw.colorVal + ' ' + p.title);
-        html += '<div class="product-card" onclick="showProductDetail(' + i + ',' + escAttr(JSON.stringify(sw.colorVal)) + ')">';
-        html += '<div class="card-img-wrap">';
-        if (mainImgUrl) html += '<img class="product-card-img" src="' + mainImgUrl + '" alt="' + mainImgAlt + '" loading="lazy">';
-        else html += '<div class="product-card-img"></div>';
-        html += '</div>';
-        html += '<div class="product-card-title">' + escHtml(p.title) + '</div>';
-        html += '<div class="product-card-color">' + escHtml(sw.colorVal) + '</div>';
-        if (price) html += '<div class="product-card-price">' + escHtml(price) + '</div>';
-        html += '</div>';
-      });
+      html += '<div class="card-swatches"></div>';
     }
+
+    html += '<div class="product-card-title">' + escHtml(p.title) + '</div>';
+    if (activeColorVal) html += '<div class="product-card-color">' + escHtml(activeColorVal) + '</div>';
+    if (price) html += '<div class="product-card-price">' + escHtml(price) + '</div>';
+    html += '</div>';
   });
-  html += '</div>'; // .product-grid
-  html += '<div class="grid-scroll-btns">';
-  html += '<button class="grid-scroll-btn" onclick="scrollGrid(-1)" aria-label="Scroll left">&#8592;</button>';
-  html += '<button class="grid-scroll-btn" onclick="scrollGrid(1)" aria-label="Scroll right">&#8594;</button>';
+
   html += '</div>';
-  html += '</div>'; // .grid-scroll-wrap
+  html += '<div class="grid-scroll-btns"><button class="grid-scroll-btn" onclick="scrollGrid(-1)" aria-label="Scroll left">&#8592;</button><button class="grid-scroll-btn" onclick="scrollGrid(1)" aria-label="Scroll right">&#8594;</button></div>';
+  html += '</div>';
   grid.innerHTML = html;
   document.getElementById('shopGrid').style.display   = 'block';
   document.getElementById('shopDetail').style.display = 'none';
 }
 
-function selectCardColor(i, si, e) {
+function switchCardColor(ci, colorVal, e) {
   e.stopPropagation();
-  _cardColorSel[i] = si;
-  var p = _shopProducts[i];
-  if (!p) return;
-  var colorSwatches = getColorSwatches(p);
-  var sw = colorSwatches[si];
-  // Update card image
-  var cards = document.querySelectorAll('.product-card');
-  var card = cards[i];
-  if (!card || !sw) return;
+  _renderedCards[ci].activeColorVal = colorVal;
+  var p = _shopProducts[_renderedCards[ci].productIdx];
+  var swatches = getColorSwatches(p);
+  var sw = swatches.find(function(s) { return s.colorVal === colorVal; });
+  var card = document.getElementById('pcard-' + ci);
+  if (!card) return;
   var img = card.querySelector('.product-card-img');
-  if (img && sw.imgUrl) { img.src = sw.imgUrl; img.alt = sw.colorVal; }
-  card.querySelectorAll('.card-swatch').forEach(function(dot, di) {
-    dot.classList.toggle('active', di === si);
+  if (img && sw && sw.imgUrl) { img.src = sw.imgUrl; img.alt = colorVal; }
+  card.querySelectorAll('.card-swatch').forEach(function(dot) {
+    dot.classList.toggle('active', dot.title === colorVal);
   });
-  // Pre-select this color variant so detail view opens on the right color
-  var vEdges = (p.variants && p.variants.edges) || [];
-  var matchVariant = vEdges.find(function(e2) {
-    return e2.node.selectedOptions.some(function(so) {
-      return so.name.toLowerCase() === 'color' && so.value === sw.colorVal;
-    });
-  });
-  if (matchVariant) _selectedVariants[i] = matchVariant.node.id;
+  var colorLabel = card.querySelector('.product-card-color');
+  if (colorLabel) colorLabel.textContent = colorVal;
+}
+
+function showProductDetailFromCard(ci) {
+  var card = _renderedCards[ci];
+  if (!card) return;
+  showProductDetail(card.productIdx, card.activeColorVal);
 }
 
 function scrollGrid(dir) {
