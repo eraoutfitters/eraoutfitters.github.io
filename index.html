@@ -1421,7 +1421,7 @@ function renderDetail(idx) {
       var isSelected = selVar && selVar.node.selectedOptions.some(function(so) {
         return so.name === opt.name && so.value === val;
       });
-      optionsHtml += '<button class="option-btn' + (isSelected ? ' selected' : '') + '" onclick="selectOption(' + idx + ',' + JSON.stringify(opt.name) + ',' + JSON.stringify(val) + ')">' + escHtml(val) + '</button>';
+      optionsHtml += '<button class="option-btn' + (isSelected ? ' selected' : '') + '" onclick="selectOption(' + idx + ',' + escAttr(JSON.stringify(opt.name)) + ',' + escAttr(JSON.stringify(val)) + ')">' + escHtml(val) + '</button>';
     });
     optionsHtml += '</div>';
   });
