@@ -622,6 +622,14 @@ body::before {
   margin-bottom: 4px;
   line-height: 1.2;
 }
+.product-card-color {
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: #6b7a6b;
+  margin-bottom: 2px;
+  text-transform: capitalize;
+}
 .product-card-price {
   font-family: 'Nunito Sans', sans-serif;
   font-size: 14px;
@@ -1479,52 +1487,45 @@ function renderProductGrid() {
   var html = '<div class="grid-scroll-wrap">';
   html += '<div class="product-grid" id="productScrollRow">';
   _shopProducts.forEach(function(p, i) {
-    var vEdges   = (p.variants && p.variants.edges) || [];
-    var price    = '';
-    if (vEdges.length) {
-      price = formatMoney(parseFloat(vEdges[0].node.price.amount), vEdges[0].node.price.currencyCode);
-    }
-
+    var vEdges = (p.variants && p.variants.edges) || [];
     var colorSwatches = getColorSwatches(p);
 
-    // Active color: use _cardColorSel[i] or first color
-    var activeSel = _cardColorSel[i] !== undefined ? _cardColorSel[i] : 0;
-    if (activeSel >= colorSwatches.length) activeSel = 0;
-
-    // Main image: variant image of active swatch, or first product image
-    var imgNodes = (p.images && p.images.edges || []).map(function(e) { return e.node; });
-    var mainImgUrl = '';
-    var mainImgAlt = escAttr(p.title);
-    if (colorSwatches.length && colorSwatches[activeSel] && colorSwatches[activeSel].imgUrl) {
-      mainImgUrl = escAttr(colorSwatches[activeSel].imgUrl);
-    } else if (imgNodes.length) {
-      mainImgUrl = escAttr(imgNodes[0].url);
-      mainImgAlt = escAttr(imgNodes[0].altText || p.title);
-    }
-
-    html += '<div class="product-card" onclick="showProductDetail(' + i + ')">';
-    html += '<div class="card-img-wrap">';
-    if (mainImgUrl) {
-      html += '<img class="product-card-img" src="' + mainImgUrl + '" alt="' + mainImgAlt + '" loading="lazy">';
-    } else {
-      html += '<div class="product-card-img"></div>';
-    }
-    html += '</div>';
-    // Color swatches
-    if (colorSwatches.length > 1) {
-      html += '<div class="card-swatches" onclick="event.stopPropagation()">';
-      colorSwatches.forEach(function(sw, si) {
-        var isActive = si === activeSel;
-        var bgStyle = sw.imgUrl ? 'background-image:url(' + escAttr(sw.imgUrl) + ');' : 'background:#ccc;';
-        html += '<div class="card-swatch' + (isActive ? ' active' : '') + '" style="' + bgStyle + '" title="' + escAttr(sw.colorVal) + '" onclick="selectCardColor(' + i + ',' + si + ',event)"></div>';
-      });
+    if (colorSwatches.length === 0) {
+      // No color option — single card
+      var price = vEdges.length ? formatMoney(parseFloat(vEdges[0].node.price.amount), vEdges[0].node.price.currencyCode) : '';
+      var imgNodes = (p.images && p.images.edges || []).map(function(e) { return e.node; });
+      var mainImgUrl = imgNodes.length ? escAttr(imgNodes[0].url) : '';
+      var mainImgAlt = imgNodes.length ? escAttr(imgNodes[0].altText || p.title) : escAttr(p.title);
+      html += '<div class="product-card" onclick="showProductDetail(' + i + ',null)">';
+      html += '<div class="card-img-wrap">';
+      if (mainImgUrl) html += '<img class="product-card-img" src="' + mainImgUrl + '" alt="' + mainImgAlt + '" loading="lazy">';
+      else html += '<div class="product-card-img"></div>';
+      html += '</div>';
+      html += '<div class="product-card-title">' + escHtml(p.title) + '</div>';
+      if (price) html += '<div class="product-card-price">' + escHtml(price) + '</div>';
       html += '</div>';
     } else {
-      html += '<div class="card-swatches"></div>';
+      // One card per color
+      colorSwatches.forEach(function(sw) {
+        var colorVariant = vEdges.find(function(e2) {
+          return e2.node.selectedOptions.some(function(so) {
+            return so.name.toLowerCase() === 'color' && so.value === sw.colorVal;
+          });
+        });
+        var price = colorVariant ? formatMoney(parseFloat(colorVariant.node.price.amount), colorVariant.node.price.currencyCode) : '';
+        var mainImgUrl = sw.imgUrl ? escAttr(sw.imgUrl) : '';
+        var mainImgAlt = escAttr(sw.colorVal + ' ' + p.title);
+        html += '<div class="product-card" onclick="showProductDetail(' + i + ',' + escAttr(JSON.stringify(sw.colorVal)) + ')">';
+        html += '<div class="card-img-wrap">';
+        if (mainImgUrl) html += '<img class="product-card-img" src="' + mainImgUrl + '" alt="' + mainImgAlt + '" loading="lazy">';
+        else html += '<div class="product-card-img"></div>';
+        html += '</div>';
+        html += '<div class="product-card-title">' + escHtml(p.title) + '</div>';
+        html += '<div class="product-card-color">' + escHtml(sw.colorVal) + '</div>';
+        if (price) html += '<div class="product-card-price">' + escHtml(price) + '</div>';
+        html += '</div>';
+      });
     }
-    html += '<div class="product-card-title">' + escHtml(p.title) + '</div>';
-    if (price) html += '<div class="product-card-price">' + escHtml(price) + '</div>';
-    html += '</div>';
   });
   html += '</div>'; // .product-grid
   html += '<div class="grid-scroll-btns">';
@@ -1576,13 +1577,20 @@ function showShopGrid() {
   document.getElementById('shopDetail').style.display = 'none';
 }
 
-function showProductDetail(idx) {
+function showProductDetail(idx, colorVal) {
   var p = _shopProducts[idx];
   if (!p) return;
 
-  // Default variant selection: first variant
   var vEdges = (p.variants && p.variants.edges) || [];
-  if (!_selectedVariants[idx] && vEdges.length) {
+  if (colorVal) {
+    // Pre-select first variant matching this color
+    var matchVariant = vEdges.find(function(e) {
+      return e.node.selectedOptions.some(function(so) {
+        return so.name.toLowerCase() === 'color' && so.value === colorVal;
+      });
+    });
+    if (matchVariant) _selectedVariants[idx] = matchVariant.node.id;
+  } else if (!_selectedVariants[idx] && vEdges.length) {
     _selectedVariants[idx] = vEdges[0].node.id;
   }
 
