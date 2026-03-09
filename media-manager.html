@@ -320,6 +320,55 @@ header p {
 .lib-type-dot.image { background: #7ecf9a; }
 .lib-type-dot.video { background: #b09ee8; }
 
+/* ── Password Gate ── */
+#passwordGate {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: #0f1a0e;
+  z-index: 999;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+#passwordGate.show { display: flex; }
+#passwordGate h2 {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #c4b48a;
+  margin-bottom: 8px;
+}
+#passwordGate p {
+  font-size: 12px;
+  color: rgba(232,224,208,0.35);
+  margin-bottom: 28px;
+  letter-spacing: 0.5px;
+}
+#passwordGate input {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 5px;
+  padding: 12px 18px;
+  font-size: 14px;
+  color: #e8e0d0;
+  width: 260px;
+  text-align: center;
+  letter-spacing: 3px;
+  outline: none;
+  margin-bottom: 12px;
+  transition: border-color 0.15s;
+}
+#passwordGate input:focus { border-color: rgba(196,180,138,0.5); }
+#passwordGate .gate-error {
+  font-size: 11px;
+  color: #e88;
+  letter-spacing: 1px;
+  height: 16px;
+  margin-bottom: 12px;
+}
+
 /* ── GitHub Settings Modal ── */
 .modal-overlay {
   display: none;
@@ -444,6 +493,15 @@ header p {
       <button class="btn btn-primary" onclick="saveSettings()">Save</button>
     </div>
   </div>
+</div>
+
+<!-- Password Gate -->
+<div id="passwordGate">
+  <h2>Era Outfitters</h2>
+  <p>Media Manager</p>
+  <input type="password" id="gateInput" placeholder="Password" onkeydown="if(event.key==='Enter')checkPassword()">
+  <div class="gate-error" id="gateError"></div>
+  <button class="btn btn-primary" onclick="checkPassword()">Enter</button>
 </div>
 
 <div class="layout">
@@ -806,8 +864,30 @@ function toast(msg) {
   toastTimer = setTimeout(function() { el.classList.remove('show'); }, 2800);
 }
 
+// ── Password Gate ─────────────────────────────────────────────
+var PASSWORD = 'era2025';  // ← change this to whatever you want
+
+function checkPassword() {
+  var val = document.getElementById('gateInput').value;
+  if (val === PASSWORD) {
+    localStorage.setItem('mm_auth', PASSWORD);
+    document.getElementById('passwordGate').classList.remove('show');
+    document.getElementById('gateInput').value = '';
+    reloadConfig();
+  } else {
+    document.getElementById('gateError').textContent = 'Incorrect password';
+    document.getElementById('gateInput').value = '';
+    document.getElementById('gateInput').focus();
+  }
+}
+
 // ── Init ──────────────────────────────────────────────────────
-reloadConfig();
+if (localStorage.getItem('mm_auth') === PASSWORD) {
+  reloadConfig();
+} else {
+  document.getElementById('passwordGate').classList.add('show');
+  setTimeout(function() { document.getElementById('gateInput').focus(); }, 50);
+}
 </script>
 </body>
 </html>
