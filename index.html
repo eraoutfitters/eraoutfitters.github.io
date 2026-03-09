@@ -29,6 +29,8 @@
 <meta name="twitter:image" content="https://eraoutfitters.com/logo.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://mddjp6-nx.myshopify.com">
+<link rel="preload" href="media/era-13.jpg" as="image">
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Nunito+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
 
@@ -276,6 +278,8 @@ body::before {
   grid-template-columns: repeat(3, 1fr);
   gap: 0;
   position: relative; z-index: 1;
+  content-visibility: auto;
+  contain-intrinsic-size: 0 600px;
 }
 .cat-tile {
   position: relative;
@@ -291,6 +295,7 @@ body::before {
   background-position: center;
   transition: transform 0.6s ease;
   filter: saturate(0.75) brightness(0.7);
+  will-change: transform;
 }
 .cat-tile:hover .cat-tile-bg { transform: scale(1.04); filter: saturate(0.85) brightness(0.75); }
 .cat-tile-overlay {
@@ -352,6 +357,8 @@ body::before {
   text-align: center;
   position: relative;
   overflow: hidden;
+  content-visibility: auto;
+  contain-intrinsic-size: 0 500px;
 }
 .brand-story::after {
   content: '';
@@ -705,6 +712,8 @@ body::before {
   padding: 88px 32px;
   position: relative;
   overflow: hidden;
+  content-visibility: auto;
+  contain-intrinsic-size: 0 500px;
 }
 .community::before {
   content: '';
@@ -784,6 +793,8 @@ body::before {
   padding: 80px 24px;
   text-align: center;
   border-top: 1px solid rgba(196,180,138,0.08);
+  content-visibility: auto;
+  contain-intrinsic-size: 0 300px;
 }
 .email-inner {
   max-width: 520px;
@@ -962,7 +973,7 @@ footer {
   <div id="hero-media"></div>
   <div class="hero-gradient"></div>
   <div class="hero-inner">
-    <img src="logo.svg" alt="Era Outfitters" class="hero-logo">
+    <img src="logo.svg" alt="Era Outfitters" class="hero-logo" decoding="async">
     <p class="hero-tagline">Field &amp; Fly Shop &nbsp;·&nbsp; Roswell, Georgia</p>
     <h1 class="hero-headline">Fish. Shoot. Gather.</h1>
     <p class="hero-copy">Premium gear, and a Roswell gathering place.</p>
@@ -1331,6 +1342,18 @@ var _selectedVariants = {}; // productIdx -> variantId
 var _cardImgIdx = {};       // productIdx -> current image index
 var _cardColorSel = {};     // productIdx -> active color swatch index
 
+function getColorSwatches(p) {
+  var seen = {}, swatches = [];
+  ((p.variants && p.variants.edges) || []).forEach(function(e) {
+    var colorOpt = e.node.selectedOptions.find(function(so) { return so.name.toLowerCase() === 'color'; });
+    if (colorOpt && !seen[colorOpt.value]) {
+      seen[colorOpt.value] = true;
+      swatches.push({ colorVal: colorOpt.value, imgUrl: e.node.image ? e.node.image.url : '' });
+    }
+  });
+  return swatches;
+}
+
 function gql(query, variables) {
   return fetch(SHOP_API, {
     method: 'POST',
@@ -1415,19 +1438,7 @@ function renderProductGrid() {
       price = formatMoney(parseFloat(vEdges[0].node.price.amount), vEdges[0].node.price.currencyCode);
     }
 
-    // Build unique colors list from variants
-    var seenColors = {};
-    var colorSwatches = []; // { colorVal, imgUrl }
-    vEdges.forEach(function(e) {
-      var colorOpt = e.node.selectedOptions.find(function(so) {
-        return so.name.toLowerCase() === 'color';
-      });
-      if (colorOpt && !seenColors[colorOpt.value]) {
-        seenColors[colorOpt.value] = true;
-        var swatchImg = e.node.image ? e.node.image.url : '';
-        colorSwatches.push({ colorVal: colorOpt.value, imgUrl: swatchImg });
-      }
-    });
+    var colorSwatches = getColorSwatches(p);
 
     // Active color: use _cardColorSel[i] or first color
     var activeSel = _cardColorSel[i] !== undefined ? _cardColorSel[i] : 0;
@@ -1484,17 +1495,7 @@ function selectCardColor(i, si, e) {
   _cardColorSel[i] = si;
   var p = _shopProducts[i];
   if (!p) return;
-  var vEdges = (p.variants && p.variants.edges) || [];
-  // Find unique colors again
-  var seenColors = {};
-  var colorSwatches = [];
-  vEdges.forEach(function(e2) {
-    var colorOpt = e2.node.selectedOptions.find(function(so) { return so.name.toLowerCase() === 'color'; });
-    if (colorOpt && !seenColors[colorOpt.value]) {
-      seenColors[colorOpt.value] = true;
-      colorSwatches.push({ colorVal: colorOpt.value, imgUrl: e2.node.image ? e2.node.image.url : '' });
-    }
-  });
+  var colorSwatches = getColorSwatches(p);
   var sw = colorSwatches[si];
   // Update card image
   var cards = document.querySelectorAll('.product-card');
@@ -1506,6 +1507,7 @@ function selectCardColor(i, si, e) {
     dot.classList.toggle('active', di === si);
   });
   // Pre-select this color variant so detail view opens on the right color
+  var vEdges = (p.variants && p.variants.edges) || [];
   var matchVariant = vEdges.find(function(e2) {
     return e2.node.selectedOptions.some(function(so) {
       return so.name.toLowerCase() === 'color' && so.value === sw.colorVal;
