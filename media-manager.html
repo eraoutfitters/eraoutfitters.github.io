@@ -808,7 +808,7 @@ function commitToGitHub() {
   btn.textContent = '⏳ Committing…';
 
   var json    = JSON.stringify(activeItems, null, 2);
-  var content = btoa(unescape(encodeURIComponent(json))); // UTF-8 safe base64
+  var content = btoa(unescape(encodeURIComponent(json)));
   var apiBase = 'https://api.github.com/repos/' + repo + '/contents/media-config.json';
   var headers = {
     'Authorization': 'Bearer ' + token,
@@ -817,35 +817,45 @@ function commitToGitHub() {
     'Content-Type': 'application/json'
   };
 
-  // Step 1: get current file SHA (required for updates)
-  fetch(apiBase + '?ref=' + branch, { headers: headers })
-    .then(function(r) { return r.json(); })
-    .then(function(fileData) {
-      var sha = fileData.sha || null;
-      var body = {
-        message: 'Update hero slideshow via media-manager',
-        content: content,
-        branch:  branch
-      };
-      if (sha) body.sha = sha;
+  function pushWithSha(sha, isRetry) {
+    var body = {
+      message: 'Update hero slideshow via media-manager',
+      content: content,
+      branch:  branch
+    };
+    if (sha) body.sha = sha;
 
-      // Step 2: push the updated file
-      return fetch(apiBase, {
-        method:  'PUT',
-        headers: headers,
-        body:    JSON.stringify(body)
+    return fetch(apiBase, { method: 'PUT', headers: headers, body: JSON.stringify(body) })
+      .then(function(r) { return r.json(); })
+      .then(function(result) {
+        if (result.content) {
+          toast('✓ Committed! Site updates in ~1 min.');
+        } else if (!isRetry && result.message && result.message.toLowerCase().indexOf('does not match') !== -1) {
+          // SHA stale — re-fetch and retry once
+          btn.textContent = '⏳ Retrying…';
+          return fetchSha().then(function(freshSha) { return pushWithSha(freshSha, true); });
+        } else if (result.message && (result.message.indexOf('401') !== -1 || result.message.toLowerCase().indexOf('bad credential') !== -1)) {
+          toast('Token expired — update it in ⚙ GitHub settings');
+          openSettings();
+        } else {
+          toast('Error: ' + (result.message || 'unknown — check token'));
+        }
       });
-    })
-    .then(function(r) { return r.json(); })
-    .then(function(result) {
-      if (result.content) {
-        toast('✓ Committed! GitHub Pages will update in ~1 min.');
-      } else {
-        toast('GitHub error: ' + (result.message || 'unknown'));
-      }
-    })
+  }
+
+  function fetchSha() {
+    return fetch(apiBase + '?ref=' + branch, { headers: headers })
+      .then(function(r) {
+        if (r.status === 401) { toast('Token expired — update it in ⚙ GitHub settings'); openSettings(); throw new Error('401'); }
+        return r.json();
+      })
+      .then(function(d) { return d.sha || null; });
+  }
+
+  fetchSha()
+    .then(function(sha) { return pushWithSha(sha, false); })
     .catch(function(err) {
-      toast('Network error — check token and repo name');
+      if (err.message !== '401') toast('Network error — check your connection');
       console.error(err);
     })
     .finally(function() {
