@@ -466,57 +466,11 @@ body::before {
 .brand-divider-line { flex: 1; height: 1px; background: rgba(196,180,138,0.25); }
 .brand-divider-diamond { width: 6px; height: 6px; background: #C4B48A; transform: rotate(45deg); opacity: 0.5; flex-shrink: 0; }
 
-/* ─── SHOP LAYER (PAGE-SLIDE-DOWN) ──────────── */
-#mainCard {
-  position: fixed;
-  inset: 0;
-  z-index: 10;
-  overflow-y: auto;
-  transform: translateY(0);
-  transition: transform 0.9s cubic-bezier(0.76, 0, 0.24, 1);
-  will-change: transform;
-}
-#mainCard.shop-open {
-  transform: translateY(100vh);
-}
-#shopLayer {
-  position: fixed;
-  inset: 0;
-  z-index: 1;
+/* ─── SHOP SECTION (INLINE) ─────────────────── */
+#shop {
   background: #F2E8D0;
-  overflow-y: auto;
   color: #1E3020;
 }
-.shop-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 20px 32px;
-  background: #1E3020;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
-.shop-header-brand {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 22px;
-  font-weight: 600;
-  color: #F2E8D0;
-  letter-spacing: 2px;
-}
-.shop-close-btn {
-  background: none;
-  border: none;
-  color: #C4B48A;
-  font-family: 'Nunito Sans', sans-serif;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  cursor: pointer;
-  padding: 8px 0;
-}
-.shop-close-btn:hover { color: #F2E8D0; }
 .shop-inner {
   padding: 48px 0 100px;
 }
@@ -998,25 +952,6 @@ footer {
 </head>
 <body>
 
-<!-- ─── SHOP LAYER (behind main card) ───────── -->
-<div id="shopLayer">
-  <div class="shop-header">
-    <span class="shop-header-brand">Er&#228; Outfitters</span>
-    <button class="shop-close-btn" onclick="closeShop()">&#8592; Back</button>
-  </div>
-  <div class="shop-inner">
-    <p class="shop-heading">Shop the Collection</p>
-    <!-- Grid view -->
-    <div id="shopGrid"></div>
-    <!-- Detail view -->
-    <div id="shopDetail">
-      <button class="detail-back" onclick="showShopGrid()">&#8592; All Products</button>
-      <div id="shopDetailContent"></div>
-    </div>
-  </div>
-</div>
-
-<!-- ─── MAIN CARD (slides down to reveal shop) ── -->
 <div id="mainCard">
 
 <!-- EYEBROW -->
@@ -1117,6 +1052,19 @@ footer {
   </div>
 </section>
 
+<!-- ─── SHOP ─────────────────────────────────── -->
+<section id="shop">
+  <div class="shop-inner">
+    <p class="shop-heading">Shop the Collection</p>
+    <!-- Grid view -->
+    <div id="shopGrid"></div>
+    <!-- Detail view -->
+    <div id="shopDetail">
+      <button class="detail-back" onclick="showShopGrid()">&#8592; All Products</button>
+      <div id="shopDetailContent"></div>
+    </div>
+  </div>
+</section>
 
 <!-- ─── COMMUNITY & EVENTS ───────────────────── -->
 <section class="community" id="community">
@@ -1453,15 +1401,21 @@ var CART_CREATE_QUERY = [
 ].join('\n');
 
 function openShopModal() {
-  document.getElementById('mainCard').classList.add('shop-open');
-  document.body.style.overflow = 'hidden';
   loadShopProducts();
+  document.getElementById('shop').scrollIntoView({ behavior: 'smooth' });
 }
 
-function closeShop() {
-  document.getElementById('mainCard').classList.remove('shop-open');
-  document.body.style.overflow = '';
-}
+function closeShop() { /* shop is always visible inline */ }
+
+// Auto-load products when shop section scrolls into view
+(function() {
+  var shopEl = document.getElementById('shop');
+  if (!shopEl) return;
+  var obs = new IntersectionObserver(function(entries, o) {
+    if (entries[0].isIntersecting) { loadShopProducts(); o.disconnect(); }
+  }, { threshold: 0.05 });
+  obs.observe(shopEl);
+}());
 
 function loadShopProducts() {
   if (_shopLoaded) return;
@@ -1491,16 +1445,35 @@ function renderProductGrid() {
   });
 
   // Interleave: round-robin across products (color round 0 of each, then round 1, etc.)
-  _renderedCards = [];
-  var maxColors = 0;
-  productSwatches.forEach(function(ps) { if (ps.swatches.length > maxColors) maxColors = ps.swatches.length; });
-  for (var round = 0; round < maxColors; round++) {
-    productSwatches.forEach(function(ps) {
-      if (round < ps.swatches.length) {
-        _renderedCards.push({ productIdx: ps.productIdx, activeColorVal: ps.swatches[round] ? ps.swatches[round].colorVal : null });
-      }
+  // Build all cards then group by color value, round-robin across color groups
+  // so cards of the same color are maximally spread apart
+  var allCards = [];
+  productSwatches.forEach(function(ps) {
+    ps.swatches.forEach(function(sw) {
+      allCards.push({ productIdx: ps.productIdx, activeColorVal: sw ? sw.colorVal : null });
     });
+  });
+
+  // Pin specific cards first, shuffle the rest
+  var pinned = [
+    { title: 'Original Erä Outfitters Long Sleeve Comfort Colors Shirt', color: 'Blue Jean' },
+    { title: 'Original Erä Outfitters Long Sleeve Comfort Colors Shirt', color: 'Light Green' }
+  ];
+  var pinnedCards = [], rest = [];
+  allCards.forEach(function(c) {
+    var p = _shopProducts[c.productIdx];
+    var matchPin = pinned.find(function(pin) {
+      return p.title === pin.title && c.activeColorVal === pin.color;
+    });
+    if (matchPin) pinnedCards[pinned.indexOf(matchPin)] = c;
+    else rest.push(c);
+  });
+  // Fisher-Yates shuffle the rest
+  for (var i = rest.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = rest[i]; rest[i] = rest[j]; rest[j] = tmp;
   }
+  _renderedCards = pinnedCards.filter(Boolean).concat(rest);
 
   var html = '<div class="grid-scroll-wrap"><div class="product-grid" id="productScrollRow">';
 
@@ -1588,6 +1561,7 @@ function scrollGrid(dir) {
 function showShopGrid() {
   document.getElementById('shopGrid').style.display   = 'block';
   document.getElementById('shopDetail').style.display = 'none';
+  document.getElementById('shop').scrollIntoView({ behavior: 'smooth' });
 }
 
 function showProductDetail(idx, colorVal) {
