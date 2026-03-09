@@ -221,6 +221,61 @@ body::before {
   animation: fadeUp 0.9s ease 1.1s forwards;
 }
 .hero-btn:hover { background: #d4c49a; transform: translateY(-1px); }
+.hero-btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: clamp(12px, 1.6vw, 14px);
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: #F2E8D0;
+  background: transparent;
+  text-decoration: none;
+  padding: 18px 40px;
+  border-radius: 2px;
+  border: 1.5px solid rgba(242,232,208,0.45);
+  transition: border-color 0.2s, color 0.2s, transform 0.2s;
+  opacity: 0;
+  animation: fadeUp 0.9s ease 1.25s forwards;
+}
+.hero-btn-ghost:hover { border-color: #F2E8D0; color: #fff; transform: translateY(-1px); }
+.hero-btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: center;
+}
+/* Hero nav arrows */
+.hero-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 6;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #F2E8D0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, border-color 0.2s;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+.hero-nav:hover { background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.5); }
+.hero-nav-prev { left: 24px; }
+.hero-nav-next { right: 24px; }
+@media (max-width: 560px) {
+  .hero-nav { width: 36px; height: 36px; font-size: 16px; }
+  .hero-nav-prev { left: 12px; }
+  .hero-nav-next { right: 12px; }
+}
 .hero-scroll {
   position: absolute;
   bottom: 28px; left: 50%;
@@ -972,15 +1027,19 @@ footer {
 <section class="hero">
   <div id="hero-media"></div>
   <div class="hero-gradient"></div>
+  <button class="hero-nav hero-nav-prev" onclick="heroNav(-1)" aria-label="Previous">&#8592;</button>
+  <button class="hero-nav hero-nav-next" onclick="heroNav(1)" aria-label="Next">&#8594;</button>
   <div class="hero-inner">
     <img src="logo.svg" alt="Era Outfitters" class="hero-logo" decoding="async">
     <p class="hero-tagline">Field &amp; Fly Shop &nbsp;·&nbsp; Roswell, Georgia</p>
     <h1 class="hero-headline">Fish. Shoot. Gather.</h1>
-    <p class="hero-copy">Premium gear, and a Roswell gathering place.</p>
-    <a href="#" onclick="openShopModal();return false;" class="hero-btn">
-      Explore the Shop
-      <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M1 7H13M7 1L13 7L7 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </a>
+    <div class="hero-btns">
+      <a href="#" onclick="openShopModal();return false;" class="hero-btn">
+        Explore the Shop
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M1 7H13M7 1L13 7L7 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <a href="#our-story" class="hero-btn-ghost">Our Story</a>
+    </div>
   </div>
   <div class="hero-scroll">
     <div class="hero-scroll-line"></div>
@@ -1034,7 +1093,7 @@ footer {
 </section>
 
 <!-- ─── BRAND STORY ───────────────────────────── -->
-<section class="brand-story reveal">
+<section class="brand-story reveal" id="our-story">
   <div class="brand-story-inner">
     <span class="section-label">Our Story</span>
     <div class="section-rule"></div>
@@ -1321,6 +1380,9 @@ footer {
   } else {
     imgTimer = setTimeout(function () { goTo(1); }, IMG_HOLD);
   }
+
+  // Expose for arrow buttons
+  window.heroNav = function(dir) { goTo(cur + dir); };
 }());
 
 // Scroll reveal
