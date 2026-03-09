@@ -253,28 +253,23 @@ body::before {
   top: 50%;
   transform: translateY(-50%);
   z-index: 6;
-  background: rgba(255,255,255,0.1);
-  border: 1px solid rgba(255,255,255,0.2);
-  color: #F2E8D0;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  font-size: 20px;
+  background: none;
+  border: none;
+  color: rgba(242,232,208,0.35);
+  font-size: 28px;
+  font-weight: 300;
+  line-height: 1;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.2s, border-color 0.2s;
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  padding: 12px 8px;
+  transition: color 0.2s;
 }
-.hero-nav:hover { background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.5); }
-.hero-nav-prev { left: 24px; }
-.hero-nav-next { right: 24px; }
+.hero-nav:hover { color: rgba(242,232,208,0.85); }
+.hero-nav-prev { left: 16px; }
+.hero-nav-next { right: 16px; }
 @media (max-width: 560px) {
-  .hero-nav { width: 36px; height: 36px; font-size: 16px; }
-  .hero-nav-prev { left: 12px; }
-  .hero-nav-next { right: 12px; }
+  .hero-nav { font-size: 22px; }
+  .hero-nav-prev { left: 6px; }
+  .hero-nav-next { right: 6px; }
 }
 .hero-scroll {
   position: absolute;
@@ -1027,8 +1022,8 @@ footer {
 <section class="hero">
   <div id="hero-media"></div>
   <div class="hero-gradient"></div>
-  <button class="hero-nav hero-nav-prev" onclick="heroNav(-1)" aria-label="Previous">&#8592;</button>
-  <button class="hero-nav hero-nav-next" onclick="heroNav(1)" aria-label="Next">&#8594;</button>
+  <button class="hero-nav hero-nav-prev" onclick="heroNav(-1)" aria-label="Previous">&#8249;</button>
+  <button class="hero-nav hero-nav-next" onclick="heroNav(1)" aria-label="Next">&#8250;</button>
   <div class="hero-inner">
     <img src="logo.svg" alt="Era Outfitters" class="hero-logo" decoding="async">
     <p class="hero-tagline">Field &amp; Fly Shop &nbsp;·&nbsp; Roswell, Georgia</p>
