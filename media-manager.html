@@ -865,24 +865,39 @@ function toast(msg) {
 }
 
 // ── Password Gate ─────────────────────────────────────────────
-var PASSWORD = 'era2025';  // ← change this to whatever you want
+// To change the password:
+//   1. Run in terminal: node -e "require('crypto').createHash('sha256').update('NEWPASSWORD').digest('hex')" | cat
+//   2. Replace the hash string below with the output
+var PASSWORD_HASH = 'cf5e60c7af9c0867df8b64c53e2d8e5be77245a9d8ba78f8b16b9bc1ec2e6afa';
+
+function sha256(str) {
+  var buf = new TextEncoder().encode(str);
+  return crypto.subtle.digest('SHA-256', buf).then(function(hashBuf) {
+    return Array.from(new Uint8Array(hashBuf)).map(function(b) {
+      return b.toString(16).padStart(2, '0');
+    }).join('');
+  });
+}
 
 function checkPassword() {
   var val = document.getElementById('gateInput').value;
-  if (val === PASSWORD) {
-    localStorage.setItem('mm_auth', PASSWORD);
-    document.getElementById('passwordGate').classList.remove('show');
-    document.getElementById('gateInput').value = '';
-    reloadConfig();
-  } else {
-    document.getElementById('gateError').textContent = 'Incorrect password';
-    document.getElementById('gateInput').value = '';
-    document.getElementById('gateInput').focus();
-  }
+  if (!val) return;
+  sha256(val).then(function(hash) {
+    if (hash === PASSWORD_HASH) {
+      localStorage.setItem('mm_auth', PASSWORD_HASH);
+      document.getElementById('passwordGate').classList.remove('show');
+      document.getElementById('gateInput').value = '';
+      reloadConfig();
+    } else {
+      document.getElementById('gateError').textContent = 'Incorrect password';
+      document.getElementById('gateInput').value = '';
+      document.getElementById('gateInput').focus();
+    }
+  });
 }
 
 // ── Init ──────────────────────────────────────────────────────
-if (localStorage.getItem('mm_auth') === PASSWORD) {
+if (localStorage.getItem('mm_auth') === PASSWORD_HASH) {
   reloadConfig();
 } else {
   document.getElementById('passwordGate').classList.add('show');
