@@ -1401,9 +1401,10 @@ function renderDetail(idx) {
   var selVar = vEdges.find(function(e) { return e.node.id === selId; });
   if (!selVar && vEdges.length) selVar = vEdges[0];
 
-  // Images: product-level images first, then variant image if not already present
+  // Images: use variant image if available, otherwise first product image
   var imgEdges = (p.images && p.images.edges) || [];
   var imgs = imgEdges.map(function(e) { return e.node; });
+  var variantImg = selVar && selVar.node.image;
 
   // Price from selected variant
   var price = selVar ? formatMoney(parseFloat(selVar.node.price.amount), selVar.node.price.currencyCode) : '';
@@ -1426,16 +1427,19 @@ function renderDetail(idx) {
     optionsHtml += '</div>';
   });
 
-  // Thumbnails
+  // Determine main image: prefer variant image, fall back to first product image
+  var mainImgNode = (variantImg && variantImg.url) ? variantImg : (imgs.length ? imgs[0] : null);
+  var mainImgSrc = mainImgNode ? escAttr(mainImgNode.url) : '';
+  var mainImgAlt = mainImgNode ? escAttr(mainImgNode.altText || p.title) : '';
+
+  // Thumbnails — mark the one matching the main image as active
   var thumbsHtml = '';
   if (imgs.length > 1) {
     imgs.forEach(function(img, ti) {
-      thumbsHtml += '<img class="detail-thumb' + (ti === 0 ? ' active' : '') + '" src="' + escAttr(img.url) + '" alt="' + escAttr(img.altText || '') + '" onclick="switchDetailImage(' + ti + ')" loading="lazy">';
+      var isActive = mainImgNode && img.url === mainImgNode.url;
+      thumbsHtml += '<img class="detail-thumb' + (isActive ? ' active' : '') + '" src="' + escAttr(img.url) + '" alt="' + escAttr(img.altText || '') + '" onclick="switchDetailImage(' + ti + ')" loading="lazy">';
     });
   }
-
-  var mainImgSrc = imgs.length ? escAttr(imgs[0].url) : '';
-  var mainImgAlt = imgs.length ? escAttr(imgs[0].altText || p.title) : '';
 
   var atcLabel = avail ? 'Add to Cart' : 'Sold Out';
   var atcDisabled = avail ? '' : ' disabled';
