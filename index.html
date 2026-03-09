@@ -457,9 +457,10 @@ body::before {
 }
 .shop-close-btn:hover { color: #F2E8D0; }
 .shop-inner {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 64px 32px 100px;
+  padding: 48px 0 100px;
+}
+.shop-inner .shop-heading {
+  padding: 0 40px;
 }
 .shop-heading {
   font-family: 'Nunito Sans', sans-serif;
@@ -471,13 +472,44 @@ body::before {
   margin-bottom: 48px;
   text-align: center;
 }
-/* Product grid */
-.product-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 40px 32px;
+/* Product grid — horizontal scroll row */
+.grid-scroll-wrap {
+  position: relative;
 }
+.product-grid {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 0 40px 20px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.product-grid::-webkit-scrollbar { display: none; }
+.grid-scroll-btns {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  padding: 16px 40px 0;
+}
+.grid-scroll-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(30,48,32,0.25);
+  background: #fff;
+  color: #1E3020;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.2s, background 0.2s;
+}
+.grid-scroll-btn:hover { border-color: #1E3020; background: #1E3020; color: #F2E8D0; }
 .product-card {
+  flex: 0 0 260px;
   cursor: pointer;
   display: flex;
   flex-direction: column;
@@ -486,9 +518,10 @@ body::before {
   position: relative;
   width: 100%;
   aspect-ratio: 3/4;
-  background: #ddd;
-  margin-bottom: 16px;
+  background: #e8e4df;
+  margin-bottom: 12px;
   overflow: hidden;
+  border-radius: 6px;
 }
 .product-card-img {
   width: 100%;
@@ -497,52 +530,32 @@ body::before {
   display: block;
   transition: opacity 0.3s;
 }
-.product-card:hover .product-card-img { opacity: 0.85; }
-.card-nav {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: rgba(255,255,255,0.75);
-  border: none;
+.product-card:hover .product-card-img { opacity: 0.88; }
+/* Color swatches */
+.card-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+  min-height: 22px;
+}
+.card-swatch {
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
-  width: 32px;
-  height: 32px;
-  font-size: 16px;
-  line-height: 1;
+  border: 2px solid transparent;
+  background-size: cover;
+  background-position: center;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  transition: opacity 0.2s;
-  z-index: 2;
-  padding: 0;
-  color: #1E3020;
+  transition: border-color 0.15s;
+  outline: 2px solid transparent;
+  outline-offset: 1px;
 }
-.card-img-wrap:hover .card-nav { opacity: 1; }
-.card-nav-prev { left: 6px; }
-.card-nav-next { right: 6px; }
-.card-dots {
-  position: absolute;
-  bottom: 7px;
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: center;
-  gap: 5px;
-  pointer-events: none;
-}
-.card-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.55);
-  transition: background 0.2s;
-}
-.card-dot.active { background: #fff; }
+.card-swatch:hover { outline-color: rgba(30,48,32,0.3); }
+.card-swatch.active { outline-color: #1E3020; }
 .product-card-title {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 19px;
+  font-size: 17px;
   font-weight: 600;
   color: #1E3020;
   margin-bottom: 4px;
@@ -550,9 +563,9 @@ body::before {
 }
 .product-card-price {
   font-family: 'Nunito Sans', sans-serif;
-  font-size: 13px;
-  color: #6b5c38;
-  letter-spacing: 0.5px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1E3020;
 }
 /* Product detail */
 #shopDetail { display: none; }
@@ -672,12 +685,15 @@ body::before {
   color: rgba(30,48,32,0.4);
 }
 @media (max-width: 900px) {
-  .product-grid { grid-template-columns: repeat(2, 1fr); gap: 32px 24px; }
   .detail-layout { grid-template-columns: 1fr; gap: 40px; }
+  .product-card { flex: 0 0 220px; }
 }
 @media (max-width: 560px) {
-  .product-grid { grid-template-columns: 1fr 1fr; gap: 24px 16px; }
-  .shop-inner { padding: 40px 20px 80px; }
+  .product-grid { padding: 0 20px 16px; gap: 14px; }
+  .grid-scroll-btns { padding: 12px 20px 0; }
+  .product-card { flex: 0 0 180px; }
+  .shop-inner { padding: 32px 0 80px; }
+  .shop-inner .shop-heading { padding: 0 20px; }
   .shop-header { padding: 16px 20px; }
 }
 
@@ -1320,6 +1336,7 @@ var _shopLoaded  = false;
 var _shopProducts = [];
 var _selectedVariants = {}; // productIdx -> variantId
 var _cardImgIdx = {};       // productIdx -> current image index
+var _cardColorSel = {};     // productIdx -> active color swatch index
 
 function gql(query, variables) {
   return fetch(SHOP_API, {
@@ -1396,64 +1413,120 @@ function renderProductGrid() {
     grid.innerHTML = '<p class="shop-loading">No products found.</p>';
     return;
   }
-  var html = '<div class="product-grid">';
+  var html = '<div class="grid-scroll-wrap">';
+  html += '<div class="product-grid" id="productScrollRow">';
   _shopProducts.forEach(function(p, i) {
-    var imgNodes = (p.images && p.images.edges || []).map(function(e) { return e.node; });
-    var curIdx   = _cardImgIdx[i] || 0;
-    var imgNode  = imgNodes[curIdx] || imgNodes[0];
-    var imgSrc   = imgNode ? escAttr(imgNode.url) : '';
-    var imgAlt   = imgNode ? escAttr(imgNode.altText || p.title) : escAttr(p.title);
+    var vEdges   = (p.variants && p.variants.edges) || [];
     var price    = '';
-    var vEdges   = p.variants && p.variants.edges;
-    if (vEdges && vEdges.length) {
-      var amt  = parseFloat(vEdges[0].node.price.amount);
-      var curr = vEdges[0].node.price.currencyCode;
-      price = formatMoney(amt, curr);
+    if (vEdges.length) {
+      price = formatMoney(parseFloat(vEdges[0].node.price.amount), vEdges[0].node.price.currencyCode);
     }
+
+    // Build unique colors list from variants
+    var seenColors = {};
+    var colorSwatches = []; // { colorVal, imgUrl }
+    vEdges.forEach(function(e) {
+      var colorOpt = e.node.selectedOptions.find(function(so) {
+        return so.name.toLowerCase() === 'color';
+      });
+      if (colorOpt && !seenColors[colorOpt.value]) {
+        seenColors[colorOpt.value] = true;
+        var swatchImg = e.node.image ? e.node.image.url : '';
+        colorSwatches.push({ colorVal: colorOpt.value, imgUrl: swatchImg });
+      }
+    });
+
+    // Active color: use _cardColorSel[i] or first color
+    var activeSel = _cardColorSel[i] !== undefined ? _cardColorSel[i] : 0;
+    if (activeSel >= colorSwatches.length) activeSel = 0;
+
+    // Main image: variant image of active swatch, or first product image
+    var imgNodes = (p.images && p.images.edges || []).map(function(e) { return e.node; });
+    var mainImgUrl = '';
+    var mainImgAlt = escAttr(p.title);
+    if (colorSwatches.length && colorSwatches[activeSel] && colorSwatches[activeSel].imgUrl) {
+      mainImgUrl = escAttr(colorSwatches[activeSel].imgUrl);
+    } else if (imgNodes.length) {
+      mainImgUrl = escAttr(imgNodes[0].url);
+      mainImgAlt = escAttr(imgNodes[0].altText || p.title);
+    }
+
     html += '<div class="product-card" onclick="showProductDetail(' + i + ')">';
     html += '<div class="card-img-wrap">';
-    if (imgSrc) {
-      html += '<img class="product-card-img" src="' + imgSrc + '" alt="' + imgAlt + '" loading="lazy">';
+    if (mainImgUrl) {
+      html += '<img class="product-card-img" src="' + mainImgUrl + '" alt="' + mainImgAlt + '" loading="lazy">';
     } else {
       html += '<div class="product-card-img"></div>';
     }
-    if (imgNodes.length > 1) {
-      html += '<button class="card-nav card-nav-prev" onclick="cycleCardImg(' + i + ',-1,event)">&#8249;</button>';
-      html += '<button class="card-nav card-nav-next" onclick="cycleCardImg(' + i + ',1,event)">&#8250;</button>';
-      html += '<div class="card-dots">';
-      imgNodes.forEach(function(_, di) {
-        html += '<div class="card-dot' + (di === curIdx ? ' active' : '') + '"></div>';
+    html += '</div>';
+    // Color swatches
+    if (colorSwatches.length > 1) {
+      html += '<div class="card-swatches" onclick="event.stopPropagation()">';
+      colorSwatches.forEach(function(sw, si) {
+        var isActive = si === activeSel;
+        var bgStyle = sw.imgUrl ? 'background-image:url(' + escAttr(sw.imgUrl) + ');' : 'background:#ccc;';
+        html += '<div class="card-swatch' + (isActive ? ' active' : '') + '" style="' + bgStyle + '" title="' + escAttr(sw.colorVal) + '" onclick="selectCardColor(' + i + ',' + si + ',event)"></div>';
       });
       html += '</div>';
+    } else {
+      html += '<div class="card-swatches"></div>';
     }
-    html += '</div>';
     html += '<div class="product-card-title">' + escHtml(p.title) + '</div>';
     if (price) html += '<div class="product-card-price">' + escHtml(price) + '</div>';
     html += '</div>';
   });
+  html += '</div>'; // .product-grid
+  html += '<div class="grid-scroll-btns">';
+  html += '<button class="grid-scroll-btn" onclick="scrollGrid(-1)" aria-label="Scroll left">&#8592;</button>';
+  html += '<button class="grid-scroll-btn" onclick="scrollGrid(1)" aria-label="Scroll right">&#8594;</button>';
   html += '</div>';
+  html += '</div>'; // .grid-scroll-wrap
   grid.innerHTML = html;
   document.getElementById('shopGrid').style.display   = 'block';
   document.getElementById('shopDetail').style.display = 'none';
 }
 
-function cycleCardImg(i, dir, e) {
+function selectCardColor(i, si, e) {
   e.stopPropagation();
-  var imgs = (_shopProducts[i] && _shopProducts[i].images && _shopProducts[i].images.edges) || [];
-  if (imgs.length < 2) return;
-  var cur = (_cardImgIdx[i] || 0) + dir;
-  if (cur < 0) cur = imgs.length - 1;
-  if (cur >= imgs.length) cur = 0;
-  _cardImgIdx[i] = cur;
-  // Update just this card's image and dots without re-rendering the whole grid
+  _cardColorSel[i] = si;
+  var p = _shopProducts[i];
+  if (!p) return;
+  var vEdges = (p.variants && p.variants.edges) || [];
+  // Find unique colors again
+  var seenColors = {};
+  var colorSwatches = [];
+  vEdges.forEach(function(e2) {
+    var colorOpt = e2.node.selectedOptions.find(function(so) { return so.name.toLowerCase() === 'color'; });
+    if (colorOpt && !seenColors[colorOpt.value]) {
+      seenColors[colorOpt.value] = true;
+      colorSwatches.push({ colorVal: colorOpt.value, imgUrl: e2.node.image ? e2.node.image.url : '' });
+    }
+  });
+  var sw = colorSwatches[si];
+  // Update card image
   var cards = document.querySelectorAll('.product-card');
   var card = cards[i];
-  if (!card) return;
+  if (!card || !sw) return;
   var img = card.querySelector('.product-card-img');
-  var node = imgs[cur].node;
-  if (img) { img.src = node.url; img.alt = node.altText || _shopProducts[i].title; }
-  var dots = card.querySelectorAll('.card-dot');
-  dots.forEach(function(d, di) { d.classList.toggle('active', di === cur); });
+  if (img && sw.imgUrl) { img.src = sw.imgUrl; img.alt = sw.colorVal; }
+  card.querySelectorAll('.card-swatch').forEach(function(dot, di) {
+    dot.classList.toggle('active', di === si);
+  });
+  // Pre-select this color variant so detail view opens on the right color
+  var matchVariant = vEdges.find(function(e2) {
+    return e2.node.selectedOptions.some(function(so) {
+      return so.name.toLowerCase() === 'color' && so.value === sw.colorVal;
+    });
+  });
+  if (matchVariant) _selectedVariants[i] = matchVariant.node.id;
+}
+
+function scrollGrid(dir) {
+  var row = document.getElementById('productScrollRow');
+  if (!row) return;
+  var cardWidth = row.querySelector('.product-card');
+  var step = cardWidth ? cardWidth.offsetWidth + 20 : 280;
+  row.scrollBy({ left: dir * step * 2, behavior: 'smooth' });
 }
 
 function showShopGrid() {
