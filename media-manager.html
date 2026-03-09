@@ -459,6 +459,42 @@ header p {
   font-size: 13px;
   letter-spacing: 1px;
 }
+
+/* ── Mobile ── */
+@media (max-width: 700px) {
+  header {
+    padding: 14px 16px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  header h1 { font-size: 13px; letter-spacing: 1.5px; }
+  .header-actions { width: 100%; flex-wrap: wrap; gap: 8px; }
+  .header-actions .btn { flex: 1; min-width: 0; padding: 10px 8px; font-size: 11px; text-align: center; }
+
+  .layout {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+  .panel-active {
+    padding: 20px 16px;
+    overflow-y: visible;
+    border-right: none;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+  .panel-library {
+    padding: 20px 16px;
+    overflow-y: visible;
+  }
+  .card-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  }
+  .library-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
+  .card-actions { flex-wrap: wrap; }
+  .card-btn { min-width: 0; }
+}
 </style>
 </head>
 <body>
