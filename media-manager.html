@@ -420,7 +420,8 @@ header p {
     <p>Drag to reorder &nbsp;·&nbsp; Click library items to add or remove</p>
   </div>
   <div class="header-actions">
-    <button class="btn btn-secondary" onclick="reloadConfig()">↺ Reload</button>
+    <button class="btn btn-secondary" onclick="reloadConfig()">↺ Load config</button>
+    <input type="file" id="filePickerInput" accept=".json" style="display:none" onchange="onFilePicked(this)">
     <button class="btn btn-secondary" onclick="openSettings()">⚙ GitHub</button>
     <button class="btn btn-secondary" onclick="saveConfig()">↓ Download</button>
     <button class="btn btn-primary" id="commitBtn" onclick="commitToGitHub()">↑ Commit to GitHub</button>
@@ -520,16 +521,42 @@ var dragSrcIdx  = null;
 // ── Load config ────────────────────────────────────────────────
 function reloadConfig() {
   fetch('media-config.json?v=' + Date.now())
-    .then(function(r) { return r.json(); })
+    .then(function(r) {
+      if (!r.ok) throw new Error('not ok');
+      return r.json();
+    })
     .then(function(data) {
-      activeItems = data.map(function(d) { return { type: d.type, src: d.src }; });
-      renderActive();
-      renderLibrary();
+      loadData(data);
       toast('Config loaded');
     })
     .catch(function() {
-      toast('Could not load media-config.json');
+      // file:// protocol blocks fetch — ask user to pick the file
+      document.getElementById('filePickerInput').click();
     });
+}
+
+function loadData(data) {
+  activeItems = data.map(function(d) { return { type: d.type, src: d.src }; });
+  renderActive();
+  renderLibrary();
+}
+
+function onFilePicked(input) {
+  var file = input.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      var data = JSON.parse(e.target.result);
+      loadData(data);
+      toast('Config loaded from file');
+    } catch(err) {
+      toast('Invalid JSON in file');
+    }
+  };
+  reader.readAsText(file);
+  // reset so picking the same file again still fires onchange
+  input.value = '';
 }
 
 // ── Render active slideshow ────────────────────────────────────
