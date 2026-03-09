@@ -320,6 +320,65 @@ header p {
 .lib-type-dot.image { background: #7ecf9a; }
 .lib-type-dot.video { background: #b09ee8; }
 
+/* ── GitHub Settings Modal ── */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: #1a2e1c;
+  border: 1px solid rgba(196,180,138,0.2);
+  border-radius: 10px;
+  padding: 32px;
+  width: 480px;
+  max-width: 95vw;
+}
+.modal h2 {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #c4b48a;
+  margin-bottom: 6px;
+}
+.modal p {
+  font-size: 12px;
+  color: rgba(232,224,208,0.45);
+  line-height: 1.6;
+  margin-bottom: 22px;
+}
+.modal p a { color: #c4b48a; }
+.modal label {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(232,224,208,0.5);
+  margin-bottom: 6px;
+}
+.modal input {
+  width: 100%;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 5px;
+  padding: 10px 12px;
+  font-size: 13px;
+  color: #e8e0d0;
+  margin-bottom: 16px;
+  outline: none;
+  font-family: monospace;
+  transition: border-color 0.15s;
+}
+.modal input:focus { border-color: rgba(196,180,138,0.5); }
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 6px; }
+
 /* ── Toast ── */
 .toast {
   position: fixed;
@@ -358,13 +417,33 @@ header p {
 <header>
   <div>
     <h1>Era Outfitters &nbsp;·&nbsp; Hero Media Manager</h1>
-    <p>Drag to reorder &nbsp;·&nbsp; Click library items to add or remove &nbsp;·&nbsp; Save to download updated config</p>
+    <p>Drag to reorder &nbsp;·&nbsp; Click library items to add or remove</p>
   </div>
   <div class="header-actions">
     <button class="btn btn-secondary" onclick="reloadConfig()">↺ Reload</button>
-    <button class="btn btn-primary" onclick="saveConfig()">↓ Save media-config.json</button>
+    <button class="btn btn-secondary" onclick="openSettings()">⚙ GitHub</button>
+    <button class="btn btn-secondary" onclick="saveConfig()">↓ Download</button>
+    <button class="btn btn-primary" id="commitBtn" onclick="commitToGitHub()">↑ Commit to GitHub</button>
   </div>
 </header>
+
+<!-- GitHub Settings Modal -->
+<div class="modal-overlay" id="settingsModal">
+  <div class="modal">
+    <h2>GitHub Settings</h2>
+    <p>Create a Personal Access Token at <a href="https://github.com/settings/tokens" target="_blank">github.com/settings/tokens</a> with <strong>repo</strong> scope. It's stored only in your browser's localStorage — never sent anywhere except GitHub's API.</p>
+    <label>Personal Access Token</label>
+    <input type="password" id="ghToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+    <label>Repository (owner/repo)</label>
+    <input type="text" id="ghRepo" placeholder="eraoutfitters/eraoutfitters.github.io">
+    <label>Branch</label>
+    <input type="text" id="ghBranch" placeholder="main">
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeSettings()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveSettings()">Save</button>
+    </div>
+  </div>
+</div>
 
 <div class="layout">
 
@@ -605,7 +684,85 @@ function saveConfig() {
   a.download = 'media-config.json';
   a.click();
   URL.revokeObjectURL(url);
-  toast('Saved! Replace media-config.json in repo and push.');
+  toast('Downloaded media-config.json');
+}
+
+// ── GitHub Settings ────────────────────────────────────────────
+function openSettings() {
+  document.getElementById('ghToken').value  = localStorage.getItem('gh_token')  || '';
+  document.getElementById('ghRepo').value   = localStorage.getItem('gh_repo')   || 'eraoutfitters/eraoutfitters.github.io';
+  document.getElementById('ghBranch').value = localStorage.getItem('gh_branch') || 'main';
+  document.getElementById('settingsModal').classList.add('open');
+}
+function closeSettings() {
+  document.getElementById('settingsModal').classList.remove('open');
+}
+function saveSettings() {
+  localStorage.setItem('gh_token',  document.getElementById('ghToken').value.trim());
+  localStorage.setItem('gh_repo',   document.getElementById('ghRepo').value.trim());
+  localStorage.setItem('gh_branch', document.getElementById('ghBranch').value.trim());
+  closeSettings();
+  toast('GitHub settings saved');
+}
+
+// ── Commit to GitHub ───────────────────────────────────────────
+function commitToGitHub() {
+  var token  = localStorage.getItem('gh_token');
+  var repo   = localStorage.getItem('gh_repo')   || 'eraoutfitters/eraoutfitters.github.io';
+  var branch = localStorage.getItem('gh_branch') || 'main';
+
+  if (!token) { openSettings(); toast('Enter your GitHub token first'); return; }
+  if (!activeItems.length) { toast('Nothing to commit'); return; }
+
+  var btn = document.getElementById('commitBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Committing…';
+
+  var json    = JSON.stringify(activeItems, null, 2);
+  var content = btoa(unescape(encodeURIComponent(json))); // UTF-8 safe base64
+  var apiBase = 'https://api.github.com/repos/' + repo + '/contents/media-config.json';
+  var headers = {
+    'Authorization': 'Bearer ' + token,
+    'Accept': 'application/vnd.github+json',
+    'X-GitHub-Api-Version': '2022-11-28',
+    'Content-Type': 'application/json'
+  };
+
+  // Step 1: get current file SHA (required for updates)
+  fetch(apiBase + '?ref=' + branch, { headers: headers })
+    .then(function(r) { return r.json(); })
+    .then(function(fileData) {
+      var sha = fileData.sha || null;
+      var body = {
+        message: 'Update hero slideshow via media-manager',
+        content: content,
+        branch:  branch
+      };
+      if (sha) body.sha = sha;
+
+      // Step 2: push the updated file
+      return fetch(apiBase, {
+        method:  'PUT',
+        headers: headers,
+        body:    JSON.stringify(body)
+      });
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(result) {
+      if (result.content) {
+        toast('✓ Committed! GitHub Pages will update in ~1 min.');
+      } else {
+        toast('GitHub error: ' + (result.message || 'unknown'));
+      }
+    })
+    .catch(function(err) {
+      toast('Network error — check token and repo name');
+      console.error(err);
+    })
+    .finally(function() {
+      btn.disabled = false;
+      btn.textContent = '↑ Commit to GitHub';
+    });
 }
 
 // ── Toast ──────────────────────────────────────────────────────
