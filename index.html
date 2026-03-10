@@ -483,6 +483,22 @@ body::before {
   margin-bottom: 48px;
   text-align: center;
 }
+/* Product row label */
+.shop-row-label {
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: rgba(30,48,32,0.45);
+  padding: 0 40px;
+  margin-bottom: 16px;
+}
+.shop-row-label + .grid-scroll-wrap { margin-bottom: 48px; }
+@media (max-width: 560px) {
+  .shop-row-label { padding: 0 20px; }
+}
+
 /* Product grid — horizontal scroll row */
 .grid-scroll-wrap {
   position: relative;
@@ -1368,7 +1384,7 @@ var PRODUCTS_QUERY = [
   '  products(first: 24) {',
   '    edges {',
   '      node {',
-  '        id title descriptionHtml',
+  '        id title descriptionHtml productType',
   '        images(first: 10) { edges { node { url altText } } }',
   '        variants(first: 100) {',
   '          edges {',
@@ -1471,53 +1487,72 @@ function renderProductGrid() {
   }
   _renderedCards = pinnedCards.filter(Boolean).concat(rest);
 
-  var html = '<div class="grid-scroll-wrap"><div class="product-grid" id="productScrollRow">';
+  // Split into shirts and hats
+  function isHat(card) {
+    var pt = (_shopProducts[card.productIdx].productType || '').toLowerCase();
+    var title = (_shopProducts[card.productIdx].title || '').toLowerCase();
+    return pt.indexOf('hat') !== -1 || pt.indexOf('cap') !== -1 || pt.indexOf('beanie') !== -1 ||
+           title.indexOf('hat') !== -1 || title.indexOf('cap') !== -1 || title.indexOf('beanie') !== -1;
+  }
+  var shirtCards = _renderedCards.filter(function(c) { return !isHat(c); });
+  var hatCards   = _renderedCards.filter(function(c) { return isHat(c); });
 
-  _renderedCards.forEach(function(card, ci) {
-    var p = _shopProducts[card.productIdx];
-    var vEdges = (p.variants && p.variants.edges) || [];
-    var swatches = getColorSwatches(p);
-    var activeColorVal = card.activeColorVal;
+  function buildRow(cards, rowId, globalOffset) {
+    var rowHtml = '<div class="grid-scroll-wrap"><div class="product-grid" id="' + rowId + '">';
+    cards.forEach(function(card, ri) {
+      var ci = globalOffset + ri;
+      var p = _shopProducts[card.productIdx];
+      var vEdges = (p.variants && p.variants.edges) || [];
+      var swatches = getColorSwatches(p);
+      var activeColorVal = card.activeColorVal;
 
-    // Image for active color
-    var activeSw = swatches.find(function(sw) { return sw.colorVal === activeColorVal; });
-    var imgNodes = (p.images && p.images.edges || []).map(function(e) { return e.node; });
-    var imgUrl = (activeSw && activeSw.imgUrl) ? escAttr(activeSw.imgUrl) : (imgNodes.length ? escAttr(imgNodes[0].url) : '');
-    var imgAlt = escAttr((activeColorVal ? activeColorVal + ' ' : '') + p.title);
+      var activeSw = swatches.find(function(sw) { return sw.colorVal === activeColorVal; });
+      var imgNodes = (p.images && p.images.edges || []).map(function(e) { return e.node; });
+      var imgUrl = (activeSw && activeSw.imgUrl) ? escAttr(activeSw.imgUrl) : (imgNodes.length ? escAttr(imgNodes[0].url) : '');
+      var imgAlt = escAttr((activeColorVal ? activeColorVal + ' ' : '') + p.title);
 
-    // Price for active color
-    var colorVariant = activeColorVal ? vEdges.find(function(e2) {
-      return e2.node.selectedOptions.some(function(so) { return so.name.toLowerCase() === 'color' && so.value === activeColorVal; });
-    }) : null;
-    var price = (colorVariant || vEdges[0]) ? formatMoney(parseFloat((colorVariant || vEdges[0]).node.price.amount), (colorVariant || vEdges[0]).node.price.currencyCode) : '';
+      var colorVariant = activeColorVal ? vEdges.find(function(e2) {
+        return e2.node.selectedOptions.some(function(so) { return so.name.toLowerCase() === 'color' && so.value === activeColorVal; });
+      }) : null;
+      var price = (colorVariant || vEdges[0]) ? formatMoney(parseFloat((colorVariant || vEdges[0]).node.price.amount), (colorVariant || vEdges[0]).node.price.currencyCode) : '';
 
-    html += '<div class="product-card" id="pcard-' + ci + '" onclick="showProductDetailFromCard(' + ci + ')">';
-    html += '<div class="card-img-wrap">';
-    html += imgUrl ? '<img class="product-card-img" src="' + imgUrl + '" alt="' + imgAlt + '" loading="lazy">' : '<div class="product-card-img"></div>';
-    html += '</div>';
+      rowHtml += '<div class="product-card" id="pcard-' + ci + '" onclick="showProductDetailFromCard(' + ci + ')">';
+      rowHtml += '<div class="card-img-wrap">';
+      rowHtml += imgUrl ? '<img class="product-card-img" src="' + imgUrl + '" alt="' + imgAlt + '" loading="lazy">' : '<div class="product-card-img"></div>';
+      rowHtml += '</div>';
 
-    // Swatches
-    if (swatches.length > 1) {
-      html += '<div class="card-swatches" onclick="event.stopPropagation()">';
-      swatches.forEach(function(sw) {
-        var isActive = sw.colorVal === activeColorVal;
-        var bgStyle = sw.imgUrl ? 'background-image:url(' + escAttr(sw.imgUrl) + ');background-size:cover;' : 'background:#ccc;';
-        html += '<div class="card-swatch' + (isActive ? ' active' : '') + '" style="' + bgStyle + '" title="' + escAttr(sw.colorVal) + '" onclick="switchCardColor(' + ci + ',' + escAttr(JSON.stringify(sw.colorVal)) + ',event)"></div>';
-      });
-      html += '</div>';
-    } else {
-      html += '<div class="card-swatches"></div>';
-    }
+      if (swatches.length > 1) {
+        rowHtml += '<div class="card-swatches" onclick="event.stopPropagation()">';
+        swatches.forEach(function(sw) {
+          var isActive = sw.colorVal === activeColorVal;
+          var bgStyle = sw.imgUrl ? 'background-image:url(' + escAttr(sw.imgUrl) + ');background-size:cover;' : 'background:#ccc;';
+          rowHtml += '<div class="card-swatch' + (isActive ? ' active' : '') + '" style="' + bgStyle + '" title="' + escAttr(sw.colorVal) + '" onclick="switchCardColor(' + ci + ',' + escAttr(JSON.stringify(sw.colorVal)) + ',event)"></div>';
+        });
+        rowHtml += '</div>';
+      } else {
+        rowHtml += '<div class="card-swatches"></div>';
+      }
 
-    html += '<div class="product-card-title">' + escHtml(p.title) + '</div>';
-    if (activeColorVal) html += '<div class="product-card-color">' + escHtml(activeColorVal) + '</div>';
-    if (price) html += '<div class="product-card-price">' + escHtml(price) + '</div>';
-    html += '</div>';
-  });
+      rowHtml += '<div class="product-card-title">' + escHtml(p.title) + '</div>';
+      if (activeColorVal) rowHtml += '<div class="product-card-color">' + escHtml(activeColorVal) + '</div>';
+      if (price) rowHtml += '<div class="product-card-price">' + escHtml(price) + '</div>';
+      rowHtml += '</div>';
+    });
+    rowHtml += '</div>';
+    rowHtml += '<div class="grid-scroll-btns"><button class="grid-scroll-btn" onclick="scrollGrid(\'' + rowId + '\',-1)" aria-label="Scroll left">&#8592;</button><button class="grid-scroll-btn" onclick="scrollGrid(\'' + rowId + '\',1)" aria-label="Scroll right">&#8594;</button></div>';
+    rowHtml += '</div>';
+    return rowHtml;
+  }
 
-  html += '</div>';
-  html += '<div class="grid-scroll-btns"><button class="grid-scroll-btn" onclick="scrollGrid(-1)" aria-label="Scroll left">&#8592;</button><button class="grid-scroll-btn" onclick="scrollGrid(1)" aria-label="Scroll right">&#8594;</button></div>';
-  html += '</div>';
+  var html = '';
+  if (shirtCards.length) {
+    html += '<p class="shop-row-label">Shirts</p>';
+    html += buildRow(shirtCards, 'productScrollRow', 0);
+  }
+  if (hatCards.length) {
+    html += '<p class="shop-row-label">Hats</p>';
+    html += buildRow(hatCards, 'productScrollRowHats', shirtCards.length);
+  }
   grid.innerHTML = html;
   document.getElementById('shopGrid').style.display   = 'block';
   document.getElementById('shopDetail').style.display = 'none';
@@ -1546,8 +1581,8 @@ function showProductDetailFromCard(ci) {
   showProductDetail(card.productIdx, card.activeColorVal);
 }
 
-function scrollGrid(dir) {
-  var row = document.getElementById('productScrollRow');
+function scrollGrid(rowId, dir) {
+  var row = document.getElementById(rowId);
   if (!row) return;
   var cardWidth = row.querySelector('.product-card');
   var step = cardWidth ? cardWidth.offsetWidth + 20 : 280;
