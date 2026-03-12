@@ -1521,7 +1521,7 @@ function renderProductGrid() {
       }) : null;
       var price = (colorVariant || vEdges[0]) ? formatMoney(parseFloat((colorVariant || vEdges[0]).node.price.amount), (colorVariant || vEdges[0]).node.price.currencyCode) : '';
 
-      rowHtml += '<div class="product-card" id="pcard-' + ci + '" onclick="showProductDetailFromCard(' + ci + ')">';
+      rowHtml += '<div class="product-card" id="pcard-' + ci + '" onclick="showProductDetail(' + card.productIdx + ',' + (card.activeColorVal ? escAttr(JSON.stringify(card.activeColorVal)) : 'null') + ')">';
       rowHtml += '<div class="card-img-wrap">';
       rowHtml += imgUrl ? '<img class="product-card-img" src="' + imgUrl + '" alt="' + imgAlt + '" loading="lazy">' : '<div class="product-card-img"></div>';
       rowHtml += '</div>';
@@ -1674,7 +1674,7 @@ function renderDetail(idx) {
   if (imgs.length > 1) {
     imgs.forEach(function(img, ti) {
       var isActive = mainImgNode && img.url === mainImgNode.url;
-      thumbsHtml += '<img class="detail-thumb' + (isActive ? ' active' : '') + '" src="' + escAttr(img.url) + '" alt="' + escAttr(img.altText || '') + '" onclick="switchDetailImage(' + ti + ')" loading="lazy">';
+      thumbsHtml += '<img class="detail-thumb' + (isActive ? ' active' : '') + '" src="' + escAttr(img.url) + '" alt="' + escAttr(img.altText || '') + '" onclick="switchDetailImage(' + idx + ',' + ti + ')" loading="lazy">';
     });
   }
 
@@ -1721,14 +1721,28 @@ function selectOption(idx, optName, optVal) {
   renderDetail(idx);
 }
 
-function switchDetailImage(ti) {
-  var p = _shopProducts;
+function switchDetailImage(idx, ti) {
   var imgs = document.querySelectorAll('.detail-thumb');
   var mainImg = document.getElementById('detailMainImg');
   if (!mainImg || !imgs[ti]) return;
+  var clickedSrc = imgs[ti].src;
+  // If the clicked thumbnail matches a variant image, update the selected variant
+  var p = _shopProducts[idx];
+  if (p) {
+    var vEdges = (p.variants && p.variants.edges) || [];
+    var matchVariant = vEdges.find(function(e) {
+      return e.node.image && e.node.image.url === clickedSrc;
+    });
+    if (matchVariant) {
+      _selectedVariants[idx] = matchVariant.node.id;
+      renderDetail(idx);
+      return;
+    }
+  }
+  // No matching variant — just swap the displayed image
   imgs.forEach(function(t) { t.classList.remove('active'); });
   imgs[ti].classList.add('active');
-  mainImg.src = imgs[ti].src;
+  mainImg.src = clickedSrc;
   mainImg.alt = imgs[ti].alt;
 }
 
