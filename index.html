@@ -1502,10 +1502,10 @@ function renderProductGrid() {
   var shirtCards = _renderedCards.filter(function(c) { return !isHat(c); });
   var hatCards   = _renderedCards.filter(function(c) { return isHat(c); });
 
-  function buildRow(cards, rowId, globalOffset) {
+  function buildRow(cards, rowId) {
     var rowHtml = '<div class="grid-scroll-wrap"><div class="product-grid" id="' + rowId + '">';
-    cards.forEach(function(card, ri) {
-      var ci = globalOffset + ri;
+    cards.forEach(function(card) {
+      var ci = _renderedCards.indexOf(card);
       var p = _shopProducts[card.productIdx];
       var vEdges = (p.variants && p.variants.edges) || [];
       var swatches = getColorSwatches(p);
@@ -1552,11 +1552,11 @@ function renderProductGrid() {
   var html = '';
   if (shirtCards.length) {
     html += '<p class="shop-row-label">Shirts</p>';
-    html += buildRow(shirtCards, 'productScrollRow', 0);
+    html += buildRow(shirtCards, 'productScrollRow');
   }
   if (hatCards.length) {
     html += '<p class="shop-row-label">Hats</p>';
-    html += buildRow(hatCards, 'productScrollRowHats', shirtCards.length);
+    html += buildRow(hatCards, 'productScrollRowHats');
   }
   grid.innerHTML = html;
   document.getElementById('shopGrid').style.display   = 'block';
