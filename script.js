@@ -564,7 +564,24 @@ function switchDetailImage(idx, ti) {
       return e.node.image && e.node.image.url === clickedSrc;
     });
     if (matchVariant) {
-      _selectedVariants[idx] = matchVariant.node.id;
+      // Preserve current size (and any other non-color options) when switching color via image
+      var currentVar = vEdges.find(function(e) { return e.node.id === _selectedVariants[idx]; });
+      var newColorOpt = matchVariant.node.selectedOptions.find(function(so) {
+        return so.name.toLowerCase() === 'color';
+      });
+      if (currentVar && newColorOpt) {
+        // Start from current selections, override only the color
+        var currentOpts = {};
+        currentVar.node.selectedOptions.forEach(function(so) { currentOpts[so.name] = so.value; });
+        currentOpts[newColorOpt.name] = newColorOpt.value;
+        // Find variant matching new color + same size
+        var bestMatch = vEdges.find(function(e) {
+          return e.node.selectedOptions.every(function(so) { return currentOpts[so.name] === so.value; });
+        });
+        _selectedVariants[idx] = (bestMatch || matchVariant).node.id;
+      } else {
+        _selectedVariants[idx] = matchVariant.node.id;
+      }
       renderDetail(idx);
       return;
     }
