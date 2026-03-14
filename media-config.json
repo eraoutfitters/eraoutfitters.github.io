@@ -5,23 +5,23 @@
   },
   {
     "type": "video",
-    "src": "media/IMG_7600.mov"
+    "src": "media/IMG_7600.mp4"
   },
   {
     "type": "image",
-    "src": "media/era-9.jpg"
+    "src": "media/era-9.webp"
   },
   {
     "type": "image",
-    "src": "media/era-13.jpg"
+    "src": "media/era-13.webp"
   },
   {
     "type": "image",
-    "src": "media/era-15.jpg"
+    "src": "media/era-15.webp"
   },
   {
     "type": "image",
-    "src": "media/era-1.jpg"
+    "src": "media/era-1.webp"
   },
   {
     "type": "video",
@@ -29,15 +29,15 @@
   },
   {
     "type": "image",
-    "src": "media/era-5.jpg"
+    "src": "media/era-5.webp"
   },
   {
     "type": "image",
-    "src": "media/era-7.jpg"
+    "src": "media/era-7.webp"
   },
   {
     "type": "image",
-    "src": "media/era-16.jpg"
+    "src": "media/era-16.webp"
   },
   {
     "type": "video",
@@ -45,6 +45,6 @@
   },
   {
     "type": "image",
-    "src": "media/era-3.jpg"
+    "src": "media/era-3.webp"
   }
 ]
