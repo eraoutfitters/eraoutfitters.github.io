@@ -24,6 +24,25 @@
 <meta name="twitter:title" content="Erä Outfitters | Field &amp; Fly Shop · Roswell, Georgia">
 <meta name="twitter:description" content="A modern Southern field shop blending fly fishing, upland hunting, and heritage outdoor apparel. Coming to Historic Roswell, Georgia.">
 <meta name="twitter:image" content="https://eraoutfitters.com/hero-og.jpg">
+<!-- Structured data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": "Erä Outfitters",
+  "description": "A modern Southern field and fly shop blending fly fishing, upland hunting, and heritage outdoor apparel. Coming to Historic Roswell, Georgia.",
+  "url": "https://eraoutfitters.com",
+  "logo": "https://eraoutfitters.com/logo.svg",
+  "image": "https://eraoutfitters.com/hero-og.jpg",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Roswell",
+    "addressRegion": "GA",
+    "addressCountry": "US"
+  },
+  "sameAs": ["https://instagram.com/eraoutfitter"]
+}
+</script>
 <link rel="icon" href="logo.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -33,6 +52,12 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+<!-- ─── STICKY BAR ────────────────────────────── -->
+<nav id="stickyBar" class="sticky-bar" aria-label="Quick navigation">
+  <img src="logo.svg" alt="Erä Outfitters" class="sticky-logo">
+  <button class="sticky-shop-btn" onclick="openShopModal()" aria-label="Open shop">Shop</button>
+</nav>
 
 <div id="mainCard">
 
@@ -204,7 +229,7 @@
     <p class="sub">Join the list for opening day, first events, and early access to new gear.</p>
     <form style="margin:0;padding:0;position:relative;overflow:hidden;"
       action="https://eraoutfitters.us10.list-manage.com/subscribe/post?u=f6e6c6ba682dcca7138938074&amp;id=c5f58615a8&amp;f_id=000c4ee4f0"
-      method="post" target="_blank" novalidate>
+      method="post">
       <div class="form-row">
         <input type="email" name="EMAIL" class="form-input" id="emailInput" placeholder="your@email.com" autocomplete="email" required/>
         <button type="submit" class="form-btn">Get Early Access</button>
@@ -226,7 +251,7 @@
   </div>
   <div class="foot-brand">Er&#228; Outfitters</div>
   <div class="foot-links">
-    <a href="https://instagram.com/eraoutfitter" target="_blank" class="foot-link">@eraoutfitter</a>
+    <a href="https://instagram.com/eraoutfitter" target="_blank" rel="noopener" class="foot-link">@eraoutfitter</a>
     <div class="foot-sep"></div>
     <a href="#" class="foot-link" id="eml"></a>
     <div class="foot-sep"></div>

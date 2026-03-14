@@ -5,7 +5,6 @@ fetch('media-config.json')
 (function (ALL_MEDIA) {
   var isMobile = window.matchMedia('(max-width: 768px)').matches;
 
-  // Detect slow connection — serve images only if bandwidth is very low
   var conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
   var slowConn = conn && (
     conn.saveData === true ||
@@ -14,7 +13,6 @@ fetch('media-config.json')
   );
   var videosAllowed = !slowConn;
 
-  // Filter out videos on slow connections
   var media = videosAllowed
     ? ALL_MEDIA
     : ALL_MEDIA.filter(function (m) { return m.type === 'image'; });
@@ -22,15 +20,14 @@ fetch('media-config.json')
   if (!media.length) return;
 
   var container = document.getElementById('hero-media');
-  var FADE         = 1200;  // ms — must match CSS transition
-  var IMG_HOLD     = 5000;  // ms images stay visible
-  var VIDEO_SKIP   = 3000;  // ms to wait before skipping a stalled video
+  var FADE         = 1200;
+  var IMG_HOLD     = 5000;
+  var VIDEO_SKIP   = 3000;
   var cur          = 0;
   var imgTimer     = null;
   var skipTimer    = null;
   var els          = [];
 
-  // Helper: stamp all required autoplay attributes onto a <video> element
   function makeVideoEl(src, cls) {
     var v = document.createElement('video');
     v.muted       = true;
@@ -51,25 +48,18 @@ fetch('media-config.json')
     return v;
   }
 
-  // Build elements
   media.forEach(function (m) {
     var el;
     if (m.type === 'video') {
-      // Wrapper div is the fade/z-index target; videos live inside it
       el = document.createElement('div');
       el.className = 'hero-media-item is-video';
-
       var videoMain = makeVideoEl(m.src, 'vp-main');
       el.appendChild(videoMain);
-
-      // Blur clone only created on mobile — desktop hides it via CSS anyway
-      // but we skip creation entirely to avoid loading the same stream twice
       var videoBlur = null;
       if (isMobile) {
         videoBlur = makeVideoEl(m.src, 'vp-blur');
         el.appendChild(videoBlur);
       }
-
       container.appendChild(el);
       els.push({ el: el, videoMain: videoMain, videoBlur: videoBlur, type: 'video' });
     } else {
@@ -81,14 +71,13 @@ fetch('media-config.json')
     }
   });
 
-  // Wire ended/playing events on the main video of each item
   els.forEach(function (item, i) {
     if (item.type !== 'video') return;
     item.videoMain.addEventListener('ended', function () {
       if (cur === i) goTo(i + 1);
     });
     item.videoMain.addEventListener('playing', function () {
-      clearTimeout(skipTimer); // video started — cancel stall guard
+      clearTimeout(skipTimer);
     });
   });
 
@@ -96,8 +85,6 @@ fetch('media-config.json')
     clearTimeout(skipTimer);
     item.videoMain.currentTime = 0;
     if (item.videoBlur) item.videoBlur.currentTime = 0;
-
-    // Stall guard: skip if main video hasn't started within VIDEO_SKIP ms
     skipTimer = setTimeout(function () {
       if (item.videoMain.paused || item.videoMain.readyState < 2) {
         item.videoMain.pause();
@@ -105,37 +92,24 @@ fetch('media-config.json')
         onFail();
       }
     }, VIDEO_SKIP);
-
     var p = item.videoMain.play();
-    // Blur play failure is non-fatal — ignore its promise
     if (item.videoBlur) item.videoBlur.play().catch(function () {});
-
     if (p && typeof p.then === 'function') {
-      p.then(function () {
-        clearTimeout(skipTimer);
-      }).catch(function () {
-        clearTimeout(skipTimer);
-        onFail();
-      });
+      p.then(function () { clearTimeout(skipTimer); })
+       .catch(function () { clearTimeout(skipTimer); onFail(); });
     }
   }
 
   function goTo(idx) {
     var prevIdx = cur;
     cur = ((idx % els.length) + els.length) % els.length;
-
     clearTimeout(imgTimer);
     clearTimeout(skipTimer);
-
     var next = els[cur];
     var prev = els[prevIdx];
-
-    // Bring next layer up and fade in
     next.el.style.zIndex  = '3';
-    void next.el.offsetWidth; // force reflow
+    void next.el.offsetWidth;
     next.el.style.opacity = '1';
-
-    // After crossfade completes, drop previous behind and pause its video
     setTimeout(function () {
       if (prev.type === 'video') {
         prev.videoMain.pause();
@@ -145,35 +119,27 @@ fetch('media-config.json')
       prev.el.style.zIndex  = '1';
       next.el.style.zIndex  = '2';
     }, FADE);
-
     if (next.type === 'video') {
-      playVideo(next, function () {
-        imgTimer = setTimeout(function () { goTo(cur + 1); }, 0);
-      });
+      playVideo(next, function () { imgTimer = setTimeout(function () { goTo(cur + 1); }, 0); });
     } else {
       imgTimer = setTimeout(function () { goTo(cur + 1); }, IMG_HOLD);
     }
   }
 
-  // Show first item
   var first = els[0];
   first.el.style.zIndex  = '2';
   first.el.style.opacity = '1';
-
   if (first.type === 'video') {
-    playVideo(first, function () {
-      imgTimer = setTimeout(function () { goTo(1); }, 0);
-    });
+    playVideo(first, function () { imgTimer = setTimeout(function () { goTo(1); }, 0); });
   } else {
     imgTimer = setTimeout(function () { goTo(1); }, IMG_HOLD);
   }
 
-  // Expose for arrow buttons
   window.heroNav = function(dir) { goTo(cur + dir); };
 }(ALL_MEDIA));
   }).catch(function() { console.warn('media-config.json not found'); });
 
-// Scroll reveal
+// ─── SCROLL REVEAL ────────────────────────────
 var reveals = document.querySelectorAll('.reveal');
 var observer = new IntersectionObserver(function(entries) {
   entries.forEach(function(e) {
@@ -183,13 +149,14 @@ var observer = new IntersectionObserver(function(entries) {
 reveals.forEach(function(el) { observer.observe(el); });
 
 // ─── SHOP — Storefront API ────────────────────
-var SHOP_DOMAIN  = 'mddjp6-nx.myshopify.com';
-var SHOP_TOKEN   = 'b306f8e1668b7a20ecdc465faf332c76';
-var SHOP_API     = 'https://' + SHOP_DOMAIN + '/api/2024-01/graphql.json';
-var _shopLoaded  = false;
+var SHOP_DOMAIN   = 'mddjp6-nx.myshopify.com';
+var SHOP_TOKEN    = 'b306f8e1668b7a20ecdc465faf332c76';
+var SHOP_API      = 'https://' + SHOP_DOMAIN + '/api/2024-01/graphql.json';
+var _shopLoaded   = false;
 var _shopProducts = [];
-var _selectedVariants = {}; // productIdx -> variantId
-var _renderedCards = [];    // flat ordered list of {productIdx, activeColorVal}
+var _selectedVariants = {};
+var _renderedCards    = [];
+var _shopScrollY      = 0; // saves scroll position before entering detail
 
 function getColorSwatches(p) {
   var seen = {}, swatches = [];
@@ -252,7 +219,7 @@ function openShopModal() {
   document.getElementById('shop').scrollIntoView({ behavior: 'smooth' });
 }
 
-function closeShop() { /* shop is always visible inline */ }
+function closeShop() {}
 
 // Auto-load products when shop section scrolls into view
 (function() {
@@ -264,10 +231,26 @@ function closeShop() { /* shop is always visible inline */ }
   obs.observe(shopEl);
 }());
 
+// ─── SKELETON LOADING ─────────────────────────
+function renderSkeletons(n) {
+  var html = '<p class="shop-row-label" aria-hidden="true">&nbsp;</p>'
+           + '<div class="grid-scroll-wrap"><div class="product-grid">';
+  for (var i = 0; i < n; i++) {
+    html += '<div class="product-card product-card--skeleton" aria-hidden="true">'
+          + '<div class="card-img-wrap skeleton-pulse"></div>'
+          + '<div class="skeleton-line" style="width:75%;margin-top:14px"></div>'
+          + '<div class="skeleton-line" style="width:45%;margin-top:8px"></div>'
+          + '<div class="skeleton-line" style="width:35%;margin-top:8px"></div>'
+          + '</div>';
+  }
+  html += '</div></div>';
+  return html;
+}
+
 function loadShopProducts() {
   if (_shopLoaded) return;
   var grid = document.getElementById('shopGrid');
-  grid.innerHTML = '<p class="shop-loading">Loading&hellip;</p>';
+  grid.innerHTML = renderSkeletons(6);
   gql(PRODUCTS_QUERY).then(function(data) {
     _shopLoaded = true;
     var edges = (data.data && data.data.products && data.data.products.edges) || [];
@@ -285,15 +268,11 @@ function renderProductGrid() {
     return;
   }
 
-  // Build per-product swatch lists
   var productSwatches = _shopProducts.map(function(p, i) {
     var sw = getColorSwatches(p);
     return { productIdx: i, swatches: sw.length ? sw : [null] };
   });
 
-  // Interleave: round-robin across products (color round 0 of each, then round 1, etc.)
-  // Build all cards then group by color value, round-robin across color groups
-  // so cards of the same color are maximally spread apart
   var allCards = [];
   productSwatches.forEach(function(ps) {
     ps.swatches.forEach(function(sw) {
@@ -301,7 +280,6 @@ function renderProductGrid() {
     });
   });
 
-  // Pin specific cards first, shuffle the rest
   var pinned = [
     { title: 'Original Erä Outfitters Long Sleeve Comfort Colors Shirt', color: 'Blue Jean' },
     { title: 'Original Erä Outfitters Long Sleeve Comfort Colors Shirt', color: 'Light Green' }
@@ -315,14 +293,12 @@ function renderProductGrid() {
     if (matchPin) pinnedCards[pinned.indexOf(matchPin)] = c;
     else rest.push(c);
   });
-  // Fisher-Yates shuffle the rest
   for (var i = rest.length - 1; i > 0; i--) {
     var j = Math.floor(Math.random() * (i + 1));
     var tmp = rest[i]; rest[i] = rest[j]; rest[j] = tmp;
   }
   _renderedCards = pinnedCards.filter(Boolean).concat(rest);
 
-  // Split into shirts and hats
   function isHat(card) {
     var pt = (_shopProducts[card.productIdx].productType || '').toLowerCase();
     var title = (_shopProducts[card.productIdx].title || '').toLowerCase();
@@ -351,17 +327,31 @@ function renderProductGrid() {
       }) : null;
       var price = (colorVariant || vEdges[0]) ? formatMoney(parseFloat((colorVariant || vEdges[0]).node.price.amount), (colorVariant || vEdges[0]).node.price.currencyCode) : '';
 
-      rowHtml += '<div class="product-card" id="pcard-' + ci + '" onclick="showProductDetail(' + card.productIdx + ',' + (card.activeColorVal ? escAttr(JSON.stringify(card.activeColorVal)) : 'null') + ')">';
+      var cardAriaLabel = escAttr(p.title + (activeColorVal ? ', ' + activeColorVal : '') + (price ? ', ' + price : ''));
+      var cardOnclick = 'showProductDetail(' + card.productIdx + ',' + (activeColorVal ? escAttr(JSON.stringify(activeColorVal)) : 'null') + ')';
+
+      rowHtml += '<div class="product-card" id="pcard-' + ci + '"'
+              + ' role="button" tabindex="0" aria-label="' + cardAriaLabel + '"'
+              + ' onclick="' + cardOnclick + '"'
+              + ' onkeydown="if(event.key===\'Enter\'||event.key===\' \'){' + cardOnclick + '}">';
       rowHtml += '<div class="card-img-wrap">';
       rowHtml += imgUrl ? '<img class="product-card-img" src="' + imgUrl + '" alt="' + imgAlt + '" loading="lazy">' : '<div class="product-card-img"></div>';
       rowHtml += '</div>';
 
       if (swatches.length > 1) {
-        rowHtml += '<div class="card-swatches" onclick="event.stopPropagation()">';
+        rowHtml += '<div class="card-swatches" onclick="event.stopPropagation()" role="group" aria-label="Color options">';
         swatches.forEach(function(sw) {
           var isActive = sw.colorVal === activeColorVal;
           var bgStyle = sw.imgUrl ? 'background-image:url(' + escAttr(sw.imgUrl) + ');background-size:cover;' : 'background:#ccc;';
-          rowHtml += '<div class="card-swatch' + (isActive ? ' active' : '') + '" style="' + bgStyle + '" title="' + escAttr(sw.colorVal) + '" onclick="switchCardColor(' + ci + ',' + escAttr(JSON.stringify(sw.colorVal)) + ',event)"></div>';
+          var swOnclick = 'switchCardColor(' + ci + ',' + escAttr(JSON.stringify(sw.colorVal)) + ',event)';
+          rowHtml += '<div class="card-swatch' + (isActive ? ' active' : '') + '"'
+                  + ' style="' + bgStyle + '"'
+                  + ' role="button" tabindex="0"'
+                  + ' title="' + escAttr(sw.colorVal) + '"'
+                  + ' aria-label="' + escAttr(sw.colorVal + (isActive ? ' (selected)' : '')) + '"'
+                  + ' onclick="' + swOnclick + '"'
+                  + ' onkeydown="if(event.key===\'Enter\'||event.key===\' \'){' + swOnclick + '}">'
+                  + '</div>';
         });
         rowHtml += '</div>';
       } else {
@@ -374,7 +364,10 @@ function renderProductGrid() {
       rowHtml += '</div>';
     });
     rowHtml += '</div>';
-    rowHtml += '<div class="grid-scroll-btns"><button class="grid-scroll-btn" onclick="scrollGrid(\'' + rowId + '\',-1)" aria-label="Scroll left">&#8592;</button><button class="grid-scroll-btn" onclick="scrollGrid(\'' + rowId + '\',1)" aria-label="Scroll right">&#8594;</button></div>';
+    rowHtml += '<div class="grid-scroll-btns">'
+             + '<button class="grid-scroll-btn" onclick="scrollGrid(\'' + rowId + '\',-1)" aria-label="Scroll left">&#8592;</button>'
+             + '<button class="grid-scroll-btn" onclick="scrollGrid(\'' + rowId + '\',1)" aria-label="Scroll right">&#8594;</button>'
+             + '</div>';
     rowHtml += '</div>';
     return rowHtml;
   }
@@ -404,10 +397,14 @@ function switchCardColor(ci, colorVal, e) {
   var img = card.querySelector('.product-card-img');
   if (img && sw && sw.imgUrl) { img.src = sw.imgUrl; img.alt = colorVal; }
   card.querySelectorAll('.card-swatch').forEach(function(dot) {
-    dot.classList.toggle('active', dot.title === colorVal);
+    var isNowActive = dot.title === colorVal;
+    dot.classList.toggle('active', isNowActive);
+    dot.setAttribute('aria-label', dot.title + (isNowActive ? ' (selected)' : ''));
   });
   var colorLabel = card.querySelector('.product-card-color');
   if (colorLabel) colorLabel.textContent = colorVal;
+  // Update card aria-label
+  card.setAttribute('aria-label', escAttr(p.title + ', ' + colorVal));
 }
 
 function showProductDetailFromCard(ci) {
@@ -419,24 +416,25 @@ function showProductDetailFromCard(ci) {
 function scrollGrid(rowId, dir) {
   var row = document.getElementById(rowId);
   if (!row) return;
-  var cardWidth = row.querySelector('.product-card');
-  var step = cardWidth ? cardWidth.offsetWidth + 20 : 280;
+  var cardEl = row.querySelector('.product-card');
+  var step = cardEl ? cardEl.offsetWidth + 20 : 280;
   row.scrollBy({ left: dir * step * 2, behavior: 'smooth' });
 }
 
 function showShopGrid() {
   document.getElementById('shopGrid').style.display   = 'block';
   document.getElementById('shopDetail').style.display = 'none';
-  document.getElementById('shop').scrollIntoView({ behavior: 'smooth' });
+  // Restore exact scroll position instead of jumping to section top
+  window.scrollTo({ top: _shopScrollY, behavior: 'instant' });
 }
 
 function showProductDetail(idx, colorVal) {
+  _shopScrollY = window.scrollY; // save before hiding grid
   var p = _shopProducts[idx];
   if (!p) return;
 
   var vEdges = (p.variants && p.variants.edges) || [];
   if (colorVal) {
-    // Pre-select first variant matching this color
     var matchVariant = vEdges.find(function(e) {
       return e.node.selectedOptions.some(function(so) {
         return so.name.toLowerCase() === 'color' && so.value === colorVal;
@@ -450,6 +448,8 @@ function showProductDetail(idx, colorVal) {
   document.getElementById('shopGrid').style.display   = 'none';
   document.getElementById('shopDetail').style.display = 'block';
   renderDetail(idx);
+  // Scroll to top of shop section
+  document.getElementById('shop').scrollIntoView({ behavior: 'smooth' });
 }
 
 function renderDetail(idx) {
@@ -459,22 +459,20 @@ function renderDetail(idx) {
   var selVar = vEdges.find(function(e) { return e.node.id === selId; });
   if (!selVar && vEdges.length) selVar = vEdges[0];
 
-  // Images: use variant image if available, otherwise first product image
   var imgEdges = (p.images && p.images.edges) || [];
   var imgs = imgEdges.map(function(e) { return e.node; });
   var variantImg = selVar && selVar.node.image;
 
-  // Price from selected variant
   var price = selVar ? formatMoney(parseFloat(selVar.node.price.amount), selVar.node.price.currencyCode) : '';
   var avail = selVar ? selVar.node.availableForSale : false;
 
-  // Build options UI
+  // Build options UI with per-option availability
   var optionsHtml = '';
   (p.options || []).forEach(function(opt) {
-    // Skip single-value "Title" option (Shopify default for simple products)
     if (opt.values.length === 1 && opt.name === 'Title') return;
-    optionsHtml += '<div class="detail-option-label">' + escHtml(opt.name) + '</div>';
-    optionsHtml += '<div class="option-btns">';
+    optionsHtml += '<div class="detail-option-label" id="opt-label-' + escAttr(opt.name) + '">' + escHtml(opt.name) + '</div>';
+    optionsHtml += '<div class="option-btns" role="group" aria-labelledby="opt-label-' + escAttr(opt.name) + '">';
+
     var sizeOrder = ['XS','S','SM','S/M','SMALL','M','MD','M/L','MEDIUM','L','LG','LARGE','XL','1X','2X','XXL','2XL','3X','XXXL','3XL','4XL'];
     var sortedVals = opt.values.slice().sort(function(a, b) {
       var ai = sizeOrder.indexOf(a.toUpperCase());
@@ -484,27 +482,48 @@ function renderDetail(idx) {
       if (bi === -1) return -1;
       return ai - bi;
     });
+
     sortedVals.forEach(function(val) {
-      // Find variant for this option value given other selected options
       var isSelected = selVar && selVar.node.selectedOptions.some(function(so) {
         return so.name === opt.name && so.value === val;
       });
-      optionsHtml += '<button class="option-btn' + (isSelected ? ' selected' : '') + '" onclick="selectOption(' + idx + ',' + escAttr(JSON.stringify(opt.name)) + ',' + escAttr(JSON.stringify(val)) + ')">' + escHtml(val) + '</button>';
+
+      // Check stock for this option value with the currently selected other options
+      var testOpts = {};
+      if (selVar) {
+        selVar.node.selectedOptions.forEach(function(so) { testOpts[so.name] = so.value; });
+      }
+      testOpts[opt.name] = val;
+      var matchV = vEdges.find(function(e) {
+        return e.node.selectedOptions.every(function(so) { return testOpts[so.name] === so.value; });
+      });
+      var isAvail = matchV ? matchV.node.availableForSale : false;
+
+      optionsHtml += '<button class="option-btn'
+                   + (isSelected ? ' selected' : '')
+                   + (isAvail ? '' : ' sold-out') + '"'
+                   + ' aria-label="' + escAttr(opt.name + ' ' + val + (isAvail ? '' : ', sold out')) + '"'
+                   + ' aria-pressed="' + (isSelected ? 'true' : 'false') + '"'
+                   + ' onclick="selectOption(' + idx + ',' + escAttr(JSON.stringify(opt.name)) + ',' + escAttr(JSON.stringify(val)) + ')">'
+                   + escHtml(val)
+                   + '</button>';
     });
     optionsHtml += '</div>';
   });
 
-  // Determine main image: prefer variant image, fall back to first product image
   var mainImgNode = (variantImg && variantImg.url) ? variantImg : (imgs.length ? imgs[0] : null);
   var mainImgSrc = mainImgNode ? escAttr(mainImgNode.url) : '';
   var mainImgAlt = mainImgNode ? escAttr(mainImgNode.altText || p.title) : '';
 
-  // Thumbnails — mark the one matching the main image as active
   var thumbsHtml = '';
   if (imgs.length > 1) {
     imgs.forEach(function(img, ti) {
       var isActive = mainImgNode && img.url === mainImgNode.url;
-      thumbsHtml += '<img class="detail-thumb' + (isActive ? ' active' : '') + '" src="' + escAttr(img.url) + '" alt="' + escAttr(img.altText || '') + '" onclick="switchDetailImage(' + idx + ',' + ti + ')" loading="lazy">';
+      thumbsHtml += '<img class="detail-thumb' + (isActive ? ' active' : '') + '"'
+                 + ' src="' + escAttr(img.url) + '"'
+                 + ' alt="' + escAttr(img.altText || p.title + ' view ' + (ti + 1)) + '"'
+                 + ' onclick="switchDetailImage(' + idx + ',' + ti + ')"'
+                 + ' loading="lazy">';
     });
   }
 
@@ -514,7 +533,8 @@ function renderDetail(idx) {
   var html = '<div class="detail-layout">';
   html += '<div class="detail-images">';
   if (mainImgSrc) {
-    html += '<img id="detailMainImg" class="detail-main-img" src="' + mainImgSrc + '" alt="' + mainImgAlt + '">';
+    html += '<img id="detailMainImg" class="detail-main-img" src="' + mainImgSrc + '" alt="' + mainImgAlt + '"'
+         + ' onclick="openImageZoom(this.src,this.alt)" title="Click to zoom" style="cursor:zoom-in">';
   } else {
     html += '<div id="detailMainImg" class="detail-main-img"></div>';
   }
@@ -525,7 +545,7 @@ function renderDetail(idx) {
   if (price) html += '<div class="detail-price">' + escHtml(price) + '</div>';
   html += optionsHtml;
   if (p.descriptionHtml) html += '<div class="detail-desc">' + p.descriptionHtml + '</div>';
-  html += '<button class="detail-atc-btn"' + atcDisabled + ' onclick="addToCart(' + idx + ')">' + atcLabel + '</button>';
+  html += '<button class="detail-atc-btn"' + atcDisabled + ' aria-label="' + escAttr(atcLabel + ' — ' + p.title) + '" onclick="addToCart(' + idx + ')">' + atcLabel + '</button>';
   html += '</div></div>';
 
   document.getElementById('shopDetailContent').innerHTML = html;
@@ -536,14 +556,12 @@ function selectOption(idx, optName, optVal) {
   var vEdges = (p.variants && p.variants.edges) || [];
   var selVar = vEdges.find(function(e) { return e.node.id === _selectedVariants[idx]; });
 
-  // Build new option map: current selections, override the changed one
   var currentOpts = {};
   if (selVar) {
     selVar.node.selectedOptions.forEach(function(so) { currentOpts[so.name] = so.value; });
   }
   currentOpts[optName] = optVal;
 
-  // Find variant that matches all current options
   var match = vEdges.find(function(e) {
     return e.node.selectedOptions.every(function(so) { return currentOpts[so.name] === so.value; });
   });
@@ -556,7 +574,6 @@ function switchDetailImage(idx, ti) {
   var mainImg = document.getElementById('detailMainImg');
   if (!mainImg || !imgs[ti]) return;
   var clickedSrc = imgs[ti].src;
-  // If the clicked thumbnail matches a variant image, update the selected variant
   var p = _shopProducts[idx];
   if (p) {
     var vEdges = (p.variants && p.variants.edges) || [];
@@ -570,11 +587,9 @@ function switchDetailImage(idx, ti) {
         return so.name.toLowerCase() === 'color';
       });
       if (currentVar && newColorOpt) {
-        // Start from current selections, override only the color
         var currentOpts = {};
         currentVar.node.selectedOptions.forEach(function(so) { currentOpts[so.name] = so.value; });
         currentOpts[newColorOpt.name] = newColorOpt.value;
-        // Find variant matching new color + same size
         var bestMatch = vEdges.find(function(e) {
           return e.node.selectedOptions.every(function(so) { return currentOpts[so.name] === so.value; });
         });
@@ -586,7 +601,6 @@ function switchDetailImage(idx, ti) {
       return;
     }
   }
-  // No matching variant — just swap the displayed image
   imgs.forEach(function(t) { t.classList.remove('active'); });
   imgs[ti].classList.add('active');
   mainImg.src = clickedSrc;
@@ -613,6 +627,24 @@ function addToCart(idx) {
     });
 }
 
+// ─── IMAGE ZOOM LIGHTBOX ──────────────────────
+function openImageZoom(src, alt) {
+  var overlay = document.createElement('div');
+  overlay.className = 'img-zoom-overlay';
+  overlay.setAttribute('role', 'dialog');
+  overlay.setAttribute('aria-label', 'Zoomed image');
+  overlay.innerHTML = '<button class="img-zoom-close" aria-label="Close zoom">&#10005;</button>'
+                    + '<img class="img-zoom-img" src="' + src + '" alt="' + (alt || '') + '">';
+  overlay.addEventListener('click', function(e) {
+    if (e.target === overlay || e.target.classList.contains('img-zoom-close')) overlay.remove();
+  });
+  document.addEventListener('keydown', function escZoom(e) {
+    if (e.key === 'Escape') { overlay.remove(); document.removeEventListener('keydown', escZoom); }
+  });
+  document.body.appendChild(overlay);
+  overlay.querySelector('.img-zoom-close').focus();
+}
+
 function formatMoney(amount, currency) {
   if (currency === 'USD') return '$' + amount.toFixed(2).replace(/\.00$/, '');
   return currency + ' ' + amount.toFixed(2);
@@ -625,14 +657,77 @@ function escAttr(s) {
   return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
 
-// Email obfuscation
+// ─── DOM READY ────────────────────────────────
 document.addEventListener('DOMContentLoaded', function() {
+
+  // Email focus style
   var input = document.getElementById('emailInput');
   if (input) { input.addEventListener('focus', function() { this.style.outline = 'none'; }); }
-  var el = document.getElementById('eml');
-  if (el) {
+
+  // Email obfuscation
+  var eml = document.getElementById('eml');
+  if (eml) {
     var addr = 'shop' + '@' + 'eraoutfitters' + '.' + 'com';
-    el.textContent = addr;
-    el.href = 'mailto:' + addr;
+    eml.textContent = addr;
+    eml.href = 'mailto:' + addr;
   }
+
+  // ─── EMAIL SIGNUP — JSONP (no page redirect) ──
+  var emailForm = document.querySelector('.email-section form');
+  if (emailForm) {
+    emailForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      var emailVal = (document.getElementById('emailInput') || {}).value || '';
+      emailVal = emailVal.trim();
+      if (!emailVal || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) {
+        setEmailStatus('Please enter a valid email address.', false);
+        return;
+      }
+      var btn = emailForm.querySelector('.form-btn');
+      if (btn) { btn.disabled = true; btn.textContent = 'Joining\u2026'; }
+
+      var url = emailForm.action.replace('/post?', '/post-json?')
+              + '&EMAIL=' + encodeURIComponent(emailVal)
+              + '&c=_mcCallback';
+
+      window._mcCallback = function(res) {
+        if (btn) { btn.disabled = false; btn.textContent = 'Get Early Access'; }
+        if (res.result === 'success') {
+          setEmailStatus('You\u2019re on the list. See you on opening day.', true);
+          var row = emailForm.querySelector('.form-row');
+          if (row) row.style.display = 'none';
+        } else {
+          var msg = (res.msg || 'Something went wrong. Try again.')
+                    .replace(/<[^>]*>/g, '').replace(/^\d+ - /, '');
+          setEmailStatus(msg, false);
+        }
+      };
+      var s = document.createElement('script');
+      s.src = url;
+      document.head.appendChild(s);
+    });
+
+    function setEmailStatus(msg, ok) {
+      var el = document.getElementById('emailStatus');
+      if (!el) {
+        el = document.createElement('p');
+        el.id = 'emailStatus';
+        var row = emailForm.querySelector('.form-row');
+        if (row) row.after(el); else emailForm.appendChild(el);
+      }
+      el.className = 'email-status' + (ok ? ' email-status--ok' : ' email-status--err');
+      el.textContent = msg;
+    }
+  }
+
+  // ─── STICKY BAR ───────────────────────────────
+  var stickyBar = document.getElementById('stickyBar');
+  if (stickyBar) {
+    var heroEl = document.querySelector('.hero');
+    window.addEventListener('scroll', function() {
+      var threshold = heroEl ? heroEl.offsetHeight * 0.55 : 400;
+      stickyBar.classList.toggle('visible', window.scrollY > threshold);
+    }, { passive: true });
+  }
+
 });
