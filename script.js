@@ -694,6 +694,15 @@ function quickAddClick(e, ci) {
     });
   }
 
+  var sizeOrder = ['XXS','XS','S','M','L','XL','XXL','XXXL','3XL','4XL','OS','ONE SIZE'];
+  availSizes.sort(function(a, b) {
+    var ai = sizeOrder.indexOf(a.toUpperCase());
+    var bi = sizeOrder.indexOf(b.toUpperCase());
+    if (ai === -1) ai = sizeOrder.length;
+    if (bi === -1) bi = sizeOrder.length;
+    return ai - bi;
+  });
+
   if (availSizes.length <= 1) {
     quickAddDirect(ci, availSizes.length === 1 ? availSizes[0] : null);
     return;
