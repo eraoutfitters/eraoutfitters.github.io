@@ -363,35 +363,10 @@ function renderProductGrid() {
       if (activeColorVal) rowHtml += '<div class="product-card-color">' + escHtml(activeColorVal) + '</div>';
       if (price) rowHtml += '<div class="product-card-price">' + escHtml(price) + '</div>';
 
-      // Quick Add button + size picker
-      var sizeOpt = p.options && p.options.find(function(o) { return o.name.toLowerCase() === 'size'; });
-      var availSizes = [];
-      if (sizeOpt && sizeOpt.values) {
-        availSizes = sizeOpt.values.filter(function(sv) {
-          return vEdges.some(function(ve) {
-            var matchColor = !activeColorVal || ve.node.selectedOptions.some(function(so) {
-              return so.name.toLowerCase() === 'color' && so.value === activeColorVal;
-            });
-            var matchSize = ve.node.selectedOptions.some(function(so) {
-              return so.name.toLowerCase() === 'size' && so.value === sv;
-            });
-            return matchColor && matchSize && ve.node.availableForSale;
-          });
-        });
-      }
-      var colorArgStr = activeColorVal ? escAttr(JSON.stringify(activeColorVal)) : 'null';
+      // Quick Add — color is read live from _renderedCards[ci] at click time, not baked in
       rowHtml += '<div class="card-quick-add" onclick="event.stopPropagation()">';
-      if (availSizes.length > 1) {
-        rowHtml += '<button class="quick-add-btn" id="qa-btn-' + ci + '" onclick="quickAddClick(event,' + ci + ',' + card.productIdx + ',' + colorArgStr + ',true,null)">Quick Add</button>';
-        rowHtml += '<div class="card-size-picker" id="qa-sizes-' + ci + '">';
-        availSizes.forEach(function(sv) {
-          rowHtml += '<button class="size-pill" onclick="quickAddSize(event,' + ci + ',' + card.productIdx + ',' + colorArgStr + ',' + escAttr(JSON.stringify(sv)) + ')">' + escHtml(sv) + '</button>';
-        });
-        rowHtml += '</div>';
-      } else {
-        var singleSize = availSizes.length === 1 ? escAttr(JSON.stringify(availSizes[0])) : 'null';
-        rowHtml += '<button class="quick-add-btn" id="qa-btn-' + ci + '" onclick="quickAddClick(event,' + ci + ',' + card.productIdx + ',' + colorArgStr + ',false,' + singleSize + ')">Quick Add</button>';
-      }
+      rowHtml += '<button class="quick-add-btn" id="qa-btn-' + ci + '" onclick="quickAddClick(event,' + ci + ')">Quick Add</button>';
+      rowHtml += '<div class="card-size-picker" id="qa-sizes-' + ci + '"></div>';
       rowHtml += '</div>';
 
       rowHtml += '</div>';
@@ -692,50 +667,89 @@ function addToCart(idx) {
 }
 
 // ─── QUICK ADD ────────────────────────────────
-function quickAddClick(e, ci, productIdx, activeColorVal, hasSizes, singleSize) {
+// Always read the live color from _renderedCards[ci] — never bake it into onclick strings.
+function quickAddClick(e, ci) {
   e.stopPropagation();
-  if (!hasSizes) {
-    quickAddDirect(ci, productIdx, activeColorVal, singleSize);
+  var cardData = _renderedCards[ci];
+  if (!cardData) return;
+  var productIdx    = cardData.productIdx;
+  var activeColor   = cardData.activeColorVal;   // live value, reflects swatch switches
+  var p             = _shopProducts[productIdx];
+  var vEdges        = (p.variants && p.variants.edges) || [];
+
+  // Compute sizes available for the current color right now
+  var sizeOpt = p.options && p.options.find(function(o) { return o.name.toLowerCase() === 'size'; });
+  var availSizes = [];
+  if (sizeOpt && sizeOpt.values) {
+    availSizes = sizeOpt.values.filter(function(sv) {
+      return vEdges.some(function(ve) {
+        var matchColor = !activeColor || ve.node.selectedOptions.some(function(so) {
+          return so.name.toLowerCase() === 'color' && so.value === activeColor;
+        });
+        var matchSize = ve.node.selectedOptions.some(function(so) {
+          return so.name.toLowerCase() === 'size' && so.value === sv;
+        });
+        return matchColor && matchSize && ve.node.availableForSale;
+      });
+    });
+  }
+
+  if (availSizes.length <= 1) {
+    quickAddDirect(ci, availSizes.length === 1 ? availSizes[0] : null);
     return;
   }
+
+  // Build picker fresh (correct sizes for current color) then toggle
   var picker = document.getElementById('qa-sizes-' + ci);
   if (!picker) return;
   var isOpen = picker.classList.contains('open');
-  document.querySelectorAll('.card-size-picker.open').forEach(function(p) { p.classList.remove('open'); });
-  if (!isOpen) picker.classList.add('open');
+  document.querySelectorAll('.card-size-picker.open').forEach(function(el) { el.classList.remove('open'); });
+  if (!isOpen) {
+    picker.innerHTML = availSizes.map(function(sv) {
+      return '<button class="size-pill" onclick="quickAddSize(event,' + ci + ',' + JSON.stringify(sv) + ')">' + escHtml(sv) + '</button>';
+    }).join('');
+    picker.classList.add('open');
+  }
 }
 
-function quickAddSize(e, ci, productIdx, activeColorVal, sizeVal) {
+function quickAddSize(e, ci, sizeVal) {
   e.stopPropagation();
-  quickAddDirect(ci, productIdx, activeColorVal, sizeVal);
+  quickAddDirect(ci, sizeVal);
   var picker = document.getElementById('qa-sizes-' + ci);
   if (picker) picker.classList.remove('open');
 }
 
-function quickAddDirect(ci, productIdx, activeColorVal, sizeVal) {
-  var p = _shopProducts[productIdx];
-  var vEdges = (p.variants && p.variants.edges) || [];
+function quickAddDirect(ci, sizeVal) {
+  var cardData = _renderedCards[ci];
+  if (!cardData) return;
+  var productIdx  = cardData.productIdx;
+  var activeColor = cardData.activeColorVal;   // always the live swatch color
+  var p           = _shopProducts[productIdx];
+  var vEdges      = (p.variants && p.variants.edges) || [];
+
   var selVar = vEdges.find(function(ve) {
-    var matchColor = !activeColorVal || ve.node.selectedOptions.some(function(so) {
-      return so.name.toLowerCase() === 'color' && so.value === activeColorVal;
+    var matchColor = !activeColor || ve.node.selectedOptions.some(function(so) {
+      return so.name.toLowerCase() === 'color' && so.value === activeColor;
     });
     var matchSize = !sizeVal || ve.node.selectedOptions.some(function(so) {
       return so.name.toLowerCase() === 'size' && so.value === sizeVal;
     });
     return matchColor && matchSize;
   });
+  // Fallback: first variant matching color
   if (!selVar) selVar = vEdges.find(function(ve) {
-    return !activeColorVal || ve.node.selectedOptions.some(function(so) {
-      return so.name.toLowerCase() === 'color' && so.value === activeColorVal;
+    return !activeColor || ve.node.selectedOptions.some(function(so) {
+      return so.name.toLowerCase() === 'color' && so.value === activeColor;
     });
   });
   if (!selVar) return;
 
   var variantId = selVar.node.id;
-  var colorOpt = selVar.node.selectedOptions.find(function(so) { return so.name.toLowerCase() === 'color'; });
+  var colorOpt  = selVar.node.selectedOptions.find(function(so) { return so.name.toLowerCase() === 'color'; });
   var sizeOpt2  = selVar.node.selectedOptions.find(function(so) { return so.name.toLowerCase() === 'size'; });
   var color = colorOpt ? colorOpt.value : '';
   var size  = sizeOpt2  ? sizeOpt2.value  : '';
+
   var imgUrl = '';
   if (selVar.node.image && selVar.node.image.url) {
     imgUrl = selVar.node.image.url;
@@ -760,10 +774,7 @@ function quickAddDirect(ci, productIdx, activeColorVal, sizeVal) {
   if (btn) {
     btn.textContent = 'Added \u2713';
     btn.classList.add('added');
-    setTimeout(function() {
-      btn.textContent = 'Quick Add';
-      btn.classList.remove('added');
-    }, 1400);
+    setTimeout(function() { btn.textContent = 'Quick Add'; btn.classList.remove('added'); }, 1400);
   }
   openCart();
 }
