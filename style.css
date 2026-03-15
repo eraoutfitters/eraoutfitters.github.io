@@ -566,6 +566,51 @@ body::before {
   font-weight: 700;
   color: #1E3020;
 }
+/* Quick Add */
+.card-quick-add {
+  position: relative;
+  margin-top: 10px;
+}
+.quick-add-btn {
+  width: 100%;
+  padding: 8px 0;
+  background: transparent;
+  border: 1.5px solid #1E3020;
+  border-radius: 4px;
+  color: #1E3020;
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s;
+}
+.quick-add-btn:hover { background: #1E3020; color: #F2E8D0; }
+.quick-add-btn.added { background: #1E3020; color: #F2E8D0; border-color: #1E3020; }
+.card-size-picker {
+  display: none;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+.card-size-picker.open { display: flex; }
+.size-pill {
+  padding: 5px 10px;
+  background: #fff;
+  border: 1.5px solid #c8bfaa;
+  border-radius: 3px;
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #1E3020;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.size-pill:hover { background: #1E3020; color: #F2E8D0; border-color: #1E3020; }
+
 /* Product detail */
 #shopDetail { display: none; }
 #shopGrid   { display: block; }

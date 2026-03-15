@@ -362,6 +362,38 @@ function renderProductGrid() {
       rowHtml += '<div class="product-card-title">' + escHtml(p.title) + '</div>';
       if (activeColorVal) rowHtml += '<div class="product-card-color">' + escHtml(activeColorVal) + '</div>';
       if (price) rowHtml += '<div class="product-card-price">' + escHtml(price) + '</div>';
+
+      // Quick Add button + size picker
+      var sizeOpt = p.options && p.options.find(function(o) { return o.name.toLowerCase() === 'size'; });
+      var availSizes = [];
+      if (sizeOpt && sizeOpt.values) {
+        availSizes = sizeOpt.values.filter(function(sv) {
+          return vEdges.some(function(ve) {
+            var matchColor = !activeColorVal || ve.node.selectedOptions.some(function(so) {
+              return so.name.toLowerCase() === 'color' && so.value === activeColorVal;
+            });
+            var matchSize = ve.node.selectedOptions.some(function(so) {
+              return so.name.toLowerCase() === 'size' && so.value === sv;
+            });
+            return matchColor && matchSize && ve.node.availableForSale;
+          });
+        });
+      }
+      var colorArgStr = activeColorVal ? escAttr(JSON.stringify(activeColorVal)) : 'null';
+      rowHtml += '<div class="card-quick-add" onclick="event.stopPropagation()">';
+      if (availSizes.length > 1) {
+        rowHtml += '<button class="quick-add-btn" id="qa-btn-' + ci + '" onclick="quickAddClick(event,' + ci + ',' + card.productIdx + ',' + colorArgStr + ',true,null)">Quick Add</button>';
+        rowHtml += '<div class="card-size-picker" id="qa-sizes-' + ci + '">';
+        availSizes.forEach(function(sv) {
+          rowHtml += '<button class="size-pill" onclick="quickAddSize(event,' + ci + ',' + card.productIdx + ',' + colorArgStr + ',' + escAttr(JSON.stringify(sv)) + ')">' + escHtml(sv) + '</button>';
+        });
+        rowHtml += '</div>';
+      } else {
+        var singleSize = availSizes.length === 1 ? escAttr(JSON.stringify(availSizes[0])) : 'null';
+        rowHtml += '<button class="quick-add-btn" id="qa-btn-' + ci + '" onclick="quickAddClick(event,' + ci + ',' + card.productIdx + ',' + colorArgStr + ',false,' + singleSize + ')">Quick Add</button>';
+      }
+      rowHtml += '</div>';
+
       rowHtml += '</div>';
     });
     rowHtml += '</div>';
@@ -656,6 +688,83 @@ function addToCart(idx) {
     }, 1400);
   }
 
+  openCart();
+}
+
+// ─── QUICK ADD ────────────────────────────────
+function quickAddClick(e, ci, productIdx, activeColorVal, hasSizes, singleSize) {
+  e.stopPropagation();
+  if (!hasSizes) {
+    quickAddDirect(ci, productIdx, activeColorVal, singleSize);
+    return;
+  }
+  var picker = document.getElementById('qa-sizes-' + ci);
+  if (!picker) return;
+  var isOpen = picker.classList.contains('open');
+  document.querySelectorAll('.card-size-picker.open').forEach(function(p) { p.classList.remove('open'); });
+  if (!isOpen) picker.classList.add('open');
+}
+
+function quickAddSize(e, ci, productIdx, activeColorVal, sizeVal) {
+  e.stopPropagation();
+  quickAddDirect(ci, productIdx, activeColorVal, sizeVal);
+  var picker = document.getElementById('qa-sizes-' + ci);
+  if (picker) picker.classList.remove('open');
+}
+
+function quickAddDirect(ci, productIdx, activeColorVal, sizeVal) {
+  var p = _shopProducts[productIdx];
+  var vEdges = (p.variants && p.variants.edges) || [];
+  var selVar = vEdges.find(function(ve) {
+    var matchColor = !activeColorVal || ve.node.selectedOptions.some(function(so) {
+      return so.name.toLowerCase() === 'color' && so.value === activeColorVal;
+    });
+    var matchSize = !sizeVal || ve.node.selectedOptions.some(function(so) {
+      return so.name.toLowerCase() === 'size' && so.value === sizeVal;
+    });
+    return matchColor && matchSize;
+  });
+  if (!selVar) selVar = vEdges.find(function(ve) {
+    return !activeColorVal || ve.node.selectedOptions.some(function(so) {
+      return so.name.toLowerCase() === 'color' && so.value === activeColorVal;
+    });
+  });
+  if (!selVar) return;
+
+  var variantId = selVar.node.id;
+  var colorOpt = selVar.node.selectedOptions.find(function(so) { return so.name.toLowerCase() === 'color'; });
+  var sizeOpt2  = selVar.node.selectedOptions.find(function(so) { return so.name.toLowerCase() === 'size'; });
+  var color = colorOpt ? colorOpt.value : '';
+  var size  = sizeOpt2  ? sizeOpt2.value  : '';
+  var imgUrl = '';
+  if (selVar.node.image && selVar.node.image.url) {
+    imgUrl = selVar.node.image.url;
+  } else {
+    var imgEdges = (p.images && p.images.edges) || [];
+    if (imgEdges.length) imgUrl = imgEdges[0].node.url;
+  }
+  var price    = parseFloat(selVar.node.price.amount);
+  var currency = selVar.node.price.currencyCode;
+
+  var existing = _cart.find(function(item) { return item.variantId === variantId; });
+  if (existing) {
+    existing.qty++;
+  } else {
+    _cart.push({ variantId: variantId, qty: 1, productIdx: productIdx,
+                 title: p.title, color: color, size: size,
+                 price: price, currency: currency, imgUrl: imgUrl });
+  }
+  updateCartBadge();
+
+  var btn = document.getElementById('qa-btn-' + ci);
+  if (btn) {
+    btn.textContent = 'Added \u2713';
+    btn.classList.add('added');
+    setTimeout(function() {
+      btn.textContent = 'Quick Add';
+      btn.classList.remove('added');
+    }, 1400);
+  }
   openCart();
 }
 
