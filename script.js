@@ -715,7 +715,7 @@ function quickAddClick(e, ci) {
   document.querySelectorAll('.card-size-picker.open').forEach(function(el) { el.classList.remove('open'); });
   if (!isOpen) {
     picker.innerHTML = availSizes.map(function(sv) {
-      return '<button class="size-pill" onclick="quickAddSize(event,' + ci + ',' + JSON.stringify(sv) + ')">' + escHtml(sv) + '</button>';
+      return '<button class="size-pill" onclick="quickAddSize(event,' + ci + ',' + escAttr(JSON.stringify(sv)) + ')">' + escHtml(sv) + '</button>';
     }).join('');
     picker.classList.add('open');
   }

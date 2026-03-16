@@ -985,7 +985,7 @@ footer {
   border-bottom: 1px solid rgba(196,180,138,0.08);
 }
 .sticky-bar.visible { transform: translateY(0); }
-.sticky-logo { height: 32px; width: auto; flex-shrink: 0; display: block; }
+.sticky-logo { height: 32px; width: auto; max-width: 120px; object-fit: contain; flex-shrink: 0; display: block; }
 .sticky-shop-btn {
   background: #C4B48A;
   color: #0f1a0e;
