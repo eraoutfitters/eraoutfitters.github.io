@@ -329,7 +329,7 @@ function renderProductGrid() {
       var price = (colorVariant || vEdges[0]) ? formatMoney(parseFloat((colorVariant || vEdges[0]).node.price.amount), (colorVariant || vEdges[0]).node.price.currencyCode) : '';
 
       var cardAriaLabel = escAttr(p.title + (activeColorVal ? ', ' + activeColorVal : '') + (price ? ', ' + price : ''));
-      var cardOnclick = 'showProductDetail(' + card.productIdx + ',' + (activeColorVal ? escAttr(JSON.stringify(activeColorVal)) : 'null') + ')';
+      var cardOnclick = 'showProductDetailFromCard(' + ci + ')';
 
       rowHtml += '<div class="product-card" id="pcard-' + ci + '"'
               + ' role="button" tabindex="0" aria-label="' + cardAriaLabel + '"'
@@ -443,12 +443,21 @@ function showProductDetail(idx, colorVal) {
 
   var vEdges = (p.variants && p.variants.edges) || [];
   if (colorVal) {
-    var matchVariant = vEdges.find(function(e) {
-      return e.node.selectedOptions.some(function(so) {
-        return so.name.toLowerCase() === 'color' && so.value === colorVal;
-      });
+    // If there's already a selected variant that matches this color (e.g. from quick-add size
+    // selection), keep it so the size stays pre-selected. Only override when the current
+    // variant is a different color.
+    var currentVar = vEdges.find(function(e) { return e.node.id === _selectedVariants[idx]; });
+    var colorAlreadyMatches = currentVar && currentVar.node.selectedOptions.some(function(so) {
+      return so.name.toLowerCase() === 'color' && so.value === colorVal;
     });
-    if (matchVariant) _selectedVariants[idx] = matchVariant.node.id;
+    if (!colorAlreadyMatches) {
+      var matchVariant = vEdges.find(function(e) {
+        return e.node.selectedOptions.some(function(so) {
+          return so.name.toLowerCase() === 'color' && so.value === colorVal;
+        });
+      });
+      if (matchVariant) _selectedVariants[idx] = matchVariant.node.id;
+    }
   } else if (!_selectedVariants[idx] && vEdges.length) {
     _selectedVariants[idx] = vEdges[0].node.id;
   }
@@ -754,6 +763,8 @@ function quickAddDirect(ci, sizeVal) {
   if (!selVar) return;
 
   var variantId = selVar.node.id;
+  // Store so that clicking into the product detail page pre-selects this exact color+size
+  _selectedVariants[productIdx] = variantId;
   var colorOpt  = selVar.node.selectedOptions.find(function(so) { return so.name.toLowerCase() === 'color'; });
   var sizeOpt2  = selVar.node.selectedOptions.find(function(so) { return so.name.toLowerCase() === 'size'; });
   var color = colorOpt ? colorOpt.value : '';
