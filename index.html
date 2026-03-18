@@ -28,7 +28,7 @@
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "LocalBusiness",
+  "@type": ["LocalBusiness", "SportingGoodsStore"],
   "name": "Erä Outfitters",
   "description": "A modern Southern field and fly shop blending fly fishing, upland hunting, and heritage outdoor apparel. Coming to Roswell, Georgia.",
   "url": "https://eraoutfitters.com",
@@ -41,6 +41,17 @@
     "addressRegion": "GA",
     "addressCountry": "US"
   },
+  "areaServed": ["Roswell, GA", "Alpharetta, GA", "Atlanta, GA"],
+  "serviceArea": {
+    "@type": "GeoCircle",
+    "geoMidpoint": {
+      "@type": "GeoCoordinates",
+      "latitude": 34.0232,
+      "longitude": -84.3616
+    },
+    "geoRadius": "50000"
+  },
+  "hasMap": "https://maps.google.com/?q=Er%C3%A4+Outfitters+Roswell+GA",
   "sameAs": [
     "https://instagram.com/eraoutfitter"
   ]
