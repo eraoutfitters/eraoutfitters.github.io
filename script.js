@@ -951,13 +951,6 @@ document.addEventListener('DOMContentLoaded', function() {
   var input = document.getElementById('emailInput');
   if (input) { input.addEventListener('focus', function() { this.style.outline = 'none'; }); }
 
-  // Email obfuscation — decoded at runtime, never in plain source
-  var eml = document.getElementById('eml');
-  if (eml) {
-    var addr = atob('c2hvcEBlcmFvdXRmaXR0ZXJzLmNvbQ==');
-    eml.textContent = addr;
-    eml.href = 'mailto:' + addr;
-  }
 
   // ─── EMAIL SIGNUP — JSONP (no page redirect) ──
   var emailForm = document.querySelector('.email-section form');
