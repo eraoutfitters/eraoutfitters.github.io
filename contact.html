@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en" style="background:#0f1a0e;color:#F2E8D0;">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-MX768VZGD5"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-MX768VZGD5');
+</script>
+<meta charset="UTF-8">
+<meta name="theme-color" content="#0f1a0e">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Contact | Erä Outfitters · Roswell, Georgia</title>
+<meta name="description" content="Get in touch with Erä Outfitters. Field &amp; Fly Shop coming to Roswell, Georgia.">
+<link rel="canonical" href="https://eraoutfitters.com/contact">
+<link rel="icon" href="logo.svg" type="image/svg+xml">
+<link rel="icon" href="logo.png" type="image/png">
+<link rel="apple-touch-icon" href="logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://mddjp6-nx.myshopify.com">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,600;0,700;1,400&family=Nunito+Sans:wght@300;400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+.contact-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.contact-hero {
+  background: #060e06;
+  padding: 80px 24px 64px;
+  text-align: center;
+  border-bottom: 1px solid rgba(196,180,138,0.08);
+}
+.contact-hero-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(196,180,138,0.6);
+  text-decoration: none;
+  margin-bottom: 40px;
+  transition: color 0.2s;
+}
+.contact-hero-back:hover { color: #C4B48A; }
+.contact-hero h1 {
+  font-family: 'Lora', Georgia, serif;
+  font-size: clamp(32px, 5vw, 52px);
+  font-weight: 700;
+  color: #F2E8D0;
+  margin: 0 0 12px;
+  line-height: 1.15;
+}
+.contact-hero p {
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: clamp(16px, 2vw, 18px);
+  color: rgba(242,232,208,0.6);
+  font-weight: 300;
+  margin: 0;
+}
+.contact-body {
+  flex: 1;
+  background: #1E3020;
+  padding: 72px 24px 80px;
+}
+.contact-inner {
+  max-width: 520px;
+  margin: 0 auto;
+}
+.contact-field {
+  margin-bottom: 16px;
+}
+.contact-label {
+  display: block;
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(196,180,138,0.7);
+  margin-bottom: 8px;
+}
+.contact-input,
+.contact-textarea {
+  display: block;
+  width: 100%;
+  background: rgba(15,26,14,0.6);
+  border: 1px solid rgba(196,180,138,0.2);
+  border-radius: 4px;
+  padding: 14px 16px;
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 16px;
+  font-weight: 300;
+  color: #F2E8D0;
+  outline: none;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+}
+.contact-input:focus,
+.contact-textarea:focus {
+  border-color: rgba(196,180,138,0.6);
+}
+.contact-input::placeholder,
+.contact-textarea::placeholder { color: rgba(242,232,208,0.25); }
+.contact-textarea {
+  resize: vertical;
+  min-height: 140px;
+  line-height: 1.6;
+}
+.contact-submit {
+  width: 100%;
+  background: #C4B48A;
+  border: none;
+  padding: 18px 28px;
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: #0f1a0e;
+  cursor: pointer;
+  border-radius: 4px;
+  margin-top: 8px;
+  transition: background 0.2s;
+}
+.contact-submit:hover { background: #D4C49A; }
+.contact-submit:disabled { opacity: 0.6; cursor: default; }
+.contact-status {
+  margin-top: 20px;
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 15px;
+  text-align: center;
+}
+.contact-status--ok { color: #C4B48A; }
+.contact-status--err { color: #e07070; }
+.contact-success {
+  text-align: center;
+  padding: 40px 0;
+}
+.contact-success .success-mark {
+  display: inline-block;
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  border: 2px solid #C4B48A;
+  line-height: 44px;
+  font-size: 22px;
+  color: #C4B48A;
+  margin-bottom: 24px;
+}
+.contact-success p {
+  font-family: 'Lora', Georgia, serif;
+  font-style: italic;
+  font-size: clamp(18px, 2.5vw, 22px);
+  color: rgba(242,232,208,0.85);
+  margin: 0;
+}
+</style>
+</head>
+<body>
+
+<!-- ─── STICKY BAR ────────────────────────────── -->
+<nav id="stickyBar" class="sticky-bar" aria-label="Quick navigation">
+  <a href="index.html"><img src="logo.svg" alt="Erä Outfitters" class="sticky-logo"></a>
+  <div class="sticky-actions">
+    <button class="sticky-shop-btn" onclick="openShopModal()" aria-label="Open shop">Shop</button>
+    <button class="sticky-cart-btn" onclick="openCart()" aria-label="View cart">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      <span id="cartBadge" class="cart-badge" style="display:none" aria-live="polite">0</span>
+    </button>
+  </div>
+</nav>
+
+<!-- ─── CART DRAWER ──────────────────────────── -->
+<div id="cartOverlay" class="cart-overlay" onclick="closeCart()"></div>
+<aside id="cartDrawer" class="cart-drawer" role="dialog" aria-modal="true" aria-label="Shopping cart">
+  <div class="cart-header">
+    <span class="cart-title">Your Cart</span>
+    <button class="cart-close" onclick="closeCart()" aria-label="Close cart">&#10005;</button>
+  </div>
+  <div id="cartItems" class="cart-items"></div>
+  <div id="cartFooter" class="cart-footer"></div>
+</aside>
+
+<div id="mainCard" class="contact-page">
+
+<!-- ─── CONTACT HERO ──────────────────────────── -->
+<div class="contact-hero">
+  <a href="index.html" class="contact-hero-back">
+    <svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M13 7H1M7 13L1 7L7 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Back
+  </a>
+  <span class="section-label">Get in Touch</span>
+  <h1>Contact Us</h1>
+  <p>Questions, wholesale inquiries, or just want to say hello.</p>
+</div>
+
+<!-- ─── CONTACT FORM ──────────────────────────── -->
+<div class="contact-body">
+  <div class="contact-inner">
+
+    <div id="contactFormWrap">
+      <form id="contactForm">
+        <input type="hidden" name="access_key" value="a02ab5b4-8617-4782-93c7-a7f33dd856d1">
+        <input type="hidden" name="subject" value="New message from eraoutfitters.com">
+        <input type="checkbox" name="botcheck" style="display:none;" tabindex="-1" aria-hidden="true">
+
+        <div class="contact-field">
+          <label class="contact-label" for="contactName">Name</label>
+          <input class="contact-input" type="text" id="contactName" name="name" placeholder="Your name" required>
+        </div>
+
+        <div class="contact-field">
+          <label class="contact-label" for="contactEmail">Email</label>
+          <input class="contact-input" type="email" id="contactEmail" name="email" placeholder="your@email.com" required>
+        </div>
+
+        <div class="contact-field">
+          <label class="contact-label" for="contactMessage">Message</label>
+          <textarea class="contact-textarea" id="contactMessage" name="message" placeholder="How can we help?" required></textarea>
+        </div>
+
+        <button type="submit" class="contact-submit" id="contactSubmit">Send Message</button>
+        <p class="contact-status" id="contactStatus"></p>
+      </form>
+
+      <div id="contactSuccess" class="contact-success" style="display:none;">
+        <div class="success-mark">&#10003;</div>
+        <p>Message sent. We&rsquo;ll be in touch.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ─── FOOTER ────────────────────────────────── -->
+<footer>
+  <div class="foot-ornament">
+    <div class="fo-line"></div>
+    <div class="fo-diamond"></div>
+    <div class="fo-line"></div>
+  </div>
+  <div class="foot-brand">Er&#228; Outfitters</div>
+  <div class="foot-links">
+    <a href="https://instagram.com/eraoutfitter" target="_blank" rel="noopener" class="foot-link">@eraoutfitter</a>
+    <div class="foot-sep"></div>
+    <a href="contact.html" class="foot-link">Contact</a>
+    <div class="foot-sep"></div>
+    <span class="foot-link" style="cursor:default;">Roswell, Georgia</span>
+  </div>
+</footer>
+
+</div><!-- /#mainCard -->
+
+<script src="script.js" defer></script>
+<script>
+document.getElementById('contactForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  var btn = document.getElementById('contactSubmit');
+  var status = document.getElementById('contactStatus');
+  btn.disabled = true;
+  btn.textContent = 'Sending\u2026';
+  status.textContent = '';
+  status.className = 'contact-status';
+
+  fetch('https://api.web3forms.com/submit', {
+    method: 'POST',
+    body: new FormData(this),
+    headers: { 'Accept': 'application/json' }
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.success) {
+      document.getElementById('contactForm').style.display = 'none';
+      document.getElementById('contactSuccess').style.display = 'block';
+    } else {
+      status.textContent = data.message || 'Something went wrong. Please try again.';
+      status.className = 'contact-status contact-status--err';
+      btn.disabled = false;
+      btn.textContent = 'Send Message';
+    }
+  })
+  .catch(function() {
+    status.textContent = 'Network error. Please try again.';
+    status.className = 'contact-status contact-status--err';
+    btn.disabled = false;
+    btn.textContent = 'Send Message';
+  });
+});
+</script>
+</body>
+</html>
