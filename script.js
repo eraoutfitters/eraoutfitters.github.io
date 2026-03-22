@@ -884,11 +884,26 @@ function renderCartDrawer() {
 
   var subtotal = _cart.reduce(function(sum, item) { return sum + item.price * item.qty; }, 0);
   var currency = _cart[0].currency;
+  var koozieThreshold = 25;
+  var remaining = Math.max(0, koozieThreshold - subtotal);
+  var pct = Math.min(100, Math.round((subtotal / koozieThreshold) * 100));
+  var promoHtml;
+  if (remaining > 0) {
+    promoHtml = '<div class="koozie-promo">'
+      + '<div class="koozie-promo-msg">Add <strong>' + escHtml(formatMoney(remaining, currency)) + ' more</strong> for a <strong>free koozie</strong>! 🧊</div>'
+      + '<div class="koozie-promo-bar"><div class="koozie-promo-fill" style="width:' + pct + '%"></div></div>'
+      + '</div>';
+  } else {
+    promoHtml = '<div class="koozie-promo koozie-promo--unlocked">'
+      + '🎉 You\'ve unlocked a <strong>free koozie</strong>! It\'ll be added at checkout.'
+      + '</div>';
+  }
   footerEl.innerHTML =
     '<div class="cart-subtotal">'
     + '<span class="cart-subtotal-label">Subtotal</span>'
     + '<span class="cart-subtotal-price">' + escHtml(formatMoney(subtotal, currency)) + '</span>'
     + '</div>'
+    + promoHtml
     + '<button class="cart-checkout-btn" id="cartCheckoutBtn" onclick="checkout()">Checkout</button>';
 }
 
@@ -1019,3 +1034,22 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
 });
+
+// ─── EYEBROW BANNER ROTATOR ──────────────────
+(function rotateBanner() {
+  var msgs = [
+    'Coming to Downtown Roswell, Georgia',
+    'Spend $25 \u2014 Get a Free Koozie \uD83E\uDDCA'
+  ];
+  var i = 0;
+  var el = document.getElementById('eyebrow-text');
+  if (!el) return;
+  setInterval(function () {
+    i = (i + 1) % msgs.length;
+    el.style.opacity = '0';
+    setTimeout(function () {
+      el.textContent = msgs[i];
+      el.style.opacity = '1';
+    }, 300);
+  }, 4000);
+})();
