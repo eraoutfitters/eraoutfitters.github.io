@@ -282,24 +282,23 @@ function renderProductGrid() {
     return { productIdx: i, swatches: sw.length ? sw : [null] };
   });
 
+  // One card per product (first color swatch as default)
   var allCards = [];
   productSwatches.forEach(function(ps) {
-    ps.swatches.forEach(function(sw) {
-      allCards.push({ productIdx: ps.productIdx, activeColorVal: sw ? sw.colorVal : null });
-    });
+    var firstSw = ps.swatches[0];
+    allCards.push({ productIdx: ps.productIdx, activeColorVal: firstSw ? firstSw.colorVal : null });
   });
 
-  var pinned = [
-    { title: 'Original Erä Outfitters Long Sleeve Comfort Colors Shirt', color: 'Blue Jean' },
-    { title: 'Original Erä Outfitters Long Sleeve Comfort Colors Shirt', color: 'Light Green' }
+  // Pin specific products to the front by title
+  var pinnedTitles = [
+    'Original Erä Outfitters Long Sleeve Comfort Colors Shirt',
+    'Original Erä Outfitters Comfort Colors Shirt'
   ];
   var pinnedCards = [], rest = [];
   allCards.forEach(function(c) {
     var p = _shopProducts[c.productIdx];
-    var matchPin = pinned.find(function(pin) {
-      return p.title === pin.title && c.activeColorVal === pin.color;
-    });
-    if (matchPin) pinnedCards[pinned.indexOf(matchPin)] = c;
+    var pinIdx = pinnedTitles.indexOf(p.title);
+    if (pinIdx !== -1 && !pinnedCards[pinIdx]) pinnedCards[pinIdx] = c;
     else rest.push(c);
   });
   for (var i = rest.length - 1; i > 0; i--) {
@@ -308,14 +307,23 @@ function renderProductGrid() {
   }
   _renderedCards = pinnedCards.filter(Boolean).concat(rest);
 
+  function isAccessory(card) {
+    var p = _shopProducts[card.productIdx];
+    var pt = (p.productType || '').toLowerCase();
+    var title = (p.title || '').toLowerCase();
+    return title.indexOf('koozie') !== -1 || title.indexOf('sticker') !== -1 ||
+           pt.indexOf('accessory') !== -1 || pt.indexOf('accessories') !== -1 ||
+           pt.indexOf('drinkware') !== -1;
+  }
   function isHat(card) {
     var pt = (_shopProducts[card.productIdx].productType || '').toLowerCase();
     var title = (_shopProducts[card.productIdx].title || '').toLowerCase();
     return pt.indexOf('hat') !== -1 || pt.indexOf('cap') !== -1 || pt.indexOf('beanie') !== -1 ||
            title.indexOf('hat') !== -1 || title.indexOf('cap') !== -1 || title.indexOf('beanie') !== -1;
   }
-  var shirtCards = _renderedCards.filter(function(c) { return !isHat(c); });
-  var hatCards   = _renderedCards.filter(function(c) { return isHat(c); });
+  var accessoryCards = _renderedCards.filter(function(c) { return isAccessory(c); });
+  var hatCards   = _renderedCards.filter(function(c) { return !isAccessory(c) && isHat(c); });
+  var shirtCards = _renderedCards.filter(function(c) { return !isAccessory(c) && !isHat(c); });
 
   function buildRow(cards, rowId) {
     var rowHtml = '<div class="grid-scroll-wrap"><div class="product-grid" id="' + rowId + '">';
@@ -396,6 +404,10 @@ function renderProductGrid() {
   if (hatCards.length) {
     html += '<p class="shop-row-label">Hats</p>';
     html += buildRow(hatCards, 'productScrollRowHats');
+  }
+  if (accessoryCards.length) {
+    html += '<p class="shop-row-label">Accessories</p>';
+    html += buildRow(accessoryCards, 'productScrollRowAccessories');
   }
   grid.innerHTML = html;
   document.getElementById('shopGrid').style.display   = 'block';
