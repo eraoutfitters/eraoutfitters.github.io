@@ -937,8 +937,9 @@ function renderCartDrawer() {
       + '<div class="koozie-promo-bar"><div class="koozie-promo-fill" style="width:' + pct + '%"></div></div>'
       + '</div>';
   } else {
+    var koozieInCart = _cart.some(function(i) { return i.freeGift; });
     promoHtml = '<div class="koozie-promo koozie-promo--unlocked">'
-      + '🎉 <strong>Free koozie added to your cart!</strong>'
+      + (koozieInCart ? '🎉 <strong>Free koozie added to your cart!</strong>' : '🎉 You\'ve unlocked a <strong>free koozie</strong>! It\'ll be added at checkout.')
       + '</div>';
   }
   footerEl.innerHTML =
@@ -1059,7 +1060,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // ─── FETCH FREE KOOZIE PRODUCT ───────────────
-  gql('{ products(first:5, query:"can cooler") { edges { node { title variants(first:1) { edges { node { id price { amount currencyCode } image { url } } } } images(first:1) { edges { node { url } } } } } } }', {})
+  gql('{ products(first:5, query:"koozie") { edges { node { title variants(first:1) { edges { node { id price { amount currencyCode } image { url } } } } images(first:1) { edges { node { url } } } } } } }', {})
     .then(function(data) {
       var edges = data.data && data.data.products && data.data.products.edges;
       if (!edges || !edges.length) return;
