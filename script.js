@@ -1087,7 +1087,7 @@ document.addEventListener('DOMContentLoaded', function() {
       _koozieImgUrl    = (vNode.image && vNode.image.url) || (imgEdges && imgEdges[0] && imgEdges[0].node.url) || '';
     });
 
-  // ─── STICKY BAR ───────────────────────────────
+  // ─── STICKY BAR + HAMBURGER ───────────────────
   var stickyBar = document.getElementById('stickyBar');
   if (stickyBar) {
     var heroEl = document.querySelector('.hero');
@@ -1095,6 +1095,30 @@ document.addEventListener('DOMContentLoaded', function() {
       var threshold = heroEl ? heroEl.offsetHeight * 0.55 : 400;
       stickyBar.classList.toggle('visible', window.scrollY > threshold);
     }, { passive: true });
+
+    var hamburger = document.getElementById('stickyHamburger');
+    if (hamburger) {
+      hamburger.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var open = stickyBar.classList.toggle('nav-open');
+        hamburger.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+      // Close nav when a link is clicked
+      var navLinks = document.querySelectorAll('.sticky-nav-link');
+      navLinks.forEach(function(link) {
+        link.addEventListener('click', function() {
+          stickyBar.classList.remove('nav-open');
+          hamburger.setAttribute('aria-expanded', 'false');
+        });
+      });
+      // Close nav on outside click
+      document.addEventListener('click', function(e) {
+        if (!stickyBar.contains(e.target)) {
+          stickyBar.classList.remove('nav-open');
+          hamburger.setAttribute('aria-expanded', 'false');
+        }
+      });
+    }
   }
 
   // ─── CART ESCAPE KEY ──────────────────────────
@@ -1102,6 +1126,11 @@ document.addEventListener('DOMContentLoaded', function() {
     if (e.key === 'Escape') {
       var drawer = document.getElementById('cartDrawer');
       if (drawer && drawer.classList.contains('open')) closeCart();
+      if (stickyBar) {
+        stickyBar.classList.remove('nav-open');
+        var hb = document.getElementById('stickyHamburger');
+        if (hb) hb.setAttribute('aria-expanded', 'false');
+      }
     }
   });
 

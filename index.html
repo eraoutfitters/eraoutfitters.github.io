@@ -136,13 +136,25 @@
 <body>
 
 <!-- ─── STICKY BAR ────────────────────────────── -->
-<nav id="stickyBar" class="sticky-bar" aria-label="Quick navigation">
-  <img src="logo.svg" alt="Erä Outfitters" class="sticky-logo">
+<nav id="stickyBar" class="sticky-bar" aria-label="Primary navigation">
+  <a href="/" class="sticky-logo-link" aria-label="Erä Outfitters home">
+    <img src="logo.svg" alt="Erä Outfitters" class="sticky-logo" width="80" height="32" loading="lazy">
+  </a>
+  <div class="sticky-nav-links" id="stickyNavLinks">
+    <a href="#shop" class="sticky-nav-link">Shop</a>
+    <a href="#shop" class="sticky-nav-link">Hunting</a>
+    <a href="#shop" class="sticky-nav-link">Fishing</a>
+    <a href="#community" class="sticky-nav-link">Events</a>
+    <a href="#our-story" class="sticky-nav-link">Our Story</a>
+    <a href="contact.html" class="sticky-nav-link">Contact</a>
+  </div>
   <div class="sticky-actions">
-    <button class="sticky-shop-btn" onclick="openShopModal()" aria-label="Open shop">Shop</button>
     <button class="sticky-cart-btn" onclick="openCart()" aria-label="View cart">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
       <span id="cartBadge" class="cart-badge" style="display:none" aria-live="polite">0</span>
+    </button>
+    <button class="sticky-hamburger" id="stickyHamburger" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
     </button>
   </div>
 </nav>
@@ -176,11 +188,11 @@
   <button class="hero-nav hero-nav-prev" onclick="heroNav(-1)" aria-label="Previous">&#8249;</button>
   <button class="hero-nav hero-nav-next" onclick="heroNav(1)" aria-label="Next">&#8250;</button>
   <div class="hero-inner">
-    <img src="logo.svg" alt="Era Outfitters" class="hero-logo" decoding="async">
+    <img src="logo.svg" alt="Era Outfitters" class="hero-logo" decoding="async" width="120" height="48" loading="eager">
     <p class="hero-tagline">Field &amp; Fly Shop &nbsp;·&nbsp; Roswell, Georgia</p>
     <h1 class="hero-headline">Fish. Shoot. Gather.</h1>
     <div class="hero-btns">
-      <a href="#" onclick="openShopModal();return false;" class="hero-btn">
+      <a href="#shop" class="hero-btn">
         Explore the Shop
         <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M1 7H13M7 1L13 7L7 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </a>
@@ -192,10 +204,19 @@
   </div>
 </section>
 
-<!-- ─── DEFINITION STRIP ──────────────────────── -->
-<div class="def-strip">
-  <p>er&#228; (n.) &mdash; An ancient word that holds a cultural meaning relating to the wilderness, hunting, fishing or a &ldquo;share&rdquo; of wild places. The concept of everyman&rsquo;s freedom to roam in present-day Finland can be traced back to the ancient culture of er&#228;.</p>
-</div>
+<!-- ─── HERO EMAIL BAR ────────────────────────── -->
+<section class="hero-email-bar">
+  <form class="hero-email-form" action="https://eraoutfitters.us10.list-manage.com/subscribe/post?u=f6e6c6ba682dcca7138938074&amp;id=c5f58615a8&amp;f_id=000c4ee4f0" method="post">
+    <span class="hero-email-label">Join the list &mdash; opening day &amp; early gear access</span>
+    <div class="hero-email-row">
+      <input type="email" name="EMAIL" class="hero-email-input" placeholder="your@email.com" autocomplete="email" required>
+      <button type="submit" class="hero-email-btn">Join</button>
+      <div style="position:absolute;left:-5000px;" aria-hidden="true">
+        <input type="text" name="b_f6e6c6ba682dcca7138938074_c5f58615a8" tabindex="-1" value="">
+      </div>
+    </div>
+  </form>
+</section>
 
 <!-- ─── CATEGORY TILES ───────────────────────── -->
 <section class="categories">
@@ -206,7 +227,7 @@
     <div class="cat-tile-content">
       <h3>Hunting</h3>
       <p>Gear and apparel built for the field: dove, quail, and all upland birds.</p>
-      <a href="#" onclick="openShopModal();return false;" class="cat-tile-link">
+      <a href="#shop" class="cat-tile-link">
         Shop Hunting <svg width="11" height="11" viewBox="0 0 14 14" fill="none"><path d="M1 7H13M7 1L13 7L7 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </a>
     </div>
@@ -218,7 +239,7 @@
     <div class="cat-tile-content">
       <h3>Fishing</h3>
       <p>Tackle for our Southern tailwaters: the Chattahoochee, Toccoa, and beyond.</p>
-      <a href="#" onclick="openShopModal();return false;" class="cat-tile-link">
+      <a href="#shop" class="cat-tile-link">
         Shop Fishing <svg width="11" height="11" viewBox="0 0 14 14" fill="none"><path d="M1 7H13M7 1L13 7L7 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </a>
     </div>
@@ -281,38 +302,43 @@
       <ul class="events-list">
         <li>
           <div class="event-diamond"></div>
-          <div>
+          <div class="event-body">
             <div class="event-name">The Shop</div>
             <div class="event-desc">Physical Field &amp; Fly Shop in Roswell, Georgia</div>
           </div>
+          <a href="contact.html" class="event-rsvp-btn">Get Notified</a>
         </li>
         <li>
           <div class="event-diamond"></div>
-          <div>
+          <div class="event-body">
             <div class="event-name">Seasonal Hunts</div>
             <div class="event-desc">Dove, Quail &amp; Upland</div>
           </div>
+          <a href="contact.html" class="event-rsvp-btn">RSVP</a>
         </li>
         <li>
           <div class="event-diamond"></div>
-          <div>
+          <div class="event-body">
             <div class="event-name">Crawfish Boils</div>
             <div class="event-desc">Spring Series</div>
           </div>
+          <a href="contact.html" class="event-rsvp-btn">RSVP</a>
         </li>
         <li>
           <div class="event-diamond"></div>
-          <div>
+          <div class="event-body">
             <div class="event-name">Live Music &amp; Pig Roasts</div>
             <div class="event-desc">Summer Series</div>
           </div>
+          <a href="contact.html" class="event-rsvp-btn">RSVP</a>
         </li>
         <li>
           <div class="event-diamond"></div>
-          <div>
+          <div class="event-body">
             <div class="event-name">Testing Grounds</div>
             <div class="event-desc">Phase 2</div>
           </div>
+          <a href="contact.html" class="event-rsvp-btn">RSVP</a>
         </li>
       </ul>
     </div>
@@ -349,10 +375,18 @@
     <div class="fo-line"></div>
   </div>
   <div class="foot-brand">Er&#228; Outfitters</div>
-  <div class="foot-links">
-    <a href="https://instagram.com/eraoutfitter" target="_blank" rel="noopener" class="foot-link">@eraoutfitter</a>
+  <p class="foot-tagline">Field &amp; Fly Shop &nbsp;&middot;&nbsp; Roswell, Georgia</p>
+  <nav class="foot-nav" aria-label="Footer navigation">
+    <a href="#shop" class="foot-link">Shop</a>
+    <div class="foot-sep"></div>
+    <a href="#community" class="foot-link">Events</a>
+    <div class="foot-sep"></div>
+    <a href="#our-story" class="foot-link">Our Story</a>
     <div class="foot-sep"></div>
     <a href="contact.html" class="foot-link">Contact</a>
+  </nav>
+  <div class="foot-links">
+    <a href="https://instagram.com/eraoutfitter" target="_blank" rel="noopener" class="foot-link">@eraoutfitter</a>
     <div class="foot-sep"></div>
     <span class="foot-link" style="cursor:default;">Roswell, Georgia</span>
   </div>
