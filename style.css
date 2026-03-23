@@ -1352,3 +1352,15 @@ footer {
   line-height: 1.4;
   padding-bottom: 14px;
 }
+
+/* ─── FREE GIFT CART ITEM ────────────────────── */
+.cart-item--free { opacity: 0.95; }
+.cart-item-free-badge {
+  font-size: 12px;
+  font-weight: 700;
+  color: #1E3020;
+  background: rgba(30,48,32,0.12);
+  border-radius: 4px;
+  padding: 2px 7px;
+  letter-spacing: 0.5px;
+}

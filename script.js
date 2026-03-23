@@ -157,7 +157,15 @@ var _shopProducts = [];
 var _selectedVariants = {};
 var _renderedCards    = [];
 var _shopScrollY      = 0; // saves scroll position before entering detail
-var _cart = []; // { variantId, qty, productIdx, title, color, size, price, currency, imgUrl }
+var _cart = []; // { variantId, qty, productIdx, title, color, size, price, currency, imgUrl, freeGift? }
+
+// ─── FREE KOOZIE GLOBALS ──────────────────────
+var _koozieVariantId = null;
+var _koozieImgUrl    = '';
+var _koozieName      = 'Erä Can Cooler';
+var _kooziePrice     = 0;
+var _koozieCurrency  = 'USD';
+var KOOZIE_THRESHOLD = 25;
 
 function getColorSwatches(p) {
   var seen = {}, swatches = [];
@@ -823,6 +831,8 @@ function updateCartBadge() {
 }
 
 function removeCartItem(variantId) {
+  var item = _cart.find(function(i) { return i.variantId === variantId; });
+  if (item && item.freeGift) return;
   _cart = _cart.filter(function(item) { return item.variantId !== variantId; });
   updateCartBadge();
   renderCartDrawer();
@@ -830,7 +840,7 @@ function removeCartItem(variantId) {
 
 function updateCartQty(variantId, delta) {
   var item = _cart.find(function(i) { return i.variantId === variantId; });
-  if (!item) return;
+  if (!item || item.freeGift) return;
   item.qty = Math.max(0, item.qty + delta);
   if (item.qty === 0) {
     _cart = _cart.filter(function(i) { return i.variantId !== variantId; });
@@ -839,7 +849,27 @@ function updateCartQty(variantId, delta) {
   renderCartDrawer();
 }
 
+function syncFreeKoozie() {
+  if (!_koozieVariantId) return;
+  var subtotal = _cart.reduce(function(sum, item) {
+    return item.freeGift ? sum : sum + item.price * item.qty;
+  }, 0);
+  var hasKoozie = _cart.some(function(i) { return i.freeGift; });
+  if (subtotal >= KOOZIE_THRESHOLD && !hasKoozie) {
+    _cart.push({ variantId: _koozieVariantId, qty: 1, productIdx: -1,
+                 title: _koozieName, color: '', size: '',
+                 price: _kooziePrice, currency: _koozieCurrency,
+                 imgUrl: _koozieImgUrl, freeGift: true });
+    updateCartBadge();
+  } else if (subtotal < KOOZIE_THRESHOLD && hasKoozie) {
+    _cart = _cart.filter(function(i) { return !i.freeGift; });
+    updateCartBadge();
+  }
+}
+
 function renderCartDrawer() {
+  syncFreeKoozie();
+
   var itemsEl  = document.getElementById('cartItems');
   var footerEl = document.getElementById('cartFooter');
   if (!itemsEl || !footerEl) return;
@@ -855,38 +885,51 @@ function renderCartDrawer() {
     var metaParts = [];
     if (item.color) metaParts.push(item.color);
     if (item.size)  metaParts.push(item.size);
-    var meta      = metaParts.join(' \u00B7 ');
-    var linePrice = formatMoney(item.price * item.qty, item.currency);
-    var vid       = escAttr(JSON.stringify(item.variantId));
+    var meta = metaParts.join(' \u00B7 ');
+    var vid  = escAttr(JSON.stringify(item.variantId));
 
-    html += '<div class="cart-item">';
-    if (item.imgUrl) {
-      html += '<img class="cart-item-img" src="' + escAttr(item.imgUrl) + '" alt="' + escAttr(item.title) + '" loading="lazy">';
+    if (item.freeGift) {
+      html += '<div class="cart-item cart-item--free">';
+      if (item.imgUrl) {
+        html += '<img class="cart-item-img" src="' + escAttr(item.imgUrl) + '" alt="' + escAttr(item.title) + '" loading="lazy">';
+      } else {
+        html += '<div class="cart-item-img"></div>';
+      }
+      html += '<div class="cart-item-info">';
+      html += '<div class="cart-item-name">' + escHtml(item.title) + '</div>';
+      if (meta) html += '<div class="cart-item-meta">' + escHtml(meta) + '</div>';
+      html += '<div class="cart-item-bottom">';
+      html += '<span class="cart-item-free-badge">🎁 FREE</span>';
+      html += '</div></div></div>';
     } else {
-      html += '<div class="cart-item-img"></div>';
+      var linePrice = formatMoney(item.price * item.qty, item.currency);
+      html += '<div class="cart-item">';
+      if (item.imgUrl) {
+        html += '<img class="cart-item-img" src="' + escAttr(item.imgUrl) + '" alt="' + escAttr(item.title) + '" loading="lazy">';
+      } else {
+        html += '<div class="cart-item-img"></div>';
+      }
+      html += '<div class="cart-item-info">';
+      html += '<div class="cart-item-name">' + escHtml(item.title) + '</div>';
+      if (meta) html += '<div class="cart-item-meta">' + escHtml(meta) + '</div>';
+      html += '<div class="cart-item-bottom">';
+      html += '<div class="cart-qty">'
+            + '<button class="cart-qty-btn" onclick="updateCartQty(' + vid + ',-1)" aria-label="Decrease quantity">&#8722;</button>'
+            + '<span class="cart-qty-num">' + item.qty + '</span>'
+            + '<button class="cart-qty-btn" onclick="updateCartQty(' + vid + ',1)" aria-label="Increase quantity">+</button>'
+            + '</div>';
+      html += '<span class="cart-item-price">' + escHtml(linePrice) + '</span>';
+      html += '</div></div>';
+      html += '<button class="cart-item-remove" onclick="removeCartItem(' + vid + ')" aria-label="Remove ' + escAttr(item.title) + ' from cart">&#10005;</button>';
+      html += '</div>';
     }
-    html += '<div class="cart-item-info">';
-    html += '<div class="cart-item-name">' + escHtml(item.title) + '</div>';
-    if (meta) html += '<div class="cart-item-meta">' + escHtml(meta) + '</div>';
-    html += '<div class="cart-item-bottom">';
-    html += '<div class="cart-qty">'
-          + '<button class="cart-qty-btn" onclick="updateCartQty(' + vid + ',-1)" aria-label="Decrease quantity">&#8722;</button>'
-          + '<span class="cart-qty-num">' + item.qty + '</span>'
-          + '<button class="cart-qty-btn" onclick="updateCartQty(' + vid + ',1)" aria-label="Increase quantity">+</button>'
-          + '</div>';
-    html += '<span class="cart-item-price">' + escHtml(linePrice) + '</span>';
-    html += '</div>';
-    html += '</div>';
-    html += '<button class="cart-item-remove" onclick="removeCartItem(' + vid + ')" aria-label="Remove ' + escAttr(item.title) + ' from cart">&#10005;</button>';
-    html += '</div>';
   });
   itemsEl.innerHTML = html;
 
-  var subtotal = _cart.reduce(function(sum, item) { return sum + item.price * item.qty; }, 0);
-  var currency = _cart[0].currency;
-  var koozieThreshold = 25;
-  var remaining = Math.max(0, koozieThreshold - subtotal);
-  var pct = Math.min(100, Math.round((subtotal / koozieThreshold) * 100));
+  var subtotal = _cart.reduce(function(sum, item) { return item.freeGift ? sum : sum + item.price * item.qty; }, 0);
+  var currency = (_cart.find(function(i) { return !i.freeGift; }) || _cart[0]).currency;
+  var remaining = Math.max(0, KOOZIE_THRESHOLD - subtotal);
+  var pct = Math.min(100, Math.round((subtotal / KOOZIE_THRESHOLD) * 100));
   var promoHtml;
   if (remaining > 0) {
     promoHtml = '<div class="koozie-promo">'
@@ -895,7 +938,7 @@ function renderCartDrawer() {
       + '</div>';
   } else {
     promoHtml = '<div class="koozie-promo koozie-promo--unlocked">'
-      + '🎉 You\'ve unlocked a <strong>free koozie</strong>! It\'ll be added at checkout.'
+      + '🎉 <strong>Free koozie added to your cart!</strong>'
       + '</div>';
   }
   footerEl.innerHTML =
@@ -1014,6 +1057,22 @@ document.addEventListener('DOMContentLoaded', function() {
       el.textContent = msg;
     }
   }
+
+  // ─── FETCH FREE KOOZIE PRODUCT ───────────────
+  gql('{ products(first:5, query:"can cooler") { edges { node { title variants(first:1) { edges { node { id price { amount currencyCode } image { url } } } } images(first:1) { edges { node { url } } } } } } }', {})
+    .then(function(data) {
+      var edges = data.data && data.data.products && data.data.products.edges;
+      if (!edges || !edges.length) return;
+      var node  = edges[0].node;
+      var vNode = node.variants.edges[0] && node.variants.edges[0].node;
+      if (!vNode) return;
+      _koozieVariantId = vNode.id;
+      _kooziePrice     = parseFloat(vNode.price.amount);
+      _koozieCurrency  = vNode.price.currencyCode;
+      _koozieName      = node.title;
+      var imgEdges     = node.images && node.images.edges;
+      _koozieImgUrl    = (vNode.image && vNode.image.url) || (imgEdges && imgEdges[0] && imgEdges[0].node.url) || '';
+    });
 
   // ─── STICKY BAR ───────────────────────────────
   var stickyBar = document.getElementById('stickyBar');
