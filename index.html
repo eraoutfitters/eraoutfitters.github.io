@@ -130,7 +130,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://mddjp6-nx.myshopify.com">
 <link rel="preconnect" href="https://www.googletagmanager.com">
-<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,600;0,700;1,400&family=Nunito+Sans:wght@300;400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -181,23 +181,26 @@
   <div class="eyebrow-line r"></div>
 </div>
 
-<!-- ─── HERO ─────────────────────────────────── -->
-<section class="hero">
-  <div id="hero-media"></div>
-  <div class="hero-gradient"></div>
-  <button class="hero-nav hero-nav-prev" onclick="heroNav(-1)" aria-label="Previous">&#8249;</button>
-  <button class="hero-nav hero-nav-next" onclick="heroNav(1)" aria-label="Next">&#8250;</button>
-  <div class="hero-inner">
-    <img src="logo.svg" alt="Era Outfitters" class="hero-logo" decoding="async" width="120" height="48" loading="eager">
-    <p class="hero-tagline">Field &amp; Fly Shop &nbsp;·&nbsp; Roswell, Georgia</p>
-    <h1 class="hero-headline">Fish. Shoot. Gather.</h1>
-    <div class="hero-btns">
-      <a href="#shop" class="hero-btn">
-        Explore the Shop
-        <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M1 7H13M7 1L13 7L7 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </a>
-      <a href="#our-story" class="hero-btn-ghost">Our Story</a>
+<!-- ─── SPLIT-FIELD HERO ─────────────────────── -->
+<section class="split-hero">
+  <div class="split-hero-left">
+    <img src="media/era-15.webp" alt="Upland hunting — pheasant harvest" class="split-hero-img" loading="eager">
+  </div>
+  <div class="split-hero-right">
+    <img src="media/era-13.webp" alt="Fly fishing on a Southern tailwater" class="split-hero-img" loading="eager">
+  </div>
+  <div class="split-hero-center">
+    <div class="split-hero-badge">
+      <img src="logo.svg" alt="Erä Outfitters" class="split-hero-logo" width="200" height="80">
+      <p class="split-hero-tagline">Equipping the Modern Outdoorsman</p>
     </div>
+  </div>
+  <div class="split-hero-cta">
+    <a href="#shop" class="hero-btn">
+      Explore the Shop
+      <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M1 7H13M7 1L13 7L7 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    <a href="#our-story" class="hero-btn-ghost">Our Story</a>
   </div>
   <div class="hero-scroll">
     <div class="hero-scroll-line"></div>
@@ -259,6 +262,14 @@
 
 </section>
 
+<!-- ─── BRAND PILLAR: LIFESTYLE PHOTO ─────────── -->
+<section class="brand-pillar">
+  <div class="brand-pillar-img-wrap">
+    <img src="media/era-1.webp" alt="Yellow lab overlooking the lake" class="brand-pillar-img" loading="lazy">
+  </div>
+  <p class="brand-pillar-caption">Where the Field Meets the Water</p>
+</section>
+
 <!-- ─── BRAND STORY ───────────────────────────── -->
 <section class="brand-story reveal" id="our-story">
   <div class="brand-story-inner">
@@ -276,6 +287,16 @@
   </div>
 </section>
 
+<!-- ─── BRAND PILLAR: QUOTE ───────────────────── -->
+<section class="brand-pillar-quote">
+  <div class="brand-pillar-quote-inner">
+    <div class="bpq-rule"></div>
+    <p>&ldquo;The best days are the ones spent knee-deep in a river or walking a bird dog through open fields.&rdquo;</p>
+    <span class="bpq-attr">&mdash; The Erä Ethos</span>
+    <div class="bpq-rule"></div>
+  </div>
+</section>
+
 <!-- ─── SHOP ─────────────────────────────────── -->
 <section id="shop">
   <div class="shop-inner">
@@ -288,6 +309,37 @@
       <div id="shopDetailContent"></div>
     </div>
   </div>
+</section>
+
+<!-- ─── TECHNICAL PRODUCT NARRATIVE ───────────── -->
+<section class="tech-product" id="tech-product">
+  <div class="tech-product-inner">
+    <span class="section-label" style="color:rgba(30,48,32,0.4);">The Original Er&#228; Long Sleeve</span>
+    <div class="section-rule" style="background:rgba(30,48,32,0.2);"></div>
+    <p class="tech-product-desc">Built for the field, finished by hand. Every shirt is individually garment-dyed for a unique, lived-in feel that gets better with age.</p>
+    <div class="tech-specs">
+      <div class="tech-spec">
+        <span class="tech-spec-label">Weight</span>
+        <span class="tech-spec-value">6.1oz Heavyweight Cotton</span>
+      </div>
+      <div class="tech-spec">
+        <span class="tech-spec-label">Process</span>
+        <span class="tech-spec-value">Artisanal Garment-Dye</span>
+      </div>
+      <div class="tech-spec">
+        <span class="tech-spec-label">Build</span>
+        <span class="tech-spec-value">Reinforced Field Seams</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── BRAND PILLAR: LIFESTYLE PHOTO 2 ───────── -->
+<section class="brand-pillar">
+  <div class="brand-pillar-img-wrap">
+    <img src="media/era-7.webp" alt="A quiet stretch of river — Southern tailwater" class="brand-pillar-img" loading="lazy">
+  </div>
+  <p class="brand-pillar-caption">Southern Tailwaters &middot; The Chattahoochee &amp; Beyond</p>
 </section>
 
 <!-- ─── COMMUNITY & EVENTS ───────────────────── -->
@@ -333,6 +385,14 @@
     </div>
 
   </div>
+</section>
+
+<!-- ─── BRAND PILLAR: FIELD PHOTO ─────────────── -->
+<section class="brand-pillar brand-pillar--dark">
+  <div class="brand-pillar-img-wrap">
+    <img src="media/era-5.webp" alt="Dove harvest — upland hunting" class="brand-pillar-img" loading="lazy">
+  </div>
+  <p class="brand-pillar-caption" style="color:rgba(196,180,138,0.6);">Upland Season &middot; Dove, Quail &amp; Beyond</p>
 </section>
 
 <!-- ─── EMAIL SIGNUP ─────────────────────────── -->
